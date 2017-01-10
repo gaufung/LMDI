@@ -1,10 +1,10 @@
-# -*- coding:utf-8 -*-
+# -*- coding:utf8 -*-
 '''
 read data from xls
 using xlrd library
 '''
 import xlrd
-from Model import Co2, Energy, Production
+from Model import Co2, Energy, Production, Dmu
 from GlobalVaribales import *
 
 
@@ -55,3 +55,15 @@ def read_co2(year):
             i)[ENE_CO2_START_COLUMN: ENE_CO2_END_COLUMN + 1])
         result.append(Co2(name, co2))
     return result
+
+def read_dmus(pro_col, sheet_year):
+    '''
+    read particular year
+    '''
+    pros = read_produciton(pro_col)
+    co2s = read_co2(sheet_year)
+    enes = read_energy(sheet_year)
+    dmus = []
+    for idx, _ in enumerate(pros):
+        dmus.append(Dmu(enes[idx], pros[idx], co2s[idx]))
+    return dmus

@@ -1,4 +1,4 @@
-# -*- coding：utf-8 -*-
+# -*- coding:utf8 -*-
 '''
 The LMDI calculator
 '''
@@ -10,12 +10,16 @@ from math import log, sqrt, exp
 from Algorithm import lambda_min, theta_max
 
 
+def write_helper(sheet, row, column, values):
+    for value in values:
+        sheet.write(row, column, label=value)
+        row += 1
+
 
 class Lmdi(object):
     '''
     The class of Lmdi
     '''
-
     def __init__(self, dmus_t, dmus_t1):
         '''
         The construction of this class
@@ -45,11 +49,11 @@ class Lmdi(object):
             operator.add, [item.co2.total for item in self._dmus_t])
         self._co2_t1 = reduce(
             operator.add, [item.co2.total for item in self._dmus_t1])
-        # the t and t1 periods sum of produciton
+        # the t and t1 periods sum of production
         self._pro_t = reduce(
-            operator.add, [item.pro.produciton for item in self._dmus_t])
+            operator.add, [item.pro.production for item in self._dmus_t])
         self._pro_t1 = reduce(
-            operator.add, [item.pro.produciton for item in self._dmus_t1])
+            operator.add, [item.pro.production for item in self._dmus_t1])
         # the t and t1 periods sum of energy consumption
         self._energy_t = reduce(
             operator.add, [item.ene.total for item in self._dmus_t])
@@ -71,7 +75,8 @@ class Lmdi(object):
         for dmu_t, dmu_t1 in zip(self._dmus_t, self._dmus_t1):
             for j in range(self._energy_count):
                 if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
-                    result += Lmdi._lfunction(dmu_t1.co2[j], dmu_t.co2[j])
+                    result += Lmdi._lfunction(dmu_t1.co2[j] / dmu_t1.co2.total,  
+                                                dmu_t.co2[j] / dmu_t.co2.total)
                 else:
                     logging.info('zero was found: %f or %f' %
                                  (dmu_t1.co2[j], dmu_t.co2[j]))
@@ -278,8 +283,8 @@ class Lmdi(object):
             number1 = dmu_t1.ene[j] / dmu_t1.ene.total
             number2 = dmu_t.ene[j] / dmu_t.ene.total
             numberator1 = log(number1 / number2)
-            number3 = dmu_t1[j] / self.co2_t1
-            number4 = dmu_t[j] / self.co2_t
+            number3 = dmu_t1.co2[j] / self.co2_t1
+            number4 = dmu_t.co2[j] / self.co2_t
             numberator2 = Lmdi._lfunction(number3, number4)
             return numberator1 * numberator2 / self.ll_sum
         elif dmu_t.ene[j] == 0.0 and dmu_t1.ene[j] != 0.0:
@@ -290,6 +295,16 @@ class Lmdi(object):
             logging.info('%s and %s %d are both zero ' %
                          (dmu_t.name, dmu_t1.name, j))
             return 0.0
+
+    def emx(self):
+        '''
+        emx factor for every dmu
+        '''
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            result = 0.0
+            for j in range(self.energy_count):
+                result += self._emx(t_t1[0], t_t1[1], j, idx)
+            yield result
 
     def _pei(self, dmu_t, dmu_t1, j, i):
         '''
@@ -304,8 +319,7 @@ class Lmdi(object):
         '''
         if dmu_t.ene[j] != 0.0 and dmu_t1.ene[j] != 0.0:
             number1 = dmu_t1.ene.total / \
-                sqrt(self.lambda_t1_t1[
-                     i] * self.lambda_t_t1[i]) / dmu_t1.pro.production
+                sqrt(self.lambda_t1_t1[i] * self.lambda_t_t1[i]) / dmu_t1.pro.production
             number2 = dmu_t.ene.total / \
                 sqrt(self.lambda_t1_t[i] *
                      self.lambda_t_t[i]) / dmu_t.pro.production
@@ -318,6 +332,15 @@ class Lmdi(object):
             logging.info('%s or %s %d is both zero ' %
                          (dmu_t.name, dmu_t1.name, j))
             return 0.0
+    def pei(self):
+        '''
+        pei factor each dmu
+        '''
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            result = 0.0
+            for j in range(self.energy_count):
+                result += self._pei(t_t1[0], t_t1[1], j, idx)
+            yield result
 
     def _pis(self, dmu_t, dmu_t1, j, i):
         '''
@@ -344,6 +367,15 @@ class Lmdi(object):
             logging.info('%s or %s %d is both zero ' %
                          (dmu_t.name, dmu_t1.name, j))
             return 0.0
+    def pis(self):
+        '''
+        pis factor for each dmu
+        '''
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            result = 0.0
+            for j in range(self.energy_count):
+                result += self._pis(t_t1[0], t_t1[1], j, idx)
+            yield result
 
     def _isg(self, dmu_t, dmu_t1, j, i):
         '''
@@ -369,6 +401,16 @@ class Lmdi(object):
                          (dmu_t.name, dmu_t1.name, j))
             return 0.0
 
+    def isg(self):
+        '''
+        isg factor for each dmu
+        '''
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            result = 0.0
+            for j in range(self.energy_count):
+                result += self._isg(t_t1[0], t_t1[1], j, idx)
+            yield result
+    
     def _eue(self, dmu_t, dmu_t1, j, i):
         '''
         calc the eue Index
@@ -390,6 +432,16 @@ class Lmdi(object):
             logging.info('%s or %s %d is both zero ' %
                          (dmu_t.name, dmu_t1.name, j))
             return 0.0
+
+    def eue(self):
+        '''
+        eue factor for each dmu
+        '''
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            result = 0.0
+            for j in range(self.energy_count):
+                result += self._eue(t_t1[0], t_t1[1], j, idx)
+            yield result
 
     def _est(self, dmu_t, dmu_t1, j, i):
         '''
@@ -414,6 +466,15 @@ class Lmdi(object):
             logging.info('%s or %s %d is both zero ' %
                          (dmu_t.name, dmu_t1.name, j))
             return 0.0
+    def est(self):
+        '''
+        est for each dmu
+        '''
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            result = 0.0
+            for j in range(self.energy_count):
+                result += self._est(t_t1[0], t_t1[1], j, idx)
+            yield result
 
     def _yoe(self, dmu_t, dmu_t1, j, i):
         '''
@@ -439,6 +500,16 @@ class Lmdi(object):
                          (dmu_t.name, dmu_t1.name, j))
             return 0.0
 
+    def yoe(self):
+        '''
+        yoe factor for each dmu
+        '''
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            result = 0.0
+            for j in range(self._energy_count):
+                result += self._yoe(t_t1[0], t_t1[1], j, idx)
+            yield result
+
     def _yct(self, dmu_t, dmu_t1, j, i):
         '''
         calc the yct Index
@@ -463,12 +534,23 @@ class Lmdi(object):
                          (dmu_t.name, dmu_t1.name, j))
             return 0.0
 
+    def yct(self):
+        '''
+        yct factor for each dmu
+        '''
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            result = 0.0
+            for j in range(self.energy_count):
+                result += self._yct(t_t1[0], t_t1[1], j, idx)
+            yield result
+
     def write(self, workbook, name):
+
         '''
         write LMDI into one sheet
         '''
         sheet = workbook.add_sheet(name)
-        sheet.write(0, 0, label='省份')
+        sheet.write(0, 0, label=u'省份')
         sheet.write(0, 1, label='T 期产出')
         sheet.write(0, 2, label='T+1 期产出')
         sheet.write(0, 3, label='T 期能源消耗')
@@ -483,8 +565,8 @@ class Lmdi(object):
             sheet.write(i + 1, 2, dmu_t1.pro.production)
             sheet.write(i + 1, 3, dmu_t.ene.total)
             sheet.write(i + 1, 4, dmu_t1.ene.total)
-            sheet.write(i + 1, 5, dmu_t.co.total)
-            sheet.write(i + 1, 6, dmu_t1.co.total)
+            sheet.write(i + 1, 5, dmu_t.co2.total)
+            sheet.write(i + 1, 6, dmu_t1.co2.total)
         sheet.write(0, 7, label=u'lambda_t_t')
         sheet.write(0, 8, label=u'lambda_t_t1')
         sheet.write(0, 9, label=u'lambda_t1_t')
@@ -502,6 +584,24 @@ class Lmdi(object):
             sheet.write(i + 1, 12, label=self._theta_t_t1[i])
             sheet.write(i + 1, 13, label=self._theta_t1_t[i])
             sheet.write(i + 1, 14, label=self._theta_t1_t1[i])
+        sheet.write(0, 15, label=u'emx')
+        write_helper(sheet, 1, 15, self.emx())
+        sheet.write(0, 16, label=u'pei')
+        write_helper(sheet, 1, 16, self.pei())
+        sheet.write(0, 17, label=u'isg')
+        write_helper(sheet, 1, 17, self.isg())
+        sheet.write(0, 18, label=u'pis')
+        write_helper(sheet, 1, 18, self.pis())
+        sheet.write(0, 19, label=u'eue')
+        write_helper(sheet, 1, 19, self.eue())
+        sheet.write(0, 20, label=u'est')
+        write_helper(sheet, 1, 20, self.est())
+        sheet.write(0, 21, label=u'yct')
+        write_helper(sheet, 1, 21, self.yct())
+        sheet.write(0, 22, label=u'yoe')
+        write_helper(sheet, 1, 22, self.yoe())
+
+        '''
         t_1 = threading.Thread(target=self._index, args=('emx', self._emx))
         t_1.start()
         t_2 = threading.Thread(target=self._index, args=('pei', self._pei))
@@ -543,3 +643,6 @@ class Lmdi(object):
             sheet.write(i + 1, 20, label=self._index('est', self._est)[i])
             sheet.write(i + 1, 21, label=self._index('yct', self._yct)[i])
             sheet.write(i + 1, 22, label=self._index('yoe', self._yoe)[i])
+     '''
+
+    
