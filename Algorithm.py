@@ -62,7 +62,7 @@ def lambda_min(dmus_s, dmus_right):
                                       dmu.ene.total, dmu.pro.production, dmu.co2.total))
         except UserWarning:
             logging.error("unsolve occurs")
-            result.append(-1.0)
+            raise Exception
     return result
 
 
@@ -112,6 +112,6 @@ def theta_max(dmus_s, dmus_right):
                                      dmu.ene.total, dmu.pro.production, dmu.co2.total))
         except UserWarning:
             logging.error("unsolve occurs")
-            result.append(-1.0)
+            raise Exception
     return result
     

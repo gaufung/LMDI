@@ -59,7 +59,6 @@ class Lmdi(object):
         self._energy_t1 = reduce(
             operator.add, [item.ene.total for item in self._dmus_t1])
 
-    
     def _lfunction(self, item1, item2):
         '''
         L function $\frac{a - b}{ln(a) - ln(b)}$
@@ -74,12 +73,11 @@ class Lmdi(object):
         for dmu_t, dmu_t1 in zip(self._dmus_t, self._dmus_t1):
             for j in range(self._energy_count):
                 if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
-                    result += self._lfunction(dmu_t1.co2[j] / self.co2_t1,  
+                    result += self._lfunction(dmu_t1.co2[j] / self.co2_t1, 
                                                 dmu_t.co2[j] / self.co2_t)
                 else:
                     logging.info('zero was found: %f or %f' %
                                  (dmu_t1.co2[j], dmu_t.co2[j]))
-        #factor = Lmdi._lfunction(self.co2_t1 / self.pro_t1, self.co2_t / self.pro_t)
         self._ll = result
 
     def _init_linear_programming(self):
@@ -364,8 +362,7 @@ class Lmdi(object):
             numerator2 = self._lfunction(number3, number4)
             return numerator1 * numerator2 / self.ll_sum
         else:
-            logging.info('%s or %s %d is both zero ' %
-                         (dmu_t.name, dmu_t1.name, j))
+            logging.info('{} or {} {} is both zero '.format(dmu_t.name, dmu_t1.name, j))
             return 0.0
     def pis(self):
         '''
@@ -410,7 +407,7 @@ class Lmdi(object):
             for j in range(self.energy_count):
                 result += self._isg(t_t1[0], t_t1[1], j, idx)
             yield result
-    
+
     def _eue(self, dmu_t, dmu_t1, j, i):
         '''
         calc the eue Index

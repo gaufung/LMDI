@@ -5,7 +5,11 @@ using xlrd library
 '''
 import xlrd
 from Model import Co2, Energy, Production, Dmu
-from GlobalVaribales import *
+from GlobalVaribales import PRO_START_ROW, PRO_END_ROW, XLXS_FILE_PATH
+from GlobalVaribales import PRODUCTION_SHEET, PROVINCE_COLUMN
+from GlobalVaribales import ENE_START_ROW, ENE_END_ROW
+from GlobalVaribales import ENE_CO2_START_COLUMN, ENE_CO2_END_COLUMN
+from GlobalVaribales import CO2_START_ROW, CO2_END_ROW
 
 
 def read_produciton(year):
