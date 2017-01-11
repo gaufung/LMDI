@@ -10,7 +10,7 @@ from math import log, sqrt, exp
 from Algorithm import lambda_min, theta_max
 
 
-def write_helper(sheet, row, column, values):
+def _write_helper(sheet, row, column, values):
     for value in values:
         sheet.write(row, column, label=value)
         row += 1
@@ -60,8 +60,8 @@ class Lmdi(object):
         self._energy_t1 = reduce(
             operator.add, [item.ene.total for item in self._dmus_t1])
 
-    @classmethod
-    def _lfunction(cls, item1, item2):
+    
+    def _lfunction(self, item1, item2):
         '''
         L function $\frac{a - b}{ln(a) - ln(b)}$
         '''
@@ -75,11 +75,12 @@ class Lmdi(object):
         for dmu_t, dmu_t1 in zip(self._dmus_t, self._dmus_t1):
             for j in range(self._energy_count):
                 if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
-                    result += Lmdi._lfunction(dmu_t1.co2[j] / dmu_t1.co2.total,  
-                                                dmu_t.co2[j] / dmu_t.co2.total)
+                    result += self._lfunction(dmu_t1.co2[j] / self.co2_t1,  
+                                                dmu_t.co2[j] / self.co2_t)
                 else:
                     logging.info('zero was found: %f or %f' %
                                  (dmu_t1.co2[j], dmu_t.co2[j]))
+        #factor = Lmdi._lfunction(self.co2_t1 / self.pro_t1, self.co2_t / self.pro_t)
         self._ll = result
 
     def _init_linear_programming(self):
@@ -151,7 +152,7 @@ class Lmdi(object):
         '''
         lambda (t, t+1)
         '''
-        return self._lambda_t1_t1
+        return self._lambda_t_t1
 
     @property
     def lambda_t1_t(self):
@@ -285,7 +286,7 @@ class Lmdi(object):
             numberator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numberator2 = Lmdi._lfunction(number3, number4)
+            numberator2 = self._lfunction(number3, number4)
             return numberator1 * numberator2 / self.ll_sum
         elif dmu_t.ene[j] == 0.0 and dmu_t1.ene[j] != 0.0:
             return dmu_t1.co2[j] / (self._co2_t1 * self.ll_sum)
@@ -326,7 +327,7 @@ class Lmdi(object):
             numerator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numberator2 = Lmdi._lfunction(number3, number4)
+            numberator2 = self._lfunction(number3, number4)
             return numerator1 * numberator2 / self.ll_sum
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -361,7 +362,7 @@ class Lmdi(object):
             numerator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numerator2 = Lmdi._lfunction(number3, number4)
+            numerator2 = self._lfunction(number3, number4)
             return numerator1 * numerator2 / self.ll_sum
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -394,7 +395,7 @@ class Lmdi(object):
             numerator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numerator2 = Lmdi._lfunction(number3, number4)
+            numerator2 = self._lfunction(number3, number4)
             return numerator1 * numerator2 / (self.ll_sum)
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -426,7 +427,7 @@ class Lmdi(object):
             numerator1 = log(self.lambda_t1_t1[i] / self.lambda_t_t[i])
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numerator2 = Lmdi._lfunction(number3, number4)
+            numerator2 = self._lfunction(number3, number4)
             return numerator1 * numerator2 / (self.ll_sum)
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -460,8 +461,8 @@ class Lmdi(object):
             numerator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numerator2 = Lmdi._lfunction(number3, number4)
-            return numerator1 * numerator2 / (self.ll_sum)
+            numerator2 = self._lfunction(number3, number4)
+            return (numerator1 * numerator2) / (self.ll_sum)
         else:
             logging.info('%s or %s %d is both zero ' %
                          (dmu_t.name, dmu_t1.name, j))
@@ -493,7 +494,7 @@ class Lmdi(object):
             numerator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numerator2 = Lmdi._lfunction(number3, number4)
+            numerator2 = self._lfunction(number3, number4)
             return numerator1 * numerator2 / (self.ll_sum)
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -527,7 +528,7 @@ class Lmdi(object):
             numerator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numerator2 = Lmdi._lfunction(number3, number4)
+            numerator2 = self._lfunction(number3, number4)
             return numerator1 * numerator2 / (self.ll_sum)
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -585,21 +586,21 @@ class Lmdi(object):
             sheet.write(i + 1, 13, label=self._theta_t1_t[i])
             sheet.write(i + 1, 14, label=self._theta_t1_t1[i])
         sheet.write(0, 15, label=u'emx')
-        write_helper(sheet, 1, 15, self.emx())
+        _write_helper(sheet, 1, 15, self.emx())
         sheet.write(0, 16, label=u'pei')
-        write_helper(sheet, 1, 16, self.pei())
+        _write_helper(sheet, 1, 16, self.pei())
         sheet.write(0, 17, label=u'isg')
-        write_helper(sheet, 1, 17, self.isg())
+        _write_helper(sheet, 1, 17, self.isg())
         sheet.write(0, 18, label=u'pis')
-        write_helper(sheet, 1, 18, self.pis())
+        _write_helper(sheet, 1, 18, self.pis())
         sheet.write(0, 19, label=u'eue')
-        write_helper(sheet, 1, 19, self.eue())
+        _write_helper(sheet, 1, 19, self.eue())
         sheet.write(0, 20, label=u'est')
-        write_helper(sheet, 1, 20, self.est())
+        _write_helper(sheet, 1, 20, self.est())
         sheet.write(0, 21, label=u'yct')
-        write_helper(sheet, 1, 21, self.yct())
+        _write_helper(sheet, 1, 21, self.yct())
         sheet.write(0, 22, label=u'yoe')
-        write_helper(sheet, 1, 22, self.yoe())
+        _write_helper(sheet, 1, 22, self.yoe())
 
         '''
         t_1 = threading.Thread(target=self._index, args=('emx', self._emx))

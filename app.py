@@ -5,8 +5,11 @@ import GlobalVaribales
 import LMDI
 import logging
 from xlwt import *
+import math
+import operator
+import Algorithm
 # 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 dmus_2006 = DataRead.read_dmus(GlobalVaribales.PRO_2006_COL, GlobalVaribales.SHEET_2006)
 dmus_2007 = DataRead.read_dmus(GlobalVaribales.PRO_2007_COL, GlobalVaribales.SHEET_2007)
 dmus_2008 = DataRead.read_dmus(GlobalVaribales.PRO_2008_COL, GlobalVaribales.SHEET_2008)
@@ -35,4 +38,4 @@ lmdi_2011_2012.write(workbook,'2011-2012')
 lmdi_2012_2013.write(workbook,'2012-2013')
 lmdi_2013_2014.write(workbook,'2013-2014')
 lmdi_2006_2014.write(workbook,'2006-2014')
-workbook.save('test.xls')
+workbook.save('factors_complete_checked.xls')
