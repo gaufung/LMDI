@@ -3,7 +3,6 @@
 The LMDI calculator
 '''
 from __future__ import division
-import threading
 import logging
 import operator
 from math import log, sqrt, exp
@@ -602,48 +601,5 @@ class Lmdi(object):
         sheet.write(0, 22, label=u'yoe')
         _write_helper(sheet, 1, 22, self.yoe())
 
-        '''
-        t_1 = threading.Thread(target=self._index, args=('emx', self._emx))
-        t_1.start()
-        t_2 = threading.Thread(target=self._index, args=('pei', self._pei))
-        t_2.start()
-        t_3 = threading.Thread(target=self._index, args=('isg', self._isg))
-        t_3.start()
-        t_4 = threading.Thread(target=self._index, args=('pis', self._pis))
-        t_4.start()
-        t_5 = threading.Thread(target=self._index, args=('eue', self._eue))
-        t_5.start()
-        t_6 = threading.Thread(target=self._index, args=('est', self._est))
-        t_6.start()
-        t_7 = threading.Thread(target=self._index, args=('yct', self._yct))
-        t_7.start()
-        t_8 = threading.Thread(target=self._index, args=('yoe', self._yoe))
-        t_8.start()
-        t_1.join()
-        t_2.join()
-        t_3.join()
-        t_4.join()
-        t_5.join()
-        t_6.join()
-        t_7.join()
-        t_8.join()
-        sheet.write(0, 15, label=u'emx')
-        sheet.write(0, 16, label=u'pei')
-        sheet.write(0, 17, label=u'isg')
-        sheet.write(0, 18, label=u'pis')
-        sheet.write(0, 19, label=u'eue')
-        sheet.write(0, 20, label=u'est')
-        sheet.write(0, 21, label=u'yct')
-        sheet.write(0, 22, label=u'yoe')
-        for i in range(self._province_count):
-            sheet.write(i + 1, 15, label=self._index('emx', self._emx)[i])
-            sheet.write(i + 1, 16, label=self._index('pei', self._pei)[i])
-            sheet.write(i + 1, 17, label=self._index('isg', self._isg)[i])
-            sheet.write(i + 1, 18, label=self._index('pis', self._pis)[i])
-            sheet.write(i + 1, 19, label=self._index('eue', self._eue)[i])
-            sheet.write(i + 1, 20, label=self._index('est', self._est)[i])
-            sheet.write(i + 1, 21, label=self._index('yct', self._yct)[i])
-            sheet.write(i + 1, 22, label=self._index('yoe', self._yoe)[i])
-     '''
 
     

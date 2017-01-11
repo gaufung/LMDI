@@ -88,7 +88,6 @@ class Co2(object):
         '''
         return self._co2[-1]
 
-    @property
     def __len__(self):
         '''
         the length of co2

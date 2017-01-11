@@ -8,7 +8,7 @@ from __future__ import division
 import logging
 from pulp import LpProblem, lpSum, LpVariable, LpMinimize, LpMaximize
 
-def addelements(sequence, *elements):
+def _addelements(sequence, *elements):
     '''
     add elements into list
     '''
@@ -52,9 +52,9 @@ def lambda_min(dmus_s, dmus_right):
             productions.append(dmu.pro.production)
             co2s.append(dmu.co2.total)
     # add slack varibales
-    addelements(energies, 1.0, 0.0)
-    addelements(productions, 0.0, 0.0)
-    addelements(co2s, 0.0, -1.0)
+    _addelements(energies, 1.0, 0.0)
+    _addelements(productions, 0.0, 0.0)
+    _addelements(co2s, 0.0, -1.0)
     result = []
     for dmu in dmus_right:
         try:
@@ -102,9 +102,9 @@ def theta_max(dmus_s, dmus_right):
             productions.append(dmu.pro.production)
             co2s.append(dmu.co2.total)
     # add slack variables
-    addelements(energies, 0, -1.0)
-    addelements(productions, -1.0, 0.0)
-    addelements(co2s, 0.0, 0.0)
+    _addelements(energies, 0, -1.0)
+    _addelements(productions, -1.0, 0.0)
+    _addelements(co2s, 0.0, 0.0)
     result = []
     for dmu in dmus_right:
         try:

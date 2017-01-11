@@ -51,15 +51,12 @@ class App(object):
         self.lmdi_2013_2014.write(workbook, '2013-2014')
         self.lmdi_2006_2014.write(workbook, '2006-2014')
         workbook.save('factors_complete_checked.xls')
-    
-    def _check_factor(self, *factors):
-        for i in range(len(factors[0])):
-            result = 1.0 
-            for factor in factors:
-                result *= math.exp(factor[i])
-            yield result
+       
     def _create_value(self, frame):
-         for _,row in frame.iterrows():
+        '''
+        $e^{\sum_{i}^{30}factor}$
+        '''
+        for _, row in frame.iterrows():
              yield math.exp(row.values.sum())
 
     def check_factors_multiply(self):
