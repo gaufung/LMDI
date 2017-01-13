@@ -72,6 +72,12 @@ class Spaam(object):
                 result.append(pei_t1 / pei_t - 1)
             self._cache['peiRatio'] = result
         return self._cache['peiRatio']
+    @property
+    def pei(self):
+        '''
+        the pei value
+        '''
+        return exp(sum(list(self._lmdi.pei())))
     #pis
     def _pis_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -108,6 +114,9 @@ class Spaam(object):
                 result.append(pis_t1 / pis_t - 1)
             self._cache['pisRatio'] = result
         return self._cache['pisRatio']
+    @property
+    def pis(self):
+        return exp(sum(list(self._lmdi.pis())))
     #isg
     def _isg_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -138,6 +147,12 @@ class Spaam(object):
                 result.append(isg_t1 / isg_t - 1)
             self._cache['isgRatio'] = result
         return self._cache['isgRatio']
+    @property
+    def isg(self):
+        '''
+        the isg value
+        '''
+        return exp(sum(list(self._lmdi.isg())))
     #eue
     def _eue_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -172,6 +187,12 @@ class Spaam(object):
                 result.append(eue_t1 / eue_t - 1)
             self._cache['eueRatio'] = result
         return self._cache['eueRatio']
+    @property
+    def eue(self):
+        '''
+        the eue value
+        '''
+        return exp(sum(list(self._lmdi.eue())))
     # est
     def _est_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -206,6 +227,12 @@ class Spaam(object):
                 result.append(est_t1 / est_t - 1)
             self._cache['estRatio'] = result
         return self._cache['estRatio']
+    @property
+    def est(self):
+        '''
+        the est value
+        '''
+        return exp(sum(list(self._lmdi.est())))
     #yoe
     def _yoe_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -240,6 +267,12 @@ class Spaam(object):
                 result.append(yoe_t1/yoe_t - 1)
             self._cache['yoeRatio'] = result
         return self._cache['yoeRatio']
+    @property
+    def yoe(self):
+        '''
+        the yoe value
+        '''
+        return exp(sum(list(self._lmdi.yoe())))
     # yct
     def _yct_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -274,6 +307,12 @@ class Spaam(object):
                 result.append(yct_t1 / yct_t -1)
             self._cache['yctRatio'] = result
         return self._cache['yctRatio']
+    @property
+    def yct(self):
+        '''
+        the yct value
+        '''
+        return exp(sum(list(self._lmdi.yct())))
      #emx
     def _peiij(self, i, j):
         dmu_t = self._dmus_t[i]
@@ -336,3 +375,10 @@ class Spaam(object):
         if not self._cache.has_key('emxRatio'):
             self._cache['emxRatio'] = [1.0 for _ in range(self._lmdi.province_count)]
         return self._cache['emxRatio']
+           
+    @property
+    def emx(self):
+        '''
+        the emx value
+        '''
+        return exp(sum(list(self._lmdi.emx())))

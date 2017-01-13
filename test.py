@@ -83,6 +83,7 @@ class Test_Attribute(unittest.TestCase):
                                              self.spaam_2006_2007.emx_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.emx()))) - 1
         self.assertAlmostEqual(sum_value, total_value, places=5)
+        self.assertAlmostEqual(total_value+1, self.spaam_2006_2007.emx)
     def test_pis(self):
         '''
         pis checked
@@ -91,6 +92,7 @@ class Test_Attribute(unittest.TestCase):
                                              self.spaam_2006_2007.pis_ratio())])
         total_sum = math.exp(sum(list(self.lmdi_2006_2007.pis()))) - 1
         self.assertAlmostEqual(sum_value, total_sum, places=5)
+        self.assertAlmostEqual(total_sum+1, self.spaam_2006_2007.pis)
     def test_pei(self):
         '''
         pei checked
@@ -99,14 +101,16 @@ class Test_Attribute(unittest.TestCase):
                                              self.spaam_2006_2007.pei_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.pei()))) - 1
         self.assertAlmostEqual(sum_value, total_value, places=5)
+        self.assertAlmostEqual(total_value+1, self.spaam_2006_2007.pei)
     def test_isg(self):
         '''
         isg checked
         '''
         sum_value = sum([k*v for k, v in zip(self.spaam_2006_2007.risg(),
-                                            self.spaam_2006_2007.isg_ratio())])
+                                             self.spaam_2006_2007.isg_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.isg()))) - 1 
         self.assertAlmostEqual(sum_value, total_value, places=5)
+        self.assertAlmostEqual(total_value+1, self.spaam_2006_2007.isg)
     def test_eue(self):
         '''
         eue checked
@@ -115,6 +119,7 @@ class Test_Attribute(unittest.TestCase):
                                              self.spaam_2006_2007.eue_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.eue()))) - 1
         self.assertAlmostEqual(sum_value, total_value, places=5)
+        self.assertAlmostEqual(total_value+1, self.spaam_2006_2007.eue)
     def test_est(self):
         '''
         est checked
@@ -123,6 +128,7 @@ class Test_Attribute(unittest.TestCase):
                                              self.spaam_2006_2007.est_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.est()))) - 1
         self.assertAlmostEqual(sum_value, total_value, places=5)
+        self.assertAlmostEqual(total_value+1, self.spaam_2006_2007.est)
     def test_yoe(self):
         '''
         yoe checked
@@ -131,6 +137,7 @@ class Test_Attribute(unittest.TestCase):
                                              self.spaam_2006_2007.yoe_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.yoe()))) - 1 
         self.assertAlmostEqual(sum_value, total_value, places=5)
+        self.assertAlmostEqual(total_value+1, self.spaam_2006_2007.yoe)
     def test_yct(self):
         '''
         yct checked
@@ -139,5 +146,7 @@ class Test_Attribute(unittest.TestCase):
                                              self.spaam_2006_2007.yct_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.yct()))) - 1
         self.assertAlmostEqual(sum_value, total_value, places=5)
+        self.assertAlmostEqual(total_value+1, self.spaam_2006_2007.yct)
+    
 if __name__ == '__main__':
     unittest.main()
