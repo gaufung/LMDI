@@ -29,7 +29,6 @@ class Lmdi(object):
         assert len(dmus_t) == len(dmus_t1)
         self._dmus_t = dmus_t
         self._dmus_t1 = dmus_t1
-        # The cache of this indexes
         self._cache = {}
         self._init()
         self._init_ll()
@@ -73,8 +72,8 @@ class Lmdi(object):
         for dmu_t, dmu_t1 in zip(self._dmus_t, self._dmus_t1):
             for j in range(self._energy_count):
                 if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
-                    result += self._lfunction(dmu_t1.co2[j] / self.co2_t1, 
-                                                dmu_t.co2[j] / self.co2_t)
+                    result += self._lfunction(dmu_t1.co2[j] / self.co2_t1,
+                                              dmu_t.co2[j] / self.co2_t)
                 else:
                     logging.info('zero was found: %f or %f' %
                                  (dmu_t1.co2[j], dmu_t.co2[j]))
@@ -540,34 +539,11 @@ class Lmdi(object):
             for j in range(self.energy_count):
                 result += self._yct(t_t1[0], t_t1[1], j, idx)
             yield result
-
-    def ci(self):
-        '''
-        CI value
-        '''
-        result1 = 0.0
-        result2 = 0.0
-        for dmut, dmut_1 in zip(self._dmus_t, self._dmus_t1):
-            for j in range(self.energy_count):
-                result1 += dmut.co2[j] / self.pro_t
-                result2 += dmut_1.co2[j] / self.pro_t1
-        return result1 / result2
-
-    # pei
-    def _pei_t_t1(self, dmu, idx, is_t=True):
-        if is_t:
-            return (dmu.ene.total / dmu.pro.production) / \
-                    sqrt(self._lambda_t_t[idx] * self._lambda_t1_t[idx])
-        else:
-            return (dmu.ene.total / dmu.pro.production) / \
-                    sqrt(self._lambda_t1_t1[idx] * self._lambda_t_t1[idx])
-    def _pei_total(self):
-        result_t, result_t1 = 0.0, 0.0
-        for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            result_t += self._pei_t_t1(dmu_t_t1[0], idx)
-            result_t1 += self._pei_t_t1(dmu_t_t1[1], idx, False)
-        return result_t, result_t1
+    #wi
     def _wi(self, idx):
+        '''
+        wi factor
+        '''
         result = 0.0
         dmu_t = self._dmus_t[idx]
         dmu_t1 = self._dmus_t1[idx]
@@ -578,28 +554,45 @@ class Lmdi(object):
                 result += self._lfunction(number1, number2)
         return result / self._ll
 
+    # pei
+    def _pei_t_t1(self, dmu, idx, is_t=True):
+        if is_t:
+            return (dmu.ene.total / dmu.pro.production) / \
+                    sqrt(self._lambda_t_t[idx] * self._lambda_t1_t[idx])
+        else:
+            return (dmu.ene.total / dmu.pro.production) / \
+                    sqrt(self._lambda_t1_t1[idx] * self._lambda_t_t1[idx])
+
     def rpei(self):
+        '''
+        r's pei
+        '''
         if not self._cache.has_key('rpei'):
             result = []
+            __pei = exp(sum(list(self.pei())))
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                wi = self._wi(idx)
+                __wi = self._wi(idx)
                 pei_t = self._pei_t_t1(dmu_t_t1[0], idx)
                 pei_t1 = self._pei_t_t1(dmu_t_t1[1], idx, False)
-                pii = wi / (self._lfunction(pei_t1, pei_t * exp(sum(list(self.pei())))))
+                pii = __wi / (self._lfunction(pei_t1, pei_t * __pei))
                 result.append(pii * pei_t)
             total = sum(result)
             self._cache['rpei'] = [item / total for item in result]
         return self._cache['rpei']
-    def peiRatio(self):
+
+    def pei_ratio(self):
+        '''
+        pei ratio
+        '''
         if not self._cache.has_key('peiRatio'):
-            result =[]
+            result = []
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
                 pei_t = self._pei_t_t1(dmu_t_t1[0], idx)
-                pei_t1 = self._pei_t_t1(dmu_t_t1[1], idx,False)
-                result.append(pei_t1 / pei_t - 1 )
+                pei_t1 = self._pei_t_t1(dmu_t_t1[1], idx, False)
+                result.append(pei_t1 / pei_t - 1)
             self._cache['peiRatio'] = result
         return self._cache['peiRatio']
-    #pis 
+    #pis
     def _pis_t_t1(self, dmu, idx, is_t=True):
         if is_t:
             return dmu.pro.production * sqrt(self._theta_t_t[idx] *
@@ -608,21 +601,25 @@ class Lmdi(object):
             return dmu.pro.production * sqrt(self._theta_t1_t1[idx] *
                                              self._theta_t_t1[idx]) / self._y_t1
     def rpis(self):
+        '''
+        r's pis
+        '''
         if not self._cache.has_key('rpis'):
             result = []
-            pis = exp(sum(list(self.pis())))
-            #print 'pis :' + str(pis)
+            __pis = exp(sum(list(self.pis())))
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                wi = self._wi(idx)
-                #print 'wi is '+ str(wi)
+                __wi = self._wi(idx)
                 pis_t = self._pis_t_t1(dmu_t_t1[0], idx)
                 pis_t1 = self._pis_t_t1(dmu_t_t1[1], idx, False)
-                pii = wi / self._lfunction(pis_t1, pis_t * exp(sum(list(self.pis()))))
+                pii = __wi / self._lfunction(pis_t1, pis_t * __pis)
                 result.append(pii * pis_t)
             total = sum(result)
             self._cache['rpis'] = [item / total for item in result]
         return self._cache['rpis']
-    def pisRatio(self):
+    def pis_ratio(self):
+        '''
+        pis ratio
+        '''
         if not self._cache.has_key('pisRatio'):
             result = []
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
@@ -631,24 +628,30 @@ class Lmdi(object):
                 result.append(pis_t1 / pis_t - 1)
             self._cache['pisRatio'] = result
         return self._cache['pisRatio']
-    #isg 
-    def _isg_t_t1(self, dmu, idx, is_t = True):
+    #isg
+    def _isg_t_t1(self, dmu, idx, is_t=True):
         if is_t:
             return self._y_t / self._pro_t
         else:
             return self._y_t1 / self._pro_t1
     def risg(self):
+        '''
+        r's isg
+        '''
         if not self._cache.has_key('risg'):
             result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                wi = self._wi(idx)
-                isg_t = self._isg_t_t1(dmu_t_t1[0], idx)
-                isg_t1 = self._isg_t_t1(dmu_t_t1[1], idx, False)
-                result.append(wi)
+            for idx, _ in enumerate(zip(self._dmus_t, self._dmus_t1)):
+                __wi = self._wi(idx)
+                #isg_t = self._isg_t_t1(dmu_t_t1[0], idx)
+                #isg_t1 = self._isg_t_t1(dmu_t_t1[1], idx, False)
+                result.append(__wi)
             total = sum(result)
             self._cache['risg'] = [item / total for item in result]
         return self._cache['risg']
-    def isgRatio(self):
+    def isg_ratio(self):
+        '''
+        isg ratio
+        '''
         if not self._cache.has_key('isgRatio'):
             result = []
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
@@ -656,7 +659,7 @@ class Lmdi(object):
                 isg_t1 = self._isg_t_t1(dmu_t_t1[1], idx, False)
                 result.append(isg_t1 / isg_t - 1)
             self._cache['isgRatio'] = result
-        return self._cache['isgRatio']    
+        return self._cache['isgRatio']
     #eue
     def _eue_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -664,18 +667,25 @@ class Lmdi(object):
         else:
             return self._lambda_t1_t1[idx]
     def reue(self):
+        '''
+        r's eue
+        '''
         if not self._cache.has_key('reue'):
             result = []
+            __eue = exp(sum(list(self.eue())))
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                wi = self._wi(idx)
+                __wi = self._wi(idx)
                 eue_t = self._eue_t_t1(dmu_t_t1[0], idx)
                 eue_t1 = self._eue_t_t1(dmu_t_t1[1], idx, False)
-                pii = wi / self._lfunction(eue_t1, eue_t * exp(sum(list(self.eue()))))
+                pii = __wi / self._lfunction(eue_t1, eue_t * __eue)
                 result.append(pii * eue_t)
             total = sum(result)
             self._cache['reue'] = [item / total for item in result]
         return self._cache['reue']
-    def eueRatio(self):
+    def eue_ratio(self):
+        '''
+        eue ratio
+        '''
         if not self._cache.has_key('eueRatio'):
             result = []
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
@@ -685,24 +695,31 @@ class Lmdi(object):
             self._cache['eueRatio'] = result
         return self._cache['eueRatio']
     # est
-    def _est_t_t1(self, dmu, idx, is_t = True):
+    def _est_t_t1(self, dmu, idx, is_t=True):
         if is_t:
             return sqrt(self._lambda_t1_t[idx] / self._lambda_t_t[idx])
         else:
             return sqrt(self._lambda_t_t1[idx] / self._lambda_t1_t1[idx])
     def rest(self):
+        '''
+        r's est
+        '''
         if not self._cache.has_key('rest'):
             result = []
+            __est = exp(sum(list(self.est())))
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                wi = self._wi(idx)
+                __wi = self._wi(idx)
                 est_t = self._est_t_t1(dmu_t_t1[0], idx)
                 est_t1 = self._est_t_t1(dmu_t_t1[1], idx, False)
-                pii = wi / self._lfunction(est_t1, est_t * exp(sum(list(self.est()))))
+                pii = __wi / self._lfunction(est_t1, est_t * __est)
                 result.append(pii * est_t)
             total = sum(result)
             self._cache['rest'] = [item / total for item in result]
         return self._cache['rest']
-    def estRatio(self):
+    def est_ratio(self):
+        '''
+        est ratio
+        '''
         if not self._cache.has_key('estRatio'):
             result = []
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
@@ -718,18 +735,25 @@ class Lmdi(object):
         else:
             return 1.0 / self._theta_t1_t1[idx]
     def ryoe(self):
+        '''
+        r's yoe
+        '''
         if not self._cache.has_key('ryoe'):
             result = []
+            __yoe = exp(sum(list(self.yoe())))
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                wi = self._wi(idx)
+                __wi = self._wi(idx)
                 yoe_t = self._yoe_t_t1(dmu_t_t1[0], idx)
                 yoe_t1 = self._yoe_t_t1(dmu_t_t1[1], idx, False)
-                pii = wi / self._lfunction(yoe_t1, yoe_t * exp(sum(list(self.yoe()))))
+                pii = __wi / self._lfunction(yoe_t1, yoe_t * __yoe)
                 result.append(pii * yoe_t)
             total = sum(result)
             self._cache['ryoe'] = [item / total for item in result]
         return self._cache['ryoe']
-    def yoeRatio(self):
+    def yoe_ratio(self):
+        '''
+        yoe ratio
+        '''
         if not self._cache.has_key('yoeRatio'):
             result = []
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
@@ -738,25 +762,32 @@ class Lmdi(object):
                 result.append(yoe_t1/yoe_t - 1)
             self._cache['yoeRatio'] = result
         return self._cache['yoeRatio']
-    # yct 
+    # yct
     def _yct_t_t1(self, dmu, idx, is_t=True):
         if is_t:
             return sqrt(self._theta_t_t[idx] / self._theta_t1_t[idx])
         else:
             return sqrt(self._theta_t1_t1[idx] / self._theta_t_t1[idx])
     def ryct(self):
+        '''
+        r yct
+        '''
         if not self._cache.has_key('ryct'):
             result = []
+            __yct = exp(sum(list(self.yct())))
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                wi = self._wi(idx)
+                __wi = self._wi(idx)
                 yct_t = self._yct_t_t1(dmu_t_t1[0], idx)
                 yct_t1 = self._yct_t_t1(dmu_t_t1[1], idx, False)
-                pii = wi / self._lfunction(yct_t1, yct_t * exp(sum(list(self.yct()))))
+                pii = __wi / self._lfunction(yct_t1, yct_t * __yct)
                 result.append(pii * yct_t)
             total = sum(result)
             self._cache['ryct'] = [item / total for item in result]
         return self._cache['ryct']
-    def yctRatio(self):
+    def yct_ratio(self):
+        '''
+        yct ratio
+        '''
         if not self._cache.has_key('yctRatio'):
             result = []
             for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
@@ -765,57 +796,63 @@ class Lmdi(object):
                 result.append(yct_t1 / yct_t -1)
             self._cache['yctRatio'] = result
         return self._cache['yctRatio']
-    #emx 
+    #emx
     def _peiij(self, i, j):
         dmu_t = self._dmus_t[i]
         dmu_t1 = self._dmus_t1[i]
         if dmu_t.co2[j] != 0.0  and dmu_t1.co2[j] != 0.0:
             sij_t = dmu_t.ene[j] / dmu_t.ene.total
             sij_t1 = dmu_t1.ene[j] / dmu_t1.ene.total
-            l = self._lfunction(sij_t1, sij_t * exp(sum(list(self.emx()))))
-            L = self._lfunction(dmu_t1.co2[j] / self._co2_t1, dmu_t.co2[j] / self._co2_t)
-            return L * sij_t / self.ll_sum / l
+            __l = self._lfunction(sij_t1, sij_t * exp(sum(list(self.emx()))))
+            __L = self._lfunction(dmu_t1.co2[j] / self._co2_t1, dmu_t.co2[j] / self._co2_t)
+            return __L * sij_t / self.ll_sum / __l
         elif dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] == 0.0:
             cijt = dmu_t.co2[j] / self.co2_t
             return cijt / self.ll_sum / exp(sum(list(self.emx())))
         else:
             return 0.0
-    def _rijTotal(self):
+    def _rij_total(self):
         result = 0.0
         for i in range(self.province_count):
             for j in range(self.energy_count):
                 result += self._peiij(i, j)
         return result
-    def _rij(self, i, j):
+    def _rij(self, i, j, emx):
         dmu_t = self._dmus_t[i]
         dmu_t1 = self._dmus_t1[i]
         if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
             sij_t = dmu_t.ene[j] / dmu_t.ene.total
             sij_t1 = dmu_t1.ene[j] / dmu_t1.ene.total
             l_upper = self._lfunction(dmu_t1.co2[j] /self._co2_t1, dmu_t.co2[j] / self._co2_t)
-            l_low = self._lfunction(sij_t1, sij_t * exp(sum(list(self.emx()))))
+            l_low = self._lfunction(sij_t1, sij_t * emx)
             return (1.0 / self._LL) * (1.0 / self._ll) *(l_upper / l_low) * (sij_t1 - sij_t)
         elif dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] == 0.0:
             cij_t = dmu_t.co2[j] / self.co2_t
-            return -1.0 * (1.0 /self._ll) * (1.0 / self._LL) * (cij_t / (exp(sum(list(self.emx())))))
+            return -1.0 * (1.0 /self._ll) * (1.0 / self._LL) * (cij_t / (emx))
         elif dmu_t.co2[j] == 0.0 and dmu_t1.co2[j] != 0.0:
             cij_t = dmu_t1.co2[j] / self.co2_t1
             return (1.0 / self._ll) * (1.0 / self._LL) * cij_t
         else:
             return 0.0
     def remx(self):
+        '''
+        r's emx
+        '''
         if not self._cache.has_key('remx'):
             result = []
-            self._LL = self._rijTotal()
-            #print 'LL: '+str(self._LL)
+            self._LL = self._rij_total()
+            __emx = exp(sum(list(self.emx())))
             for i in range(self.province_count):
                 value = 0.0
                 for j in range(self.energy_count):
-                    value += self._rij(i, j)
+                    value += self._rij(i, j, __emx)
                 result.append(value)
             self._cache['remx'] = result
         return self._cache['remx']
-    def emxRatio(self):
+    def emx_ratio(self):
+        '''
+        emx ratio
+        '''
         if not self._cache.has_key('emxRatio'):
             self._cache['emxRatio'] = [1.0 for i in range(self.province_count)]
         return self._cache['emxRatio']

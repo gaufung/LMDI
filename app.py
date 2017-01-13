@@ -143,7 +143,7 @@ class AppAttribute(object):
         dmus_2006 = DataRead.read_dmus(GlobalVaribales.PRO_2006_COL, GlobalVaribales.SHEET_2006)
         dmus_2007 = DataRead.read_dmus(GlobalVaribales.PRO_2007_COL, GlobalVaribales.SHEET_2007)
         self.lmdi_2006_2007 = LMDI.Lmdi(dmus_2006, dmus_2007)
-        print sum([k*v for k,v in zip(self.lmdi_2006_2007.rpei(), self.lmdi_2006_2007.peiRatio())])
+        print sum([k*v for k,v in zip(self.lmdi_2006_2007.rpei(), self.lmdi_2006_2007.pei_ratio())])
         print math.exp(sum(list(self.lmdi_2006_2007.pei()))) - 1
 if __name__ == '__main__':
     app = AppAttribute()

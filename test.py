@@ -78,7 +78,7 @@ class Test_Attribute(unittest.TestCase):
         emx checked
         '''
         sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.remx(),
-                                             self.lmdi_2006_2007.emxRatio())])
+                                             self.lmdi_2006_2007.emx_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.emx()))) - 1
         self.assertAlmostEqual(sum_value, total_value, places=5)
     def test_pis(self):
@@ -86,14 +86,14 @@ class Test_Attribute(unittest.TestCase):
         pis checked
         '''
         sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.rpis(),
-                                             self.lmdi_2006_2007.pisRatio())])
+                                             self.lmdi_2006_2007.pis_ratio())])
         total_sum = math.exp(sum(list(self.lmdi_2006_2007.pis()))) - 1
         self.assertAlmostEqual(sum_value, total_sum, places=5)
     def test_pei(self):
         '''
         pei checked
         '''
-        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.rpei(), self.lmdi_2006_2007.peiRatio())])
+        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.rpei(), self.lmdi_2006_2007.pei_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.pei()))) - 1 
         self.assertAlmostEqual(sum_value, total_value, places=5)
     def test_isg(self):
@@ -101,35 +101,35 @@ class Test_Attribute(unittest.TestCase):
         isg checked
         '''
         sum_value = sum([k*v for k,v in zip(self.lmdi_2006_2007.risg(),
-                                            self.lmdi_2006_2007.isgRatio())])
+                                            self.lmdi_2006_2007.isg_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.isg()))) - 1 
         self.assertAlmostEqual(sum_value, total_value, places=5)
     def test_eue(self):
         '''
         eue checked
         '''
-        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.reue(), self.lmdi_2006_2007.eueRatio())])
+        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.reue(), self.lmdi_2006_2007.eue_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.eue()))) - 1
         self.assertAlmostEqual(sum_value, total_value, places=5)
     def test_est(self):
         '''
         est checked
         '''
-        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.rest(), self.lmdi_2006_2007.estRatio())])
+        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.rest(), self.lmdi_2006_2007.est_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.est()))) - 1
         self.assertAlmostEqual(sum_value, total_value, places=5)
     def test_yoe(self):
         '''
         yoe checked
         '''
-        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.ryoe(), self.lmdi_2006_2007.yoeRatio())])
+        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.ryoe(), self.lmdi_2006_2007.yoe_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.yoe()))) - 1 
         self.assertAlmostEqual(sum_value, total_value, places=5)
     def test_yct(self):
         '''
         yct checked
         '''
-        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.ryct(), self.lmdi_2006_2007.yctRatio())])
+        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.ryct(), self.lmdi_2006_2007.yct_ratio())])
         total_value = math.exp(sum(list(self.lmdi_2006_2007.yct()))) - 1
         self.assertAlmostEqual(sum_value, total_value, places=5)
     
