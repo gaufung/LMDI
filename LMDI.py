@@ -57,8 +57,8 @@ class Lmdi(object):
             operator.add, [item.ene.total for item in self._dmus_t])
         self._energy_t1 = reduce(
             operator.add, [item.ene.total for item in self._dmus_t1])
-
-    def _lfunction(self, item1, item2):
+    @classmethod
+    def l_function(cls, item1, item2):
         '''
         L function $\frac{a - b}{ln(a) - ln(b)}$
         '''
@@ -72,7 +72,7 @@ class Lmdi(object):
         for dmu_t, dmu_t1 in zip(self._dmus_t, self._dmus_t1):
             for j in range(self._energy_count):
                 if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
-                    result += self._lfunction(dmu_t1.co2[j] / self.co2_t1,
+                    result += Lmdi.l_function(dmu_t1.co2[j] / self.co2_t1,
                                               dmu_t.co2[j] / self.co2_t)
                 else:
                     logging.info('zero was found: %f or %f' %
@@ -282,7 +282,7 @@ class Lmdi(object):
             numberator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numberator2 = self._lfunction(number3, number4)
+            numberator2 = Lmdi.l_function(number3, number4)
             return numberator1 * numberator2 / self.ll_sum
         elif dmu_t.ene[j] == 0.0 and dmu_t1.ene[j] != 0.0:
             return dmu_t1.co2[j] / (self._co2_t1 * self.ll_sum)
@@ -322,7 +322,7 @@ class Lmdi(object):
             numerator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numberator2 = self._lfunction(number3, number4)
+            numberator2 = Lmdi.l_function(number3, number4)
             return numerator1 * numberator2 / self.ll_sum
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -357,7 +357,7 @@ class Lmdi(object):
             numerator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numerator2 = self._lfunction(number3, number4)
+            numerator2 = Lmdi.l_function(number3, number4)
             return numerator1 * numerator2 / self.ll_sum
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -390,7 +390,7 @@ class Lmdi(object):
             numerator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numerator2 = self._lfunction(number3, number4)
+            numerator2 = Lmdi.l_function(number3, number4)
             return numerator1 * numerator2 / (self.ll_sum)
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -422,7 +422,7 @@ class Lmdi(object):
             numerator1 = log(self.lambda_t1_t1[i] / self.lambda_t_t[i])
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numerator2 = self._lfunction(number3, number4)
+            numerator2 = Lmdi.l_function(number3, number4)
             return numerator1 * numerator2 / (self.ll_sum)
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -456,7 +456,7 @@ class Lmdi(object):
             numerator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numerator2 = self._lfunction(number3, number4)
+            numerator2 = Lmdi.l_function(number3, number4)
             return (numerator1 * numerator2) / (self.ll_sum)
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -489,7 +489,7 @@ class Lmdi(object):
             numerator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numerator2 = self._lfunction(number3, number4)
+            numerator2 = Lmdi.l_function(number3, number4)
             return numerator1 * numerator2 / (self.ll_sum)
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -523,7 +523,7 @@ class Lmdi(object):
             numerator1 = log(number1 / number2)
             number3 = dmu_t1.co2[j] / self.co2_t1
             number4 = dmu_t.co2[j] / self.co2_t
-            numerator2 = self._lfunction(number3, number4)
+            numerator2 = Lmdi.l_function(number3, number4)
             return numerator1 * numerator2 / (self.ll_sum)
         else:
             logging.info('%s or %s %d is both zero ' %
@@ -551,7 +551,7 @@ class Lmdi(object):
             if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
                 number1 = dmu_t.co2[j] / self.co2_t
                 number2 = dmu_t1.co2[j] / self.co2_t1
-                result += self._lfunction(number1, number2)
+                result += Lmdi.l_function(number1, number2)
         return result / self._ll
 
     # pei
@@ -574,7 +574,7 @@ class Lmdi(object):
                 __wi = self._wi(idx)
                 pei_t = self._pei_t_t1(dmu_t_t1[0], idx)
                 pei_t1 = self._pei_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi / (self._lfunction(pei_t1, pei_t * __pei))
+                pii = __wi / (Lmdi.l_function(pei_t1, pei_t * __pei))
                 result.append(pii * pei_t)
             total = sum(result)
             self._cache['rpei'] = [item / total for item in result]
@@ -611,7 +611,7 @@ class Lmdi(object):
                 __wi = self._wi(idx)
                 pis_t = self._pis_t_t1(dmu_t_t1[0], idx)
                 pis_t1 = self._pis_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi / self._lfunction(pis_t1, pis_t * __pis)
+                pii = __wi / Lmdi.l_function(pis_t1, pis_t * __pis)
                 result.append(pii * pis_t)
             total = sum(result)
             self._cache['rpis'] = [item / total for item in result]
@@ -677,7 +677,7 @@ class Lmdi(object):
                 __wi = self._wi(idx)
                 eue_t = self._eue_t_t1(dmu_t_t1[0], idx)
                 eue_t1 = self._eue_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi / self._lfunction(eue_t1, eue_t * __eue)
+                pii = __wi / Lmdi.l_function(eue_t1, eue_t * __eue)
                 result.append(pii * eue_t)
             total = sum(result)
             self._cache['reue'] = [item / total for item in result]
@@ -711,7 +711,7 @@ class Lmdi(object):
                 __wi = self._wi(idx)
                 est_t = self._est_t_t1(dmu_t_t1[0], idx)
                 est_t1 = self._est_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi / self._lfunction(est_t1, est_t * __est)
+                pii = __wi / Lmdi.l_function(est_t1, est_t * __est)
                 result.append(pii * est_t)
             total = sum(result)
             self._cache['rest'] = [item / total for item in result]
@@ -745,7 +745,7 @@ class Lmdi(object):
                 __wi = self._wi(idx)
                 yoe_t = self._yoe_t_t1(dmu_t_t1[0], idx)
                 yoe_t1 = self._yoe_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi / self._lfunction(yoe_t1, yoe_t * __yoe)
+                pii = __wi / Lmdi.l_function(yoe_t1, yoe_t * __yoe)
                 result.append(pii * yoe_t)
             total = sum(result)
             self._cache['ryoe'] = [item / total for item in result]
@@ -779,7 +779,7 @@ class Lmdi(object):
                 __wi = self._wi(idx)
                 yct_t = self._yct_t_t1(dmu_t_t1[0], idx)
                 yct_t1 = self._yct_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi / self._lfunction(yct_t1, yct_t * __yct)
+                pii = __wi / Lmdi.l_function(yct_t1, yct_t * __yct)
                 result.append(pii * yct_t)
             total = sum(result)
             self._cache['ryct'] = [item / total for item in result]
@@ -803,8 +803,8 @@ class Lmdi(object):
         if dmu_t.co2[j] != 0.0  and dmu_t1.co2[j] != 0.0:
             sij_t = dmu_t.ene[j] / dmu_t.ene.total
             sij_t1 = dmu_t1.ene[j] / dmu_t1.ene.total
-            __l = self._lfunction(sij_t1, sij_t * exp(sum(list(self.emx()))))
-            __L = self._lfunction(dmu_t1.co2[j] / self._co2_t1, dmu_t.co2[j] / self._co2_t)
+            __l = Lmdi.l_function(sij_t1, sij_t * exp(sum(list(self.emx()))))
+            __L = Lmdi.l_function(dmu_t1.co2[j] / self._co2_t1, dmu_t.co2[j] / self._co2_t)
             return __L * sij_t / self.ll_sum / __l
         elif dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] == 0.0:
             cijt = dmu_t.co2[j] / self.co2_t
@@ -823,8 +823,8 @@ class Lmdi(object):
         if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
             sij_t = dmu_t.ene[j] / dmu_t.ene.total
             sij_t1 = dmu_t1.ene[j] / dmu_t1.ene.total
-            l_upper = self._lfunction(dmu_t1.co2[j] /self._co2_t1, dmu_t.co2[j] / self._co2_t)
-            l_low = self._lfunction(sij_t1, sij_t * emx)
+            l_upper = Lmdi.l_function(dmu_t1.co2[j] /self._co2_t1, dmu_t.co2[j] / self._co2_t)
+            l_low = Lmdi.l_function(sij_t1, sij_t * emx)
             return (1.0 / self._LL) * (1.0 / self._ll) *(l_upper / l_low) * (sij_t1 - sij_t)
         elif dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] == 0.0:
             cij_t = dmu_t.co2[j] / self.co2_t
