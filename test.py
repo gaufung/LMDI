@@ -7,6 +7,8 @@ import unittest
 import GlobalVaribales
 import DataRead
 import Model
+import LMDI
+import math
 
 class TestDataRead(unittest.TestCase):
     '''
@@ -59,5 +61,77 @@ class TestModel(unittest.TestCase):
         pro = Model.Production('江苏', 66)
         self.assertEqual(pro.name, '江苏')
         self.assertEqual(pro.production, 66)
+
+class Test_Attribute(unittest.TestCase):
+    '''
+    test emx
+    '''
+    def setUp(self):
+        '''
+        初始化条件
+        '''
+        dmus_2006 = DataRead.read_dmus(GlobalVaribales.PRO_2006_COL, GlobalVaribales.SHEET_2006)
+        dmus_2007 = DataRead.read_dmus(GlobalVaribales.PRO_2007_COL, GlobalVaribales.SHEET_2007)
+        self.lmdi_2006_2007 = LMDI.Lmdi(dmus_2006, dmus_2007)
+    def test_emx(self):
+        '''
+        emx checked
+        '''
+        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.remx(),
+                                             self.lmdi_2006_2007.emxRatio())])
+        total_value = math.exp(sum(list(self.lmdi_2006_2007.emx()))) - 1
+        self.assertAlmostEqual(sum_value, total_value, places=5)
+    def test_pis(self):
+        '''
+        pis checked
+        '''
+        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.rpis(),
+                                             self.lmdi_2006_2007.pisRatio())])
+        total_sum = math.exp(sum(list(self.lmdi_2006_2007.pis()))) - 1
+        self.assertAlmostEqual(sum_value, total_sum, places=5)
+    def test_pei(self):
+        '''
+        pei checked
+        '''
+        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.rpei(), self.lmdi_2006_2007.peiRatio())])
+        total_value = math.exp(sum(list(self.lmdi_2006_2007.pei()))) - 1 
+        self.assertAlmostEqual(sum_value, total_value, places=5)
+    def test_isg(self):
+        '''
+        isg checked
+        '''
+        sum_value = sum([k*v for k,v in zip(self.lmdi_2006_2007.risg(),
+                                            self.lmdi_2006_2007.isgRatio())])
+        total_value = math.exp(sum(list(self.lmdi_2006_2007.isg()))) - 1 
+        self.assertAlmostEqual(sum_value, total_value, places=5)
+    def test_eue(self):
+        '''
+        eue checked
+        '''
+        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.reue(), self.lmdi_2006_2007.eueRatio())])
+        total_value = math.exp(sum(list(self.lmdi_2006_2007.eue()))) - 1
+        self.assertAlmostEqual(sum_value, total_value, places=5)
+    def test_est(self):
+        '''
+        est checked
+        '''
+        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.rest(), self.lmdi_2006_2007.estRatio())])
+        total_value = math.exp(sum(list(self.lmdi_2006_2007.est()))) - 1
+        self.assertAlmostEqual(sum_value, total_value, places=5)
+    def test_yoe(self):
+        '''
+        yoe checked
+        '''
+        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.ryoe(), self.lmdi_2006_2007.yoeRatio())])
+        total_value = math.exp(sum(list(self.lmdi_2006_2007.yoe()))) - 1 
+        self.assertAlmostEqual(sum_value, total_value, places=5)
+    def test_yct(self):
+        '''
+        yct checked
+        '''
+        sum_value = sum([k*v for k, v in zip(self.lmdi_2006_2007.ryct(), self.lmdi_2006_2007.yctRatio())])
+        total_value = math.exp(sum(list(self.lmdi_2006_2007.yct()))) - 1
+        self.assertAlmostEqual(sum_value, total_value, places=5)
+    
 if __name__ == '__main__':
     unittest.main()
