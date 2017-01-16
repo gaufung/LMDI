@@ -1,28 +1,39 @@
 # -*- coding:utf8 -*-
 # single period attribute analysis classmethod
 from __future__ import division
-import logging
-import operator
-from math import log, sqrt, exp
+from math import sqrt, exp
 from Model import *
 from LMDI import Lmdi
 class Spaam(object):
     '''
     Single peroid attribution analysis method
     '''
-    def __init__(self, dmus_t, dmus_t1):
+    def __init__(self, dmus_t, dmus_t1, name=''):
         '''
         the construction of the single period attribute
         analysis method
         Args:
             dmus_t : the t period of Decsion Making Units
             dmus_t1 : the t+1 period of Decsion making units
+            name: the name of t and t+1
         '''
         assert len(dmus_t) == len(dmus_t1)
         self._dmus_t = dmus_t
         self._dmus_t1 = dmus_t1
         self._cache = {}
-        self._lmdi = Lmdi(self._dmus_t, self._dmus_t1)
+        self._lmdi = Lmdi(self._dmus_t, self._dmus_t1, name)
+    @property
+    def name(self):
+        '''
+        the name
+        '''
+        return self._lmdi.name
+    @property
+    def province_names(self):
+        '''
+        the province name
+        '''
+        return self._lmdi.province_names
     def _wi(self, idx):
         '''
         wi factor
@@ -32,10 +43,10 @@ class Spaam(object):
         dmu_t1 = self._dmus_t1[idx]
         for j in range(self._lmdi.energy_count):
             if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
-                number1 = dmu_t.co2[j] / self._lmdi.co2_t
-                number2 = dmu_t1.co2[j] / self._lmdi.co2_t1
+                number1 = dmu_t.co2[j] / self._lmdi.co2_sum_t
+                number2 = dmu_t1.co2[j] / self._lmdi.co2_sum_t1
                 result += Lmdi.l_function(number1, number2)
-        return result / self._lmdi.ll_sum
+        return result / self._lmdi.ll
     # pei
     def _pei_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -78,6 +89,12 @@ class Spaam(object):
         the pei value
         '''
         return exp(sum(list(self._lmdi.pei())))
+    @property
+    def pei_attributions(self):
+        '''
+        the pei attributions
+        '''
+        return [k * v for k, v in zip(self.rpei(), self.pei_ratio())]
     #pis
     def _pis_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -117,12 +134,15 @@ class Spaam(object):
     @property
     def pis(self):
         return exp(sum(list(self._lmdi.pis())))
+    @property
+    def pis_attributions(self):
+        return [k * v for k, v in zip(self.rpis(), self.pis_ratio())]
     #isg
     def _isg_t_t1(self, dmu, idx, is_t=True):
         if is_t:
-            return self._lmdi.y_t / self._lmdi.pro_t
+            return self._lmdi.y_t / self._lmdi.pro_sum_t
         else:
-            return self._lmdi.y_t1 / self._lmdi.pro_t1
+            return self._lmdi.y_t1 / self._lmdi.pro_sum_t1
     def risg(self):
         '''
         r's isg
@@ -153,6 +173,9 @@ class Spaam(object):
         the isg value
         '''
         return exp(sum(list(self._lmdi.isg())))
+    @property
+    def isg_attributions(self):
+        return [k * v for k, v in zip(self.risg(), self.isg_ratio())]
     #eue
     def _eue_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -193,6 +216,9 @@ class Spaam(object):
         the eue value
         '''
         return exp(sum(list(self._lmdi.eue())))
+    @property
+    def eue_attributions(self):
+        return [k * v for k, v in zip(self.reue(), self.eue_ratio())]
     # est
     def _est_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -233,6 +259,9 @@ class Spaam(object):
         the est value
         '''
         return exp(sum(list(self._lmdi.est())))
+    @property
+    def est_attributions(self):
+        return [k * v for k, v in zip(self.rest(), self.est_ratio())]
     #yoe
     def _yoe_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -273,6 +302,9 @@ class Spaam(object):
         the yoe value
         '''
         return exp(sum(list(self._lmdi.yoe())))
+    @property
+    def yoe_attributions(self):
+        return [k * v for k, v in zip(self.ryoe(), self.yoe_ratio())]
     # yct
     def _yct_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -313,6 +345,9 @@ class Spaam(object):
         the yct value
         '''
         return exp(sum(list(self._lmdi.yct())))
+    @property
+    def yct_attributions(self):
+        return [k * v for k, v in zip(self.ryct(), self.yct_ratio())]
      #emx
     def _peiij(self, i, j):
         dmu_t = self._dmus_t[i]
@@ -321,11 +356,11 @@ class Spaam(object):
             sij_t = dmu_t.ene[j] / dmu_t.ene.total
             sij_t1 = dmu_t1.ene[j] / dmu_t1.ene.total
             __l = Lmdi.l_function(sij_t1, sij_t * exp(sum(list(self._lmdi.emx()))))
-            __L = Lmdi.l_function(dmu_t1.co2[j] / self._lmdi.co2_t1, dmu_t.co2[j] / self._lmdi.co2_t)
-            return __L * sij_t / self._lmdi.ll_sum / __l
+            __L = Lmdi.l_function(dmu_t1.co2[j] / self._lmdi.co2_sum_t1, dmu_t.co2[j] / self._lmdi.co2_sum_t)
+            return __L * sij_t / self._lmdi.ll / __l
         elif dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] == 0.0:
-            cijt = dmu_t.co2[j] / self._lmdi.co2_t
-            return cijt / self._lmdi.ll_sum / exp(sum(list(self._lmdi.emx())))
+            cijt = dmu_t.co2[j] / self._lmdi.co2_sum_t
+            return cijt / self._lmdi.ll / exp(sum(list(self._lmdi.emx())))
         else:
             return 0.0
     def _rij_total(self):
@@ -341,16 +376,16 @@ class Spaam(object):
             sij_t = dmu_t.ene[j] / dmu_t.ene.total
             sij_t1 = dmu_t1.ene[j] / dmu_t1.ene.total
             l_upper = Lmdi.l_function(dmu_t1.co2[j] /
-                                      self._lmdi.co2_t1, dmu_t.co2[j] / self._lmdi.co2_t)
+                                      self._lmdi.co2_sum_t1, dmu_t.co2[j] / self._lmdi.co2_sum_t)
             l_low = Lmdi.l_function(sij_t1, sij_t * emx)
-            return (1.0 / self._LL) * (1.0 / self._lmdi.ll_sum) \
+            return (1.0 / self._LL) * (1.0 / self._lmdi.ll) \
                     *(l_upper / l_low) * (sij_t1 - sij_t)
         elif dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] == 0.0:
-            cij_t = dmu_t.co2[j] / self._lmdi.co2_t
-            return -1.0 * (1.0 /self._lmdi.ll_sum) * (1.0 / self._LL) * (cij_t / (emx))
+            cij_t = dmu_t.co2[j] / self._lmdi.co2_sum_t
+            return -1.0 * (1.0 /self._lmdi.ll) * (1.0 / self._LL) * (cij_t / (emx))
         elif dmu_t.co2[j] == 0.0 and dmu_t1.co2[j] != 0.0:
-            cij_t = dmu_t1.co2[j] / self._lmdi.co2_t1
-            return (1.0 / self._lmdi.ll_sum) * (1.0 / self._LL) * cij_t
+            cij_t = dmu_t1.co2[j] / self._lmdi.co2_sum_t1
+            return (1.0 / self._lmdi.ll) * (1.0 / self._LL) * cij_t
         else:
             return 0.0
     def remx(self):
@@ -375,10 +410,12 @@ class Spaam(object):
         if not self._cache.has_key('emxRatio'):
             self._cache['emxRatio'] = [1.0 for _ in range(self._lmdi.province_count)]
         return self._cache['emxRatio']
-           
     @property
     def emx(self):
         '''
         the emx value
         '''
         return exp(sum(list(self._lmdi.emx())))
+    @property
+    def emx_attributions(self):
+        return [k * v for k, v  in zip(self.remx(), self.emx_ratio())]

@@ -9,7 +9,7 @@ class Mpaam(object):
     '''
     multi period
     '''
-    def __init__(self, dmus_s):
+    def __init__(self, dmus_s, name):
         '''
         dmus_s is a list of dmus, the first one is first period
         the last is last period
@@ -18,12 +18,27 @@ class Mpaam(object):
         self._period_count = len(dmus_s)
         self._dmus_s = dmus_s
         self._province_count = len(dmus_s[0])
+        self._province_names = [item.name for item in dmus_s[0]]
         self._cache = {}
+        self._name = name
+    @property
+    def name(self):
+        '''
+        the name of multi-periods attribution
+        '''
+        return self._name
+    @property
+    def province_names(self):
+        '''
+        the names of provinces
+        '''
+        return self._province_names
     def _get_spaam(self, left, right):
         assert left != right
         label = str(left) + '-' + str(right)
         if not self._cache.has_key(label):
-            self._cache[label] = Spaam(self._dmus_s[left], self._dmus_s[right])
+            self._cache[label] = Spaam(self._dmus_s[left], self._dmus_s[right],
+                                       str(left)+'-'+str(right))
         return self._cache[label]
     def emx(self):
         '''
@@ -35,7 +50,7 @@ class Mpaam(object):
             for t in range(1, self._period_count):
                 if t-1 != 0:
                     spaam_0_t_1 = self._get_spaam(0, t-1)
-                    emx = spaam_0_t_1.emx()
+                    emx = spaam_0_t_1.emx
                     spaam_t_1_t = self._get_spaam(t-1, t)
                     contribution = spaam_t_1_t.remx()[i] * spaam_t_1_t.emx_ratio()[i]
                     value.append(emx * contribution)
@@ -56,14 +71,14 @@ class Mpaam(object):
             for t in range(1, self._period_count):
                 if t-1 != 0:
                     spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    pei = spaam_0_t_1.pei()
+                    pei = spaam_0_t_1.pei
                     spaam_t_1_t = self._get_spaam(t - 1, t)
-                    contribution = spaam_t_1_t.rpei()[i] * spaam_t_1_t.peiRatio()[i]
+                    contribution = spaam_t_1_t.rpei()[i] * spaam_t_1_t.pei_ratio()[i]
                     value += pei * contribution
                 else:
                     pei = 1.0
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rpei()[i] * spaam_t_1_t.peiRatio()[i]
+                    contribution = spaam_t_1_t.rpei()[i] * spaam_t_1_t.pei_ratio()[i]
                     value += pei * contribution
             result.append(value)
         return result
@@ -74,17 +89,17 @@ class Mpaam(object):
         result = []
         for i in range(self._province_count):
             value = 0.0
-            for t in range(1, self._province_count):
+            for t in range(1, self._period_count):
                 if t-1 != 0:
-                    spaam_0_t_1 = self._get_spaam(0,t - 1)
-                    pis = spaam_0_t_1.pis()
+                    spaam_0_t_1 = self._get_spaam(0, t - 1)
+                    pis = spaam_0_t_1.pis
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rpis()[i] * spaam_t_1_t.pisRatio()[i]
+                    contribution = spaam_t_1_t.rpis()[i] * spaam_t_1_t.pis_ratio()[i]
                     value += pis * contribution
                 else:
                     pis = 1.0
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rpis()[i] * spaam_t_1_t.pisRatio()[i]
+                    contribution = spaam_t_1_t.rpis()[i] * spaam_t_1_t.pis_ratio()[i]
                     value += pis * contribution
             result.append(value)
         return result
@@ -98,14 +113,14 @@ class Mpaam(object):
             for t in range(1, self._period_count):
                 if t-1 != 0:
                     spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    isg = spaam_0_t_1.isg()
+                    isg = spaam_0_t_1.isg
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.risg()[i] * spaam_t_1_t.isgRatio()[i]
+                    contribution = spaam_t_1_t.risg()[i] * spaam_t_1_t.isg_ratio()[i]
                     value += isg * contribution
                 else:
                     isg = 1.0
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.risg()[i] * spaam_t_1_t.isgRatio()[i]
+                    contribution = spaam_t_1_t.risg()[i] * spaam_t_1_t.isg_ratio()[i]
                     value += isg * contribution
             result.append(value)
         return result
@@ -119,14 +134,14 @@ class Mpaam(object):
             for t in range(1, self._period_count):
                 if t-1 != 0:
                     spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    eue = spaam_0_t_1.eue()
+                    eue = spaam_0_t_1.eue
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.reue()[i] * spaam_t_1_t.eueRatio()[i]
+                    contribution = spaam_t_1_t.reue()[i] * spaam_t_1_t.eue_ratio()[i]
                     value += eue * contribution
                 else:
                     eue = 1.0
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.reue()[i] * spaam_t_1_t.eueRatio()[i]
+                    contribution = spaam_t_1_t.reue()[i] * spaam_t_1_t.eue_ratio()[i]
                     value += eue * contribution
             result.append(value)
         return result
@@ -140,14 +155,14 @@ class Mpaam(object):
             for t in range(1, self._period_count):
                 if t-1 != 0:
                     spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    est = spaam_0_t_1.est()
+                    est = spaam_0_t_1.est
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rest()[i] * spaam_t_1_t.estRatio()[i]
+                    contribution = spaam_t_1_t.rest()[i] * spaam_t_1_t.est_ratio()[i]
                     value += est * contribution
                 else:
                     est = 1.0
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rest()[i] * spaam_t_1_t.estRatio()[i]
+                    contribution = spaam_t_1_t.rest()[i] * spaam_t_1_t.est_ratio()[i]
                     value += est * contribution
             result.append(value)
         return result
@@ -161,14 +176,14 @@ class Mpaam(object):
             for t in range(1, self._period_count):
                 if t-1 != 0:
                     spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    yoe = spaam_0_t_1.yoe()
+                    yoe = spaam_0_t_1.yoe
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.ryoe()[i] * spaam_t_1_t.yoeRatio()[i]
+                    contribution = spaam_t_1_t.ryoe()[i] * spaam_t_1_t.yoe_ratio()[i]
                     value += yoe * contribution
                 else:
                     yoe = 1.0
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.ryoe()[i] * spaam_t_1_t.yoeRatio()[i]
+                    contribution = spaam_t_1_t.ryoe()[i] * spaam_t_1_t.yoe_ratio()[i]
                     value += yoe * contribution
             result.append(value)
         return result
@@ -182,14 +197,14 @@ class Mpaam(object):
             for t in range(1, self._period_count):
                 if t-1 != 0:
                     spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    yct = spaam_0_t_1.yct()
+                    yct = spaam_0_t_1.yct
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.ryct()[i] * spaam_t_1_t.yctRatio()[i]
+                    contribution = spaam_t_1_t.ryct()[i] * spaam_t_1_t.yct_ratio()[i]
                     value += yct * contribution
                 else:
                     yct = 1.0
                     spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.ryct()[i] * spaam_t_1_t.yctRatio()[i]
+                    contribution = spaam_t_1_t.ryct()[i] * spaam_t_1_t.yct_ratio()[i]
                     value += yct * contribution
             result.append(value)
         return result
