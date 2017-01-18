@@ -29,7 +29,7 @@ class TestDataRead(unittest.TestCase):
                                       SHEET_2006)
         dmu = dmu_2006[0]
         self.assertAlmostEquals(dmu.pro.production, 1821.86, places=2)
-        self.assertAlmostEquals(dmu.ene.total, 1470.19, places=2)
-        self.assertAlmostEquals(dmu.co2.total, 3711.3, places=2)
+        self.assertAlmostEquals(dmu.ene.total, 1870.706144, places=2)
+        self.assertAlmostEquals(dmu.co2.total, 6014.889154, places=2)
 if __name__ == '__main__':
     unittest.main()

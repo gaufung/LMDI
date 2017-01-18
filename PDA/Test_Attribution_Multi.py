@@ -30,67 +30,63 @@ class Test_Attribuioin_Multi(unittest.TestCase):
         dmus_2012 = DataRead.read_dmus(GlobalVaribales.PRO_2012_COL, GlobalVaribales.SHEET_2012)
         dmus_2013 = DataRead.read_dmus(GlobalVaribales.PRO_2013_COL, GlobalVaribales.SHEET_2013)
         dmus_2014 = DataRead.read_dmus(GlobalVaribales.PRO_2014_COL, GlobalVaribales.SHEET_2014)
-        #self.lmdi_2006_2008 = LMDI.Lmdi(dmus_2006, dmus_2008, '2006-2008')
-        self.spaam = Spaam(dmus_2006, dmus_2014, '2006-2004')
-        #self.mpaam_2006_2007 = Mpaam([dmus_2006, dmus_2007], '2006-2007')
         self.mpaam = Mpaam([dmus_2006, dmus_2007, dmus_2008, dmus_2009, dmus_2010, dmus_2011
                             , dmus_2012, dmus_2013, dmus_2014], '2006-2004')
-    def test_emx_multi_single(self):
+    def test_emx(self):
         '''
-        check 2006, 2007, 2008 mulitperid
+        test emx
         '''
-        emx_single = self.spaam.emx - 1
-        emx_multi = sum(self.mpaam.emx())
-        self.assertAlmostEqual(emx_multi, emx_single, places=5)
-    def test_pei_multi_single(self):
+        emx_total = self.mpaam.emx_t(8)
+        emx_attribution = sum(self.mpaam.emx())
+        self.assertAlmostEqual(emx_total - 1, emx_attribution, places=5)
+    def test_pei(self):
         '''
-        check 2006, 2007, 2008 mulitperid
+        test pei
         '''
-        pei_single = self.spaam.pei - 1
-        pei_multi = sum(self.mpaam.pei())
-        self.assertAlmostEqual(pei_multi, pei_single, places=5)
-    def test_pis_multi_single(self):
+        pei_total = self.mpaam.pei_t(8)
+        pei_attribution = sum(self.mpaam.pei())
+        self.assertAlmostEqual(pei_total - 1, pei_attribution, places=5)
+    def test_pis(self):
         '''
-        check
+        test pis
         '''
-        pis_single = self.spaam.pis - 1
-        pis_multi = sum(self.mpaam.pis())
-        self.assertAlmostEqual(pis_multi, pis_single, places=5)
-    def test_isg_multi_single(self):
+        pis_total = self.mpaam.pis_t(8)
+        pis_attribution = sum(self.mpaam.pis())
+        self.assertAlmostEqual(pis_total - 1, pis_attribution, places=5)
+    def test_isg(self):
         '''
-        check
+        test isg
         '''
-        isg_single = self.spaam.isg - 1
-        isg_multi = sum(self.mpaam.isg())
-        self.assertAlmostEqual(isg_single, isg_multi, places=5)
-    def test_eue_multi_single(self):
+        isg_total = self.mpaam.isg_t(8)
+        isg_attribution = sum(self.mpaam.isg())
+        self.assertAlmostEqual(isg_total - 1, isg_attribution, places=5)
+    def test_eue(self):
         '''
-        check
+        test eue
         '''
-        eue_single = self.spaam.eue - 1
-        eue_multi = sum(self.mpaam.eue())
-        self.assertAlmostEqual(eue_multi, eue_single, places=5)
-    def test_est_multi_single(self):
+        eue_total = self.mpaam.eue_t(8)
+        eue_attribution = sum(self.mpaam.eue())
+        self.assertAlmostEquals(eue_total - 1, eue_attribution, places=5)
+    def test_est(self):
         '''
-        check
+        test est
         '''
-        est_single = self.spaam.est - 1
-        est_multi = sum(self.mpaam.est())
-        self.assertAlmostEqual(est_multi, est_single, places=5)
-    def test_yoe_multi_single(self):
+        est_total = self.mpaam.est_t(8)
+        est_attribution = sum(self.mpaam.est())
+        self.assertAlmostEqual(est_total - 1, est_attribution, places=5)
+    def test_yoe(self):
         '''
-        check
+        test yoe
         '''
-        yoe_single = self.spaam.yoe - 1
-        yoe_multi = sum(self.mpaam.yoe())
-        self.assertAlmostEqual(yoe_multi, yoe_single, places=5)
-    def test_yct_multi_single(self):
+        yoe_total = self.mpaam.yoe_t(8)
+        yoe_attribution = sum(self.mpaam.yoe())
+        self.assertAlmostEqual(yoe_total - 1, yoe_attribution, places=5)
+    def test_yct(self):
         '''
-        check
+        test yct
         '''
-        yct_single = self.spaam.yct - 1
-        yct_multi = sum(self.mpaam.yct())
-        self.assertAlmostEqual(yct_multi, yct_single, places=5)
-    
+        yct_total = self.mpaam.yct_t(8)
+        yct_attribution = sum(self.mpaam.yct())
+        self.assertAlmostEqual(yct_total - 1, yct_attribution, places=5)
 if __name__ == '__main__':
     unittest.main()

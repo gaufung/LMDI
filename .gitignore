@@ -89,5 +89,6 @@ ENV/
 .ropeproject
 
 # data 
+*.xlsx
 *.xls
 !industry.xlsx

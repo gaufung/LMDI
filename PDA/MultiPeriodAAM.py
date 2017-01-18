@@ -46,21 +46,29 @@ class Mpaam(object):
         '''
         result = []
         for i in range(self._province_count):
-            value = []
+            value = 0.0
             for t in range(1, self._period_count):
                 if t-1 != 0:
-                    spaam_0_t_1 = self._get_spaam(0, t-1)
-                    emx = spaam_0_t_1.emx
+                    #spaam_0_t_1 = self._get_spaam(0, t-1)
+                    emx = self.emx_t(t-1)
                     spaam_t_1_t = self._get_spaam(t-1, t)
                     contribution = spaam_t_1_t.remx()[i] * spaam_t_1_t.emx_ratio()[i]
-                    value.append(emx * contribution)
+                    value += emx * contribution
                 else:
                     emx = 1.0
                     spaam_t_1_t = self._get_spaam(t-1, t)
                     contribution = spaam_t_1_t.remx()[i] * spaam_t_1_t.emx_ratio()[i]
-                    value.append(emx * contribution)
-            result.append(sum(value))
+                    value += emx * contribution
+            result.append(value)
         return result
+    def emx_t(self, t):
+        '''
+        计算跨期的emx
+        '''
+        emx = 1.0
+        for i in range(1, t+1):
+            emx *= self._get_spaam(i-1, i).emx
+        return emx
     def pei(self):
         '''
         pei contribution
@@ -70,8 +78,8 @@ class Mpaam(object):
             value = 0.0
             for t in range(1, self._period_count):
                 if t-1 != 0:
-                    spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    pei = spaam_0_t_1.pei
+                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
+                    pei = self.pei_t(t-1)
                     spaam_t_1_t = self._get_spaam(t - 1, t)
                     contribution = spaam_t_1_t.rpei()[i] * spaam_t_1_t.pei_ratio()[i]
                     value += pei * contribution
@@ -82,6 +90,14 @@ class Mpaam(object):
                     value += pei * contribution
             result.append(value)
         return result
+    def pei_t(self, t):
+        '''
+        计算跨期的pei
+        '''
+        pei = 1.0
+        for i in range(1, t+1):
+            pei *= self._get_spaam(i-1, i).pei
+        return pei
     def pis(self):
         '''
         pis contribution
@@ -91,8 +107,8 @@ class Mpaam(object):
             value = 0.0
             for t in range(1, self._period_count):
                 if t-1 != 0:
-                    spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    pis = spaam_0_t_1.pis
+                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
+                    pis = self.pis_t(t-1)
                     spaam_t_1_t = self._get_spaam(t-1, t)
                     contribution = spaam_t_1_t.rpis()[i] * spaam_t_1_t.pis_ratio()[i]
                     value += pis * contribution
@@ -103,6 +119,14 @@ class Mpaam(object):
                     value += pis * contribution
             result.append(value)
         return result
+    def pis_t(self, t):
+        '''
+        计算 pei 跨期
+        '''
+        pis = 1.0
+        for i in range(1, t+1):
+            pis *= self._get_spaam(i-1, i).pis
+        return pis
     def isg(self):
         '''
         isg contribution
@@ -112,8 +136,8 @@ class Mpaam(object):
             value = 0.0
             for t in range(1, self._period_count):
                 if t-1 != 0:
-                    spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    isg = spaam_0_t_1.isg
+                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
+                    isg = self.isg_t(t-1)
                     spaam_t_1_t = self._get_spaam(t-1, t)
                     contribution = spaam_t_1_t.risg()[i] * spaam_t_1_t.isg_ratio()[i]
                     value += isg * contribution
@@ -124,6 +148,14 @@ class Mpaam(object):
                     value += isg * contribution
             result.append(value)
         return result
+    def isg_t(self, t):
+        '''
+        计算isg 跨期
+        '''
+        isg = 1.0 
+        for i in range(1, t+1):
+            isg *= self._get_spaam(i-1, i).isg
+        return isg
     def eue(self):
         '''
         eue contribution
@@ -133,8 +165,8 @@ class Mpaam(object):
             value = 0.0
             for t in range(1, self._period_count):
                 if t-1 != 0:
-                    spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    eue = spaam_0_t_1.eue
+                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
+                    eue = self.eue_t(t-1)
                     spaam_t_1_t = self._get_spaam(t-1, t)
                     contribution = spaam_t_1_t.reue()[i] * spaam_t_1_t.eue_ratio()[i]
                     value += eue * contribution
@@ -145,6 +177,14 @@ class Mpaam(object):
                     value += eue * contribution
             result.append(value)
         return result
+    def eue_t(self, t):
+        '''
+        计算 eue 跨期
+        '''
+        eue = 1.0
+        for i in range(1, t+1):
+            eue *= self._get_spaam(i-1, i).eue
+        return eue
     def est(self):
         '''
         est contribution
@@ -154,8 +194,8 @@ class Mpaam(object):
             value = 0.0
             for t in range(1, self._period_count):
                 if t-1 != 0:
-                    spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    est = spaam_0_t_1.est
+                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
+                    est = self.est_t(t-1)
                     spaam_t_1_t = self._get_spaam(t-1, t)
                     contribution = spaam_t_1_t.rest()[i] * spaam_t_1_t.est_ratio()[i]
                     value += est * contribution
@@ -166,6 +206,14 @@ class Mpaam(object):
                     value += est * contribution
             result.append(value)
         return result
+    def est_t(self, t):
+        '''
+        计算跨期 est 
+        '''
+        est = 1.0
+        for i in range(1, t+1):
+            est *= self._get_spaam(i-1, i).est
+        return est
     def yoe(self):
         '''
         the yoe contribution
@@ -175,8 +223,8 @@ class Mpaam(object):
             value = 0.0
             for t in range(1, self._period_count):
                 if t-1 != 0:
-                    spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    yoe = spaam_0_t_1.yoe
+                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
+                    yoe = self.yoe_t(t-1)
                     spaam_t_1_t = self._get_spaam(t-1, t)
                     contribution = spaam_t_1_t.ryoe()[i] * spaam_t_1_t.yoe_ratio()[i]
                     value += yoe * contribution
@@ -187,6 +235,14 @@ class Mpaam(object):
                     value += yoe * contribution
             result.append(value)
         return result
+    def yoe_t(self, t):
+        '''
+        计算跨期 yoe
+        '''
+        yoe = 1.0
+        for i in range(1, t+1):
+            yoe *= self._get_spaam(i-1, i).yoe
+        return yoe
     def yct(self):
         '''
         yct contribution
@@ -196,8 +252,8 @@ class Mpaam(object):
             value = 0.0
             for t in range(1, self._period_count):
                 if t-1 != 0:
-                    spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    yct = spaam_0_t_1.yct
+                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
+                    yct = self.yct_t(t-1)
                     spaam_t_1_t = self._get_spaam(t-1, t)
                     contribution = spaam_t_1_t.ryct()[i] * spaam_t_1_t.yct_ratio()[i]
                     value += yct * contribution
@@ -208,3 +264,17 @@ class Mpaam(object):
                     value += yct * contribution
             result.append(value)
         return result
+    def yct_t(self, t):
+        '''
+        计算跨期
+        '''
+        yct = 1.0
+        for i in range(1, t+1):
+            yct *= self._get_spaam(i-1, i).yct
+        return yct
+    def indexes(self, t):
+        '''
+        返回系数
+        '''
+        return [self.emx_t(t), self.pei_t(t), self.pis_t(t), self.isg_t(t),
+                self.eue_t(t), self.est_t(t), self.yoe_t(t), self.yct_t(t)]

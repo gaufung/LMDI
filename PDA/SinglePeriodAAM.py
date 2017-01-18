@@ -419,3 +419,11 @@ class Spaam(object):
     @property
     def emx_attributions(self):
         return [k * v for k, v  in zip(self.remx(), self.emx_ratio())]
+    @property
+    def indexes(self):
+        '''
+        指数
+        '''
+        return [self.emx, self.pei, self.pis, self.isg,
+                self.eue, self.est, self.yoe, self.yct]
+

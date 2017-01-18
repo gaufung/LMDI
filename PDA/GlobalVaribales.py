@@ -3,7 +3,7 @@
 '''
 global variables
 '''
-XLXS_FILE_PATH = 'industry.xlsx'
+XLXS_FILE_PATH = 'New_Industry.xlsx'
 PRODUCTION_SHEET = 0
 SHEET_2006 = 1
 SHEET_2007 = 2

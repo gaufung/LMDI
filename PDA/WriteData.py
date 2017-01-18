@@ -50,12 +50,12 @@ class WriteLmdiData(object):
             self._write_column(sheet, 14, lmdi.theta_t1_t1)
             self._write_column(sheet, 15, lmdi.emx())
             self._write_column(sheet, 16, lmdi.pei())
-            self._write_column(sheet, 17, lmdi.isg())
-            self._write_column(sheet, 18, lmdi.pis())
+            self._write_column(sheet, 17, lmdi.pis())
+            self._write_column(sheet, 18, lmdi.isg())
             self._write_column(sheet, 19, lmdi.eue())
             self._write_column(sheet, 20, lmdi.est())
-            self._write_column(sheet, 21, lmdi.yct())
-            self._write_column(sheet, 22, lmdi.yoe())
+            self._write_column(sheet, 21, lmdi.yoe())
+            self._write_column(sheet, 22, lmdi.yct())
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type is None:
             self._workbook.save(self._xls_file_name)
@@ -81,12 +81,12 @@ class WriteLmdiData(object):
         sheet.write(0, 14, label=u'theta_t1_t1')
         sheet.write(0, 15, label=u'emx')
         sheet.write(0, 16, label=u'pei')
-        sheet.write(0, 17, label=u'isg')
-        sheet.write(0, 18, label=u'pis')
+        sheet.write(0, 17, label=u'pis')
+        sheet.write(0, 18, label=u'isg')
         sheet.write(0, 19, label=u'eue')
         sheet.write(0, 20, label=u'est')
-        sheet.write(0, 21, label=u'yct')
-        sheet.write(0, 22, label=u'yoe')
+        sheet.write(0, 21, label=u'yoe')
+        sheet.write(0, 22, label=u'yct')
     def _write_column(self, sheet, column, values):
         '''
         Args:
@@ -102,6 +102,29 @@ class WriteLmdiData(object):
         except TypeError:
             logging.error('the type error in '+str(column)+ ' column')
             raise
+
+def WriteLmdi(object):
+    '''
+    输出lmdi结果, 按照word的格式
+    '''
+    def __init__(self, xls_file_name, *lmdis):
+        self._xls_file_name = xls_file_name
+        self._lmdis = lmdis
+    def __enter__(self):
+        self._workbook = xlwt.Workbook(encoding='utf8')
+        return self
+    def write(self):
+        pass
+    def _write_base_previous(self, sheet):
+        columns = ['periods', '']
+    def __exit__(self, exc_type, exc_val, ext_tb):
+        if exc_type is None:
+            self._workbook.save(self._xls_file_name)
+        elif exc_type is Exception:
+            logging.error(exc_val)
+            raise Exception
+        else:
+            pass
 
 class WriteSpaamData(object):
     '''
@@ -153,6 +176,8 @@ class WriteSpaamData(object):
         '''
         row = 1
         for value in values:
+            if column != 0:
+                value *= 100.0
             sheet.write(row, column, label=value)
             row += 1
 
@@ -165,6 +190,8 @@ class WriteSpaamData(object):
             pass
 
 class WriteMpaamData(object):
+
+
     '''
     write the mpaam data
     '''
@@ -189,7 +216,7 @@ class WriteMpaamData(object):
                 raise Exception(Mpaam.__name__ + ' should be initialized by name')
             sheet = self._workbook.add_sheet(mpaam.name)
             self._write_columns_names(sheet)
-            self._write_column(sheet, 0, mpaam.province_name)
+            self._write_column(sheet, 0, mpaam.province_names)
             self._write_column(sheet, 1, mpaam.emx())
             self._write_column(sheet, 2, mpaam.pei())
             self._write_column(sheet, 3, mpaam.pis())
@@ -214,6 +241,8 @@ class WriteMpaamData(object):
         '''
         row = 1
         for value in values:
+            if column != 0:
+                value *= 100
             sheet.write(row, column, label=value)
             row += 1
     def __exit__(self, exc_type, exc_val, ect_tb):

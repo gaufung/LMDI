@@ -15,7 +15,7 @@ from GlobalVaribales import CO2_START_ROW, CO2_END_ROW
 def read_produciton(year):
     '''
     read from industry.xlxs Production
-    '''
+    ''' 
     workbook = xlrd.open_workbook(XLXS_FILE_PATH)
     table = workbook.sheets()[PRODUCTION_SHEET]
     name_column = table.col_values(PROVINCE_COLUMN)
