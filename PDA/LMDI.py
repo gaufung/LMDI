@@ -8,20 +8,12 @@ import logging
 import operator
 from math import log, sqrt, exp
 from Algorithm import lambda_min, theta_max
-#from config import CEF
 from Cef_Read import CEF_DIC
-
-def _write_helper(sheet, row, column, values):
-    for value in values:
-        sheet.write(row, column, label=value)
-        row += 1
-
 
 class Lmdi(object):
     '''
     The class of Lmdi
     '''
-
     def __init__(self, dmus_t, dmus_t1, name=''):
         '''
         The construction of this class
@@ -39,7 +31,6 @@ class Lmdi(object):
         self._init_ll()
         self._init_linear_programming()
         self._init_y_sum()
-        
 
     def _init(self):
         '''
@@ -248,37 +239,49 @@ class Lmdi(object):
         '''
         the production of each dmu during t period
         '''
-        return [dmu.pro.production for dmu in self._dmus_t]
+        if not self._cache.has_key('pro_t'):
+            self._cache['pro_t'] = [dmu.pro.production for dmu in self._dmus_t]
+        return self._cache['pro_t']
     @property
     def pro_t1(self):
         '''
         the production of each dmu during t+1 period
         '''
-        return [dmu.pro.production for dmu in self._dmus_t1]
+        if not self._cache.has_key('pro_t1'):
+            self._cache['pro_t1'] = [dmu.pro.production for dmu in self._dmus_t1]
+        return self._cache['pro_t1']
     @property
     def energy_t(self):
         '''
         the energy of each dmu during t period
         '''
-        return [dmu.ene.total for dmu in self._dmus_t]
+        if not self._cache.has_key('energy_t'):
+            self._cache['energy_t'] = [dmu.ene.total for dmu in self._dmus_t]
+        return self._cache['energy_t']
     @property
     def energy_t1(self):
         '''
         the enery of each dmu during t+1 period
         '''
-        return [dmu.ene.total for dmu in self._dmus_t1]
+        if not self._cache.has_key('energy_t1'):
+            self._cache['energy_t1'] = [dmu.ene.total for dmu in self._dmus_t1]
+        return self._cache['energy_t1']
     @property
     def co2_t(self):
         '''
         the co2 emission of each dmu during t period
         '''
-        return [dmu.co2.total for dmu in self._dmus_t]
+        if not self._cache.has_key('co2_t'):
+            self._cache['co2_t'] = [dmu.co2.total for dmu in self._dmus_t]
+        return self._cache['co2_t']
     @property
     def co2_t1(self):
         '''
         the co2 emission of each dmu during t+1 period
         '''
-        return [dmu.co2.total for dmu in self._dmus_t1]
+        if not self._cache.has_key('co2_t1'):
+            self._cache['co2_t1'] = [dmu.co2.total for dmu in self._dmus_t1]
+        return self._cache['co2_t1']
     @property
     def province_names(self):
         '''
@@ -291,31 +294,6 @@ class Lmdi(object):
         the name of lmdi
         '''
         return self._name
-
-    def _index(self, name, index_function):
-        '''
-        the index Value
-        Args:
-            name: the name of index : 'emx','pis' such on
-            f: the special function of index
-        Returns:
-            the value of index
-        '''
-        if name not in self._cache:
-            result = 0.0
-            '''
-            for dmu_t, dmu_t1 in zip(self._dmus_t, self._dmus_t1):
-                for j in range(self._energy_count):
-                    result += index_function(dmu_t, dmu_t1, j)
-            result = exp(result)
-            '''
-            for i in range(self._province_count):
-                for j in range(self._energy_count):
-                    result += index_function(self._dmus_t[i],
-                                             self._dmus_t1[i], j, i)
-            self._cache[name] = exp(result)
-        return self._cache[name]
-
     def _emx(self, dmu_t, dmu_t1, j, i):
         '''
         calc the emx Index
@@ -368,7 +346,7 @@ class Lmdi(object):
         if dmu_t.ene[j] != 0.0 and dmu_t1.ene[j] != 0.0:
             number1 = dmu_t1.ene.total / \
                 sqrt(self.lambda_t1_t1[
-                     i] * self.lambda_t_t1[i]) / dmu_t1.pro.production
+                    i] * self.lambda_t_t1[i]) / dmu_t1.pro.production
             number2 = dmu_t.ene.total / \
                 sqrt(self.lambda_t1_t[i] *
                      self.lambda_t_t[i]) / dmu_t.pro.production
@@ -596,45 +574,6 @@ class Lmdi(object):
                 result += self._yct(t_t1[0], t_t1[1], j, idx)
             yield result
     def _cef(self, dmu_t, dmu_t1, j, i):
-        '''
-        calc the cef Index
-        Args:
-            dmu_t: the t period of dmu
-            dmut_t1: the t+1 period of dmu
-            j: the j-th energy
-            i: the i-th of dmu
-        Returns:
-            the calc value
-        '''
-        '''
-        if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
-            number1 = dmu_t1.co2[j] / dmu_t1.ene[j]
-            number2 = dmu_t.co2[j] / dmu_t.ene[j]
-            numberator1 = log(number1 / number2)
-            number3 = dmu_t1.co2[j] / self.co2_sum_t1
-            number4 = dmu_t.co2[j] / self.co2_sum_t
-            numberator2 = Lmdi.l_function(number3, number4)
-            return numberator1 * numberator2 / self.ll
-        else:
-            logging.info('%s or %s %d is both zero ' %
-                         (dmu_t.name, dmu_t1.name, j))
-            return 0.0
-        
-        if CEF.has_key(j):
-            return 0.0
-        else:
-            try:
-                number1 = dmu_t1.co2[j] / dmu_t1.ene[j]
-                number2 = dmu_t.co2[j] / dmu_t.ene[j]
-                numberator1 = log(number1 / number2)
-                number3 = dmu_t1.co2[j] / self.co2_sum_t1
-                number4 = dmu_t.co2[j] / self.co2_sum_t
-                numberator2 = Lmdi.l_function(number3, number4)
-                return numberator1 * numberator2 / self.ll
-            except ZeroDivisionError:
-                print i, j
-                return 0.0
-        '''
         number1 = self._t1_cef[i, j]
         number2 = self._t_cef[i, j]
         if number1 == number2:
@@ -655,6 +594,9 @@ class Lmdi(object):
                 result += self._cef(t_t1[0], t_t1[1], j, idx)
             yield result
     def ci(self):
+        '''
+        the total index
+        '''
         ci_t = self.co2_sum_t / self.pro_sum_t
         ci_t1 = self.co2_sum_t1 / self.pro_sum_t1
         return ci_t1 / ci_t
