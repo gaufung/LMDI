@@ -565,7 +565,7 @@ class AppLmdi(object):
         self._write_column(sheet, 5, ['2011']+list(self.lmdi_2010_2011.cef()))
         self._write_column(sheet, 6, ['2012']+list(self.lmdi_2011_2012.cef()))
         self._write_column(sheet, 7, ['2013']+list(self.lmdi_2012_2013.cef()))
-        self._write_column(sheet, 7, ['2014']+list(self.lmdi_2013_2014.cef()))
+        self._write_column(sheet, 8, ['2014']+list(self.lmdi_2013_2014.cef()))
     def _write_lmid_emx(self, sheet):
         self._write_column(sheet, 0, ['Province']+self.province_names)
         self._write_column(sheet, 1, ['2007']+list(self.lmdi_2006_2007.emx()))
