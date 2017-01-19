@@ -4,6 +4,7 @@
 global variables
 '''
 XLXS_FILE_PATH = 'New_Industry.xlsx'
+CO2_FILE_PATH = 'co2_coefficient.xls'
 PRODUCTION_SHEET = 0
 SHEET_2006 = 1
 SHEET_2007 = 2

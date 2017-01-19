@@ -4,6 +4,7 @@ from __future__ import division
 from math import sqrt, exp
 from Model import *
 from LMDI import Lmdi
+from Cef_Read import CEF_DIC
 class Spaam(object):
     '''
     Single peroid attribution analysis method
@@ -22,6 +23,10 @@ class Spaam(object):
         self._dmus_t1 = dmus_t1
         self._cache = {}
         self._lmdi = Lmdi(self._dmus_t, self._dmus_t1, name)
+        year_t = name.split('-')[0]
+        year_t1 = name.split('-')[1]
+        self._cef_t = CEF_DIC[year_t]
+        self._cef_t1 = CEF_DIC[year_t1]
     @property
     def name(self):
         '''
@@ -47,6 +52,12 @@ class Spaam(object):
                 number2 = dmu_t1.co2[j] / self._lmdi.co2_sum_t1
                 result += Lmdi.l_function(number1, number2)
         return result / self._lmdi.ll
+    @property
+    def ci(self):
+        '''
+        ci
+        '''
+        return self._lmdi.ci()
     # pei
     def _pei_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -424,6 +435,47 @@ class Spaam(object):
         '''
         指数
         '''
-        return [self.emx, self.pei, self.pis, self.isg,
-                self.eue, self.est, self.yoe, self.yct]
+        return [self.cef, self.emx, self.pei,
+                self.pis, self.isg, self.eue,
+                self.est, self.yoe, self.yct]
+    @property
+    def cef(self):
+        '''
+        the cef value
+        '''
+        return exp(sum(list(self._lmdi.cef())))
+    def _cef_piij(self, i, j):
+        dmu_t = self._dmus_t[i]
+        dmu_t1 = self._dmus_t1[i]
+        if dmu_t.co2[j] != 0.0  and dmu_t1.co2[j] != 0.0:
+            number1 = dmu_t.co2[j] / self._lmdi.co2_sum_t
+            number2 = dmu_t1.co2[j] / self._lmdi.co2_sum_t1
+            numerator1 = Lmdi.l_function(number1, number2) / self._lmdi.ll
+            cef_i_j_t = self._cef_t[i, j]
+            cef_i_j_t1 = self._cef_t1[i, j]
+            denumnerator1 = Lmdi.l_function(cef_i_j_t1, cef_i_j_t * self.cef)
+            return numerator1 * cef_i_j_t / denumnerator1
+        else:
+            return 0.0
+    def _cef_pij_total(self):
+        result = 0.0
+        for i in range(self._lmdi.province_count):
+            for j in range(self._lmdi.energy_count):
+                result += self._cef_piij(i, j)
+        return result
+    def rcef(self):
+        result = []
+        cef_total = self._cef_pij_total()
+        for i in range(self._lmdi.province_count):
+            value = 0.0
+            for j in range(self._lmdi.energy_count):
+                value += self._cef_piij(i, j) / cef_total * (
+                    self._cef_t1[i, j] / self._cef_t[i, j] - 1)
+            result.append(value)
+        return result
+    def cef_ratio(self):
+        return [1.0 for _ in range(self._lmdi.province_count)]
+    @property
+    def cef_attributions(self):
+        return [k * v for k, v  in zip(self.rcef(), self.cef_ratio())]
 

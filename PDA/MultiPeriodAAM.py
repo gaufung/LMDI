@@ -21,6 +21,15 @@ class Mpaam(object):
         self._province_names = [item.name for item in dmus_s[0]]
         self._cache = {}
         self._name = name
+        self._year={0 : '2006',
+                    1 : '2007',
+                    2 : '2008',
+                    3 : '2009',
+                    4 : '2010',
+                    5 : '2011',
+                    6 : '2012',
+                    7 : '2013',
+                    8 : '2014'}
     @property
     def name(self):
         '''
@@ -38,7 +47,7 @@ class Mpaam(object):
         label = str(left) + '-' + str(right)
         if not self._cache.has_key(label):
             self._cache[label] = Spaam(self._dmus_s[left], self._dmus_s[right],
-                                       str(left)+'-'+str(right))
+                                       self._year[left]+'-'+self._year[right])
         return self._cache[label]
     def emx(self):
         '''
@@ -272,9 +281,39 @@ class Mpaam(object):
         for i in range(1, t+1):
             yct *= self._get_spaam(i-1, i).yct
         return yct
+    def cef(self):
+        '''
+        the cef contribution
+        '''
+        result = []
+        for i in range(self._province_count):
+            value = 0.0
+            for t in range(1, self._period_count):
+                if t-1 != 0:
+                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
+                    cef = self.cef_t(t-1)
+                    spaam_t_1_t = self._get_spaam(t-1, t)
+                    contribution = spaam_t_1_t.rcef()[i] * spaam_t_1_t.cef_ratio()[i]
+                    value += cef * contribution
+                else:
+                    cef = 1.0
+                    spaam_t_1_t = self._get_spaam(t-1, t)
+                    contribution = spaam_t_1_t.rcef()[i] * spaam_t_1_t.cef_ratio()[i]
+                    value += cef * contribution
+            result.append(value)
+        return result
+    def cef_t(self, t):
+        '''
+        计算跨期
+        '''
+        cef = 1.0
+        for i in range(1, t+1):
+            cef *= self._get_spaam(i-1, i).cef
+        return cef
     def indexes(self, t):
         '''
         返回系数
         '''
-        return [self.emx_t(t), self.pei_t(t), self.pis_t(t), self.isg_t(t),
-                self.eue_t(t), self.est_t(t), self.yoe_t(t), self.yct_t(t)]
+        return [self.cef_t(t), self.emx_t(t), self.pei_t(t),
+                self.pis_t(t), self.isg_t(t), self.eue_t(t),
+                self.est_t(t), self.yoe_t(t), self.yct_t(t)]

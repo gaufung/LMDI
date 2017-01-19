@@ -84,7 +84,7 @@ class AppLmdi(object):
         '''
         write single period lmdi
         '''
-        columns = ['Period', 'Demx', 'Dpei', 'Dpis', 'Disg',
+        columns = ['Period', 'Dcef', 'Demx', 'Dpei', 'Dpis', 'Disg',
                    'Deue', 'Dest', 'Dyoe', 'Dyct']
         self._write_row(sheet, 0, columns)
         self._write_row(sheet, 1, [self.spaam_2006_2007.name] + self.spaam_2006_2007.indexes)
@@ -99,7 +99,7 @@ class AppLmdi(object):
         '''
         write multi period lmdi
         '''
-        columns = ['Period', 'Demx', 'Dpei', 'Dpis', 'Disg',
+        columns = ['Period', 'Dcef', 'Demx', 'Dpei', 'Dpis', 'Disg',
                    'Deue', 'Dest', 'Dyoe', 'Dyct']
         self._write_row(sheet, 0, columns)
         self._write_row(sheet, 1, ['2007'] + self.mpaam_2006_2014.indexes(1))
@@ -119,7 +119,8 @@ class AppLmdi(object):
             sheet.write(row, column, label=value)
             column += 1
     def write_single_attribution(self, save_file_name):
-        workbook = Workbook(encoding='utf')
+        workbook = Workbook(encoding='utf8')
+        self._write_single_cef(workbook.add_sheet('cef'))
         self._write_single_emx(workbook.add_sheet('emx'))
         self._write_single_pei(workbook.add_sheet('pei'))
         self._write_single_pis(workbook.add_sheet('pis'))
@@ -129,6 +130,27 @@ class AppLmdi(object):
         self._write_single_yoe(workbook.add_sheet('yoe'))
         self._write_single_yct(workbook.add_sheet('yct'))
         workbook.save(save_file_name)
+    def _write_single_cef(self, sheet):
+        '''
+        write single cef
+        '''
+        self._write_column(sheet, 0, ['Province']+self.province_names)
+        self._write_column(sheet, 1, ['2007'] + [item * 100 for item
+                                                 in self.spaam_2006_2007.cef_attributions])
+        self._write_column(sheet, 2, ['2008'] + [item * 100 for item
+                                                 in self.spaam_2007_2008.cef_attributions])
+        self._write_column(sheet, 3, ['2009'] + [item * 100 for item
+                                                 in self.spaam_2008_2009.cef_attributions])
+        self._write_column(sheet, 4, ['2010'] + [item * 100 for item
+                                                 in self.spaam_2009_2010.cef_attributions])
+        self._write_column(sheet, 5, ['2011'] + [item * 100 for item
+                                                 in self.spaam_2010_2011.cef_attributions])
+        self._write_column(sheet, 6, ['2012'] + [item * 100 for item
+                                                 in self.spaam_2011_2012.cef_attributions])
+        self._write_column(sheet, 7, ['2013'] + [item * 100 for item
+                                                 in self.spaam_2012_2013.cef_attributions])
+        self._write_column(sheet, 8, ['2014'] + [item * 100 for item
+                                                 in self.spaam_2013_2014.cef_attributions])
     def _write_single_emx(self, sheet):
         '''
         write single emx
@@ -301,16 +323,56 @@ class AppLmdi(object):
         '''
         write multi attribution
         '''
+        print 'start'
         workbook = Workbook(encoding='utf8')
+        print 'cef'
+        self._write_multi_cef(workbook.add_sheet('cef'))
+        print 'emx'
         self._write_multi_emx(workbook.add_sheet('emx'))
+        print 'pei'
         self._write_multi_pei(workbook.add_sheet('pei'))
+        print 'pis'
         self._write_multi_pis(workbook.add_sheet('pis'))
+        print 'isg'
         self._write_multi_isg(workbook.add_sheet('isg'))
+        print 'eue'
         self._write_multi_eue(workbook.add_sheet('eue'))
+        print 'est'
         self._write_multi_est(workbook.add_sheet('est'))
+        print 'yoe'
         self._write_multi_yoe(workbook.add_sheet('yoe'))
+        print 'yct'
         self._write_multi_yct(workbook.add_sheet('yct'))
         workbook.save(save_file_name)
+    def _write_multi_cef(self, sheet):
+        '''
+        write multi cef
+        '''
+        self._write_column(sheet, 0, ['Province']+self.province_names)
+        print '2007'
+        self._write_column(sheet, 1, ['2007'] + [item *100 for item
+                                                 in self.mpaam_2006_2007.cef()])
+        print '2008'
+        self._write_column(sheet, 2, ['2008'] + [item *100 for item
+                                                 in self.mpaam_2006_2008.cef()])
+        print '2009'                                        
+        self._write_column(sheet, 3, ['2009'] + [item *100 for item
+                                                 in self.mpaam_2006_2009.cef()])
+        print '2010'                                         
+        self._write_column(sheet, 4, ['2010'] + [item *100 for item
+                                                 in self.mpaam_2006_2010.cef()])
+        print '2011'                                        
+        self._write_column(sheet, 5, ['2011'] + [item *100 for item
+                                                 in self.mpaam_2006_2011.cef()])
+        print '2012'                                       
+        self._write_column(sheet, 6, ['2012'] + [item *100 for item
+                                                 in self.mpaam_2006_2012.cef()])
+        print '2013'                                         
+        self._write_column(sheet, 7, ['2013'] + [item *100 for item
+                                                 in self.mpaam_2006_2013.cef()])
+        print '2014'                                         
+        self._write_column(sheet, 8, ['2014'] + [item *100 for item
+                                                 in self.mpaam_2006_2014.cef()])
     def _write_multi_emx(self, sheet):
         '''
         write multi emx
@@ -484,6 +546,7 @@ class AppLmdi(object):
         write multi lmdi
         '''
         workbook = Workbook(encoding='utf8')
+        self._write_lmid_cef(workbook.add_sheet('cef'))
         self._write_lmid_emx(workbook.add_sheet('emx'))
         self._write_lmid_pei(workbook.add_sheet('pei'))
         self._write_lmid_pis(workbook.add_sheet('pis'))
@@ -493,6 +556,16 @@ class AppLmdi(object):
         self._write_lmid_yoe(workbook.add_sheet('yoe'))
         self._write_lmid_yct(workbook.add_sheet('yct'))
         workbook.save(save_file_name)
+    def _write_lmid_cef(self, sheet):
+        self._write_column(sheet, 0, ['Province']+self.province_names)
+        self._write_column(sheet, 1, ['2007']+list(self.lmdi_2006_2007.cef()))
+        self._write_column(sheet, 2, ['2008']+list(self.lmdi_2007_2008.cef()))
+        self._write_column(sheet, 3, ['2009']+list(self.lmdi_2008_2009.cef()))
+        self._write_column(sheet, 4, ['2010']+list(self.lmdi_2009_2010.cef()))
+        self._write_column(sheet, 5, ['2011']+list(self.lmdi_2010_2011.cef()))
+        self._write_column(sheet, 6, ['2012']+list(self.lmdi_2011_2012.cef()))
+        self._write_column(sheet, 7, ['2013']+list(self.lmdi_2012_2013.cef()))
+        self._write_column(sheet, 7, ['2014']+list(self.lmdi_2013_2014.cef()))
     def _write_lmid_emx(self, sheet):
         self._write_column(sheet, 0, ['Province']+self.province_names)
         self._write_column(sheet, 1, ['2007']+list(self.lmdi_2006_2007.emx()))
@@ -581,18 +654,13 @@ class AppLmdi(object):
         for value in values:
             sheet.write(row, column, value)
             row += 1
-class AppAttribute(object):
-    '''
-    the single attribution of each 
-    '''
-    def __init__(self):
-        dmus_2006 = DataRead.read_dmus(GlobalVaribales.PRO_2006_COL, GlobalVaribales.SHEET_2006)
-        dmus_2007 = DataRead.read_dmus(GlobalVaribales.PRO_2007_COL, GlobalVaribales.SHEET_2007)
-        self.spaam_2006_2007 = Spaam(dmus_2006, dmus_2007)
-        print sum([k * v for k, v in zip(self.spaam_2006_2007.rpei(),
-                                         self.spaam_2006_2007.pei_ratio())])
-        print math.exp(sum(list(self.spaam_2006_2007.pei()))) - 1
+    
 if __name__ == '__main__':
     app = AppLmdi()
-    app.write_multi_lmdi('LMDI分解.xls')
-    
+    '''
+    workbook = Workbook(encoding='utf8')
+    app.write_lmdi_single(workbook.add_sheet('单期LMDI'))
+    app.write_lmdi_multi(workbook.add_sheet('跨期LMDI'))
+    workbook.save('LMDI单期和跨期.xls')
+    '''
+    app.write_multi_lmdi('省份lmdi明细.xls')

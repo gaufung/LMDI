@@ -2,12 +2,14 @@
 '''
 The LMDI calculator
 '''
+from __future__ import unicode_literals
 from __future__ import division
 import logging
 import operator
 from math import log, sqrt, exp
 from Algorithm import lambda_min, theta_max
-
+#from config import CEF
+from Cef_Read import CEF_DIC
 
 def _write_helper(sheet, row, column, values):
     for value in values:
@@ -29,6 +31,7 @@ class Lmdi(object):
             name: the name for this lmdi, for example: 2006-2007, 2007-2008
         '''
         assert len(dmus_t) == len(dmus_t1)
+        self._name = name
         self._dmus_t = dmus_t
         self._dmus_t1 = dmus_t1
         self._cache = {}
@@ -36,7 +39,7 @@ class Lmdi(object):
         self._init_ll()
         self._init_linear_programming()
         self._init_y_sum()
-        self._name = name
+        
 
     def _init(self):
         '''
@@ -60,7 +63,10 @@ class Lmdi(object):
             operator.add, [item.ene.total for item in self._dmus_t])
         self._energy_sum_t1 = reduce(
             operator.add, [item.ene.total for item in self._dmus_t1])
-
+        t_year = self._name.split('-')[0]
+        t1_year = self._name.split('-')[1]
+        self._t_cef = CEF_DIC[t_year]
+        self._t1_cef = CEF_DIC[t1_year]
     @classmethod
     def l_function(cls, item1, item2):
         '''
@@ -589,3 +595,66 @@ class Lmdi(object):
             for j in range(self.energy_count):
                 result += self._yct(t_t1[0], t_t1[1], j, idx)
             yield result
+    def _cef(self, dmu_t, dmu_t1, j, i):
+        '''
+        calc the cef Index
+        Args:
+            dmu_t: the t period of dmu
+            dmut_t1: the t+1 period of dmu
+            j: the j-th energy
+            i: the i-th of dmu
+        Returns:
+            the calc value
+        '''
+        '''
+        if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
+            number1 = dmu_t1.co2[j] / dmu_t1.ene[j]
+            number2 = dmu_t.co2[j] / dmu_t.ene[j]
+            numberator1 = log(number1 / number2)
+            number3 = dmu_t1.co2[j] / self.co2_sum_t1
+            number4 = dmu_t.co2[j] / self.co2_sum_t
+            numberator2 = Lmdi.l_function(number3, number4)
+            return numberator1 * numberator2 / self.ll
+        else:
+            logging.info('%s or %s %d is both zero ' %
+                         (dmu_t.name, dmu_t1.name, j))
+            return 0.0
+        
+        if CEF.has_key(j):
+            return 0.0
+        else:
+            try:
+                number1 = dmu_t1.co2[j] / dmu_t1.ene[j]
+                number2 = dmu_t.co2[j] / dmu_t.ene[j]
+                numberator1 = log(number1 / number2)
+                number3 = dmu_t1.co2[j] / self.co2_sum_t1
+                number4 = dmu_t.co2[j] / self.co2_sum_t
+                numberator2 = Lmdi.l_function(number3, number4)
+                return numberator1 * numberator2 / self.ll
+            except ZeroDivisionError:
+                print i, j
+                return 0.0
+        '''
+        number1 = self._t1_cef[i, j]
+        number2 = self._t_cef[i, j]
+        if number1 == number2:
+            return 0.0
+        else:
+            numberator1 = log(number1 / number2)
+            number3 = dmu_t1.co2[j] / self.co2_sum_t1
+            number4 = dmu_t.co2[j] / self.co2_sum_t
+            numberator2 = Lmdi.l_function(number3, number4)
+            return numberator1 * numberator2 / self.ll
+    def cef(self):
+        '''
+        cef factor for every dmu
+        '''
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            result = 0.0
+            for j in range(self.energy_count):
+                result += self._cef(t_t1[0], t_t1[1], j, idx)
+            yield result
+    def ci(self):
+        ci_t = self.co2_sum_t / self.pro_sum_t
+        ci_t1 = self.co2_sum_t1 / self.pro_sum_t1
+        return ci_t1 / ci_t
