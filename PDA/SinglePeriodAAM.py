@@ -1,10 +1,16 @@
 # -*- coding:utf8 -*-
 # single period attribute analysis classmethod
+'''
+1： single-period 对象
+2： single-period 工厂对象
+'''
 from __future__ import division
 from math import sqrt, exp
 from Model import *
-from LMDI import Lmdi
+from LMDI import Lmdi, LmdiFactory
 from Cef_Read import CEF_DIC
+
+
 class Spaam(object):
     '''
     Single peroid attribution analysis method
@@ -22,7 +28,7 @@ class Spaam(object):
         self._dmus_t = dmus_t
         self._dmus_t1 = dmus_t1
         self._cache = {}
-        self._lmdi = Lmdi(self._dmus_t, self._dmus_t1, name)
+        self._lmdi = LmdiFactory.build(self._dmus_t, self._dmus_t1, name)
         year_t = name.split('-')[0]
         year_t1 = name.split('-')[1]
         self._cef_t = CEF_DIC[year_t]
@@ -99,13 +105,17 @@ class Spaam(object):
         '''
         the pei value
         '''
-        return exp(sum(list(self._lmdi.pei())))
+        if not self._cache.has_key('pei'):
+            self._cache['pei'] = exp(sum(list(self._lmdi.pei())))
+        return self._cache['pei']
     @property
     def pei_attributions(self):
         '''
         the pei attributions
         '''
-        return [k * v for k, v in zip(self.rpei(), self.pei_ratio())]
+        if not self._cache.has_key('pei_attribition'):
+            self._cache['pei_attribition'] = [k * v for k, v in zip(self.rpei(), self.pei_ratio())]
+        return self._cache['pei_attribition']
     #pis
     def _pis_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -144,10 +154,20 @@ class Spaam(object):
         return self._cache['pisRatio']
     @property
     def pis(self):
-        return exp(sum(list(self._lmdi.pis())))
+        '''
+        pis value
+        '''
+        if not self._cache.has_key('pis'):
+            self._cache['pis'] = exp(sum(list(self._lmdi.pis())))
+        return self._cache['pis']
     @property
     def pis_attributions(self):
-        return [k * v for k, v in zip(self.rpis(), self.pis_ratio())]
+        '''
+        pis every province attribution
+        '''
+        if not self._cache.has_key('pis_attributions'):
+            self._cache['pis_attributions'] = [k * v for k, v in zip(self.rpis(), self.pis_ratio())]
+        return self._cache['pis_attributions']
     #isg
     def _isg_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -183,10 +203,17 @@ class Spaam(object):
         '''
         the isg value
         '''
-        return exp(sum(list(self._lmdi.isg())))
+        if not self._cache.has_key('isg'):
+            self._cache['isg'] = exp(sum(list(self._lmdi.isg())))
+        return self._cache['isg']
     @property
     def isg_attributions(self):
-        return [k * v for k, v in zip(self.risg(), self.isg_ratio())]
+        '''
+        isg each province attribtuion
+        '''
+        if not self._cache.has_key('isg_attributions'):
+            self._cache['isg_attributions'] = [k * v for k, v in zip(self.risg(), self.isg_ratio())]
+        return self._cache['isg_attributions']
     #eue
     def _eue_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -226,10 +253,17 @@ class Spaam(object):
         '''
         the eue value
         '''
-        return exp(sum(list(self._lmdi.eue())))
+        if not self._cache.has_key('eue'):
+            self._cache['eue'] = exp(sum(list(self._lmdi.eue())))
+        return self._cache['eue']
     @property
     def eue_attributions(self):
-        return [k * v for k, v in zip(self.reue(), self.eue_ratio())]
+        '''
+        eue each province attribution
+        '''
+        if not self._cache.has_key('eue_attributions'):
+            self._cache['eue_attributions'] = [k * v for k, v in zip(self.reue(), self.eue_ratio())]
+        return self._cache['eue_attributions']
     # est
     def _est_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -269,10 +303,17 @@ class Spaam(object):
         '''
         the est value
         '''
-        return exp(sum(list(self._lmdi.est())))
+        if not self._cache.has_key('est'):
+            self._cache['est'] = exp(sum(list(self._lmdi.est())))
+        return self._cache['est']
     @property
     def est_attributions(self):
-        return [k * v for k, v in zip(self.rest(), self.est_ratio())]
+        '''
+        est each province attribution
+        '''
+        if not self._cache.has_key('est_attributions'):
+            self._cache['est_attributions'] = [k * v for k, v in zip(self.rest(), self.est_ratio())]
+        return self._cache['est_attributions']
     #yoe
     def _yoe_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -312,10 +353,17 @@ class Spaam(object):
         '''
         the yoe value
         '''
-        return exp(sum(list(self._lmdi.yoe())))
+        if not self._cache.has_key('yoe'):
+            self._cache['yoe'] = exp(sum(list(self._lmdi.yoe())))
+        return self._cache['yoe']
     @property
     def yoe_attributions(self):
-        return [k * v for k, v in zip(self.ryoe(), self.yoe_ratio())]
+        '''
+        yoe each province attribution
+        '''
+        if not self._cache.has_key('yoe_attributions'):
+            self._cache['yoe_attributions'] = [k * v for k, v in zip(self.ryoe(), self.yoe_ratio())]
+        return self._cache['yoe_attributions']
     # yct
     def _yct_t_t1(self, dmu, idx, is_t=True):
         if is_t:
@@ -355,10 +403,17 @@ class Spaam(object):
         '''
         the yct value
         '''
-        return exp(sum(list(self._lmdi.yct())))
+        if not self._cache.has_key('yct'):
+            self._cache['yct'] = exp(sum(list(self._lmdi.yct())))
+        return self._cache['yct']
     @property
     def yct_attributions(self):
-        return [k * v for k, v in zip(self.ryct(), self.yct_ratio())]
+        '''
+        yct each province attribution
+        '''
+        if not self._cache.has_key('yct_attributions'):
+            self._cache['yct_attributions'] = [k * v for k, v in zip(self.ryct(), self.yct_ratio())]
+        return self._cache['yct_attributions']
      #emx
     def _peiij(self, i, j):
         dmu_t = self._dmus_t[i]
@@ -367,7 +422,8 @@ class Spaam(object):
             sij_t = dmu_t.ene[j] / dmu_t.ene.total
             sij_t1 = dmu_t1.ene[j] / dmu_t1.ene.total
             __l = Lmdi.l_function(sij_t1, sij_t * exp(sum(list(self._lmdi.emx()))))
-            __L = Lmdi.l_function(dmu_t1.co2[j] / self._lmdi.co2_sum_t1, dmu_t.co2[j] / self._lmdi.co2_sum_t)
+            __L = Lmdi.l_function(dmu_t1.co2[j] / self._lmdi.co2_sum_t1, 
+                                  dmu_t.co2[j] / self._lmdi.co2_sum_t)
             return __L * sij_t / self._lmdi.ll / __l
         elif dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] == 0.0:
             cijt = dmu_t.co2[j] / self._lmdi.co2_sum_t
@@ -426,10 +482,18 @@ class Spaam(object):
         '''
         the emx value
         '''
-        return exp(sum(list(self._lmdi.emx())))
+        if not self._cache.has_key('emx'):
+            self._cache['emx'] = exp(sum(list(self._lmdi.emx())))
+        return self._cache['emx']
     @property
     def emx_attributions(self):
-        return [k * v for k, v  in zip(self.remx(), self.emx_ratio())]
+        '''
+        emx each province attribution
+        '''
+        if not self._cache.has_key('emx_attributions'):
+            self._cache['emx_attributions'] = [k * v for k, v
+                                               in zip(self.remx(), self.emx_ratio())]
+        return self._cache['emx_attributions']
     @property
     def indexes(self):
         '''
@@ -443,7 +507,9 @@ class Spaam(object):
         '''
         the cef value
         '''
-        return exp(sum(list(self._lmdi.cef())))
+        if not self._cache.has_key('cef'):
+            self._cache['cef'] = exp(sum(list(self._lmdi.cef())))
+        return self._cache['cef']
     def _cef_piij(self, i, j):
         dmu_t = self._dmus_t[i]
         dmu_t1 = self._dmus_t1[i]
@@ -464,18 +530,38 @@ class Spaam(object):
                 result += self._cef_piij(i, j)
         return result
     def rcef(self):
-        result = []
-        cef_total = self._cef_pij_total()
-        for i in range(self._lmdi.province_count):
-            value = 0.0
-            for j in range(self._lmdi.energy_count):
-                value += self._cef_piij(i, j) / cef_total * (
-                    self._cef_t1[i, j] / self._cef_t[i, j] - 1)
-            result.append(value)
-        return result
+        if not self._cache.has_key('rcef'):
+            result = []
+            cef_total = self._cef_pij_total()
+            for i in range(self._lmdi.province_count):
+                value = 0.0
+                for j in range(self._lmdi.energy_count):
+                    value += self._cef_piij(i, j) / cef_total * (
+                        self._cef_t1[i, j] / self._cef_t[i, j] - 1)
+                result.append(value)
+            self._cache['rcef'] = result
+        return self._cache['rcef']
     def cef_ratio(self):
-        return [1.0 for _ in range(self._lmdi.province_count)]
+        if not self._cache.has_key('cef_ratio'):
+            self._cache['cef_ratio'] = [1.0 for _ in range(self._lmdi.province_count)]
+        return self._cache['cef_ratio']
     @property
     def cef_attributions(self):
-        return [k * v for k, v  in zip(self.rcef(), self.cef_ratio())]
+        if not self._cache.has_key('cef_attributions'):
+            self._cache['cef_attributions'] = [k * v for k, v
+                                               in zip(self.rcef(), self.cef_ratio())]
+        return self._cache['cef_attributions']
 
+class Spaam_Factory(object):
+    '''
+    Spaam factory
+    '''
+    cache = {}
+    @classmethod
+    def build(cls, dmus_t, dmus_t1, name):
+        '''
+        创建一个 Spaam 对象
+        '''
+        if not Spaam_Factory.cache.has_key(name):
+            Spaam_Factory.cache[name] = Spaam(dmus_t, dmus_t1, name)
+        return Spaam_Factory.cache[name]

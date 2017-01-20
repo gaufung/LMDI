@@ -4,8 +4,6 @@
 Test module
 '''
 import unittest
-import math
-import GlobalVaribales
 import DataRead
 import Model
 import LMDI

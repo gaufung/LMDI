@@ -3,7 +3,6 @@
 from __future__ import division
 from __future__ import unicode_literals
 from config import *
-from GlobalVaribales import CO2_FILE_PATH
 import numpy as np
 import xlrd
 row_start = 1

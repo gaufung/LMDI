@@ -4,14 +4,10 @@
 Test module
 '''
 import unittest
-import math
-import GlobalVaribales
+from config import *
 import DataRead
-import Model
-import LMDI
-from SinglePeriodAAM import Spaam
 from MultiPeriodAAM import Mpaam
-from WriteData import WriteLmdiData, WriteSpaamData
+from WriteData import WriteLmdiData
 
 class Test_Attribuioin_Multi(unittest.TestCase):
     '''
@@ -21,15 +17,15 @@ class Test_Attribuioin_Multi(unittest.TestCase):
         '''
         初始化条件
         '''
-        dmus_2006 = DataRead.read_dmus(GlobalVaribales.PRO_2006_COL, GlobalVaribales.SHEET_2006)
-        dmus_2007 = DataRead.read_dmus(GlobalVaribales.PRO_2007_COL, GlobalVaribales.SHEET_2007)
-        dmus_2008 = DataRead.read_dmus(GlobalVaribales.PRO_2008_COL, GlobalVaribales.SHEET_2008)
-        dmus_2009 = DataRead.read_dmus(GlobalVaribales.PRO_2009_COL, GlobalVaribales.SHEET_2009)
-        dmus_2010 = DataRead.read_dmus(GlobalVaribales.PRO_2010_COL, GlobalVaribales.SHEET_2010)
-        dmus_2011 = DataRead.read_dmus(GlobalVaribales.PRO_2011_COL, GlobalVaribales.SHEET_2011)
-        dmus_2012 = DataRead.read_dmus(GlobalVaribales.PRO_2012_COL, GlobalVaribales.SHEET_2012)
-        dmus_2013 = DataRead.read_dmus(GlobalVaribales.PRO_2013_COL, GlobalVaribales.SHEET_2013)
-        dmus_2014 = DataRead.read_dmus(GlobalVaribales.PRO_2014_COL, GlobalVaribales.SHEET_2014)
+        dmus_2006 = DataRead.read_dmus(PRO_2006_COL, SHEET_2006)
+        dmus_2007 = DataRead.read_dmus(PRO_2007_COL, SHEET_2007)
+        dmus_2008 = DataRead.read_dmus(PRO_2008_COL, SHEET_2008)
+        dmus_2009 = DataRead.read_dmus(PRO_2009_COL, SHEET_2009)
+        dmus_2010 = DataRead.read_dmus(PRO_2010_COL, SHEET_2010)
+        dmus_2011 = DataRead.read_dmus(PRO_2011_COL, SHEET_2011)
+        dmus_2012 = DataRead.read_dmus(PRO_2012_COL, SHEET_2012)
+        dmus_2013 = DataRead.read_dmus(PRO_2013_COL, SHEET_2013)
+        dmus_2014 = DataRead.read_dmus(PRO_2014_COL, SHEET_2014)
         self.mpaam = Mpaam([dmus_2006, dmus_2007, dmus_2008, dmus_2009, dmus_2010, dmus_2011
                             , dmus_2012, dmus_2013, dmus_2014], '2006-2004')
     def test_emx(self):

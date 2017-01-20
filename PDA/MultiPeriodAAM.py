@@ -1,9 +1,8 @@
 # -*- coding:utf8 -*-
 # multiperiod attribute analysis method
+
 from Model import *
-from LMDI import Lmdi
-from math import sqrt, log, exp
-from SinglePeriodAAM import Spaam
+from SinglePeriodAAM import Spaam_Factory
 
 class Mpaam(object):
     '''
@@ -46,8 +45,8 @@ class Mpaam(object):
         assert left != right
         label = str(left) + '-' + str(right)
         if not self._cache.has_key(label):
-            self._cache[label] = Spaam(self._dmus_s[left], self._dmus_s[right],
-                                       self._year[left]+'-'+self._year[right])
+            self._cache[label] = Spaam_Factory.build(self._dmus_s[left], self._dmus_s[right],
+                                                     self._year[left]+'-'+self._year[right])
         return self._cache[label]
     def emx(self):
         '''

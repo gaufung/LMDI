@@ -4,7 +4,7 @@
 test PDA read module
 '''
 import unittest
-from GlobalVaribales import PRO_2006_COL, SHEET_2006
+from config import PRO_2006_COL, SHEET_2006
 import DataRead
 import Model
 import LMDI

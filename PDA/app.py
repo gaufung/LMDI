@@ -1,7 +1,7 @@
 # -*- coding:utf8 -*-
 import DataRead
 import xlrd
-import GlobalVaribales
+import config
 import LMDI
 import logging
 from xlwt import *
@@ -19,15 +19,15 @@ class AppLmdi(object):
     the lmdi application
     '''
     def __init__(self):
-        dmus_2006 = DataRead.read_dmus(GlobalVaribales.PRO_2006_COL, GlobalVaribales.SHEET_2006)
-        dmus_2007 = DataRead.read_dmus(GlobalVaribales.PRO_2007_COL, GlobalVaribales.SHEET_2007)
-        dmus_2008 = DataRead.read_dmus(GlobalVaribales.PRO_2008_COL, GlobalVaribales.SHEET_2008)
-        dmus_2009 = DataRead.read_dmus(GlobalVaribales.PRO_2009_COL, GlobalVaribales.SHEET_2009)
-        dmus_2010 = DataRead.read_dmus(GlobalVaribales.PRO_2010_COL, GlobalVaribales.SHEET_2010)
-        dmus_2011 = DataRead.read_dmus(GlobalVaribales.PRO_2011_COL, GlobalVaribales.SHEET_2011)
-        dmus_2012 = DataRead.read_dmus(GlobalVaribales.PRO_2012_COL, GlobalVaribales.SHEET_2012)
-        dmus_2013 = DataRead.read_dmus(GlobalVaribales.PRO_2013_COL, GlobalVaribales.SHEET_2013)
-        dmus_2014 = DataRead.read_dmus(GlobalVaribales.PRO_2014_COL, GlobalVaribales.SHEET_2014)
+        dmus_2006 = DataRead.read_dmus(config.PRO_2006_COL, config.SHEET_2006)
+        dmus_2007 = DataRead.read_dmus(config.PRO_2007_COL, config.SHEET_2007)
+        dmus_2008 = DataRead.read_dmus(config.PRO_2008_COL, config.SHEET_2008)
+        dmus_2009 = DataRead.read_dmus(config.PRO_2009_COL, config.SHEET_2009)
+        dmus_2010 = DataRead.read_dmus(config.PRO_2010_COL, config.SHEET_2010)
+        dmus_2011 = DataRead.read_dmus(config.PRO_2011_COL, config.SHEET_2011)
+        dmus_2012 = DataRead.read_dmus(config.PRO_2012_COL, config.SHEET_2012)
+        dmus_2013 = DataRead.read_dmus(config.PRO_2013_COL, config.SHEET_2013)
+        dmus_2014 = DataRead.read_dmus(config.PRO_2014_COL, config.SHEET_2014)
         self.lmdi_2006_2007 = LMDI.Lmdi(dmus_2006, dmus_2007, '2006-2007')
         self.lmdi_2007_2008 = LMDI.Lmdi(dmus_2007, dmus_2008, '2007-2008')
         self.lmdi_2008_2009 = LMDI.Lmdi(dmus_2008, dmus_2009, '2008-2009')
@@ -323,25 +323,15 @@ class AppLmdi(object):
         '''
         write multi attribution
         '''
-        print 'start'
         workbook = Workbook(encoding='utf8')
-        print 'cef'
         self._write_multi_cef(workbook.add_sheet('cef'))
-        print 'emx'
         self._write_multi_emx(workbook.add_sheet('emx'))
-        print 'pei'
         self._write_multi_pei(workbook.add_sheet('pei'))
-        print 'pis'
         self._write_multi_pis(workbook.add_sheet('pis'))
-        print 'isg'
         self._write_multi_isg(workbook.add_sheet('isg'))
-        print 'eue'
         self._write_multi_eue(workbook.add_sheet('eue'))
-        print 'est'
         self._write_multi_est(workbook.add_sheet('est'))
-        print 'yoe'
         self._write_multi_yoe(workbook.add_sheet('yoe'))
-        print 'yct'
         self._write_multi_yct(workbook.add_sheet('yct'))
         workbook.save(save_file_name)
     def _write_multi_cef(self, sheet):
@@ -349,28 +339,20 @@ class AppLmdi(object):
         write multi cef
         '''
         self._write_column(sheet, 0, ['Province']+self.province_names)
-        print '2007'
         self._write_column(sheet, 1, ['2007'] + [item *100 for item
                                                  in self.mpaam_2006_2007.cef()])
-        print '2008'
         self._write_column(sheet, 2, ['2008'] + [item *100 for item
-                                                 in self.mpaam_2006_2008.cef()])
-        print '2009'                                        
+                                                 in self.mpaam_2006_2008.cef()])                                     
         self._write_column(sheet, 3, ['2009'] + [item *100 for item
-                                                 in self.mpaam_2006_2009.cef()])
-        print '2010'                                         
+                                                 in self.mpaam_2006_2009.cef()])                                       
         self._write_column(sheet, 4, ['2010'] + [item *100 for item
-                                                 in self.mpaam_2006_2010.cef()])
-        print '2011'                                        
+                                                 in self.mpaam_2006_2010.cef()])                                     
         self._write_column(sheet, 5, ['2011'] + [item *100 for item
-                                                 in self.mpaam_2006_2011.cef()])
-        print '2012'                                       
+                                                 in self.mpaam_2006_2011.cef()])                                     
         self._write_column(sheet, 6, ['2012'] + [item *100 for item
-                                                 in self.mpaam_2006_2012.cef()])
-        print '2013'                                         
+                                                 in self.mpaam_2006_2012.cef()])                                       
         self._write_column(sheet, 7, ['2013'] + [item *100 for item
-                                                 in self.mpaam_2006_2013.cef()])
-        print '2014'                                         
+                                                 in self.mpaam_2006_2013.cef()])                                   
         self._write_column(sheet, 8, ['2014'] + [item *100 for item
                                                  in self.mpaam_2006_2014.cef()])
     def _write_multi_emx(self, sheet):
@@ -662,5 +644,7 @@ if __name__ == '__main__':
     app.write_lmdi_single(workbook.add_sheet('单期LMDI'))
     app.write_lmdi_multi(workbook.add_sheet('跨期LMDI'))
     workbook.save('LMDI单期和跨期.xls')
-    '''
+    
     app.write_multi_lmdi('省份lmdi明细.xls')
+    '''
+    app.write_multi_attribution('multi_attribution.xls')
