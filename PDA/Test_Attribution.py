@@ -101,12 +101,12 @@ class TestAttribute(unittest.TestCase):
         '''
         test ci by province 
         '''
-        ci_province = self.spaam_2006_2007.ci_province
-        emx_province = self.spaam_2006_2007._lmdi.emx_province()
-        cef_province = self.spaam_2006_2007._lmdi.cef_province()
-        pei_province = self.spaam_2006_2007._lmdi.pei_province()
-        eue_province = self.spaam_2006_2007._lmdi.eue_province()
-        est_province = self.spaam_2006_2007._lmdi.est_province()
+        ci_province = self.spaam_2006_2007.ci_by_province
+        emx_province = self.spaam_2006_2007.emx_by_province
+        cef_province = self.spaam_2006_2007.cef_by_province
+        pei_province = self.spaam_2006_2007.pei_by_province
+        eue_province = self.spaam_2006_2007.eue_by_province
+        est_province = self.spaam_2006_2007.est_by_province
         for idx, _ in enumerate(ci_province):
             product = emx_province[idx] + cef_province[idx] + pei_province[idx] + \
                       0 + 0 + eue_province[idx] + \

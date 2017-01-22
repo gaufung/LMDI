@@ -601,14 +601,17 @@ class Lmdi(object):
         ci_t = self.co2_sum_t / self.pro_sum_t
         ci_t1 = self.co2_sum_t1 / self.pro_sum_t1
         return ci_t1 / ci_t
+#  各个省份的能源指数分解合并
     def ci_province(self):
+        '''
+        C_{i}^{T+1} / C_{i}^{T} by province
+        '''
         result = []
         for dmu_t, dmu_t1 in zip(self._dmus_t, self._dmus_t1):
             ci_t = dmu_t.co2.total / dmu_t.pro.production
             ci_t1 = dmu_t1.co2.total / dmu_t1.pro.production
             result.append(ci_t1 / ci_t)
         return result
-    
     def _l_i_j(self, idx, j):
         '''
         计算单个省份的L函数值
@@ -638,7 +641,7 @@ class Lmdi(object):
             numberator1 = log(number1 / number2)
             numberator2 = self._l_i_j(idx, j)
             return numberator1 * numberator2 / self._ll_i(idx)
-    def cef_province(self):
+    def cef_by_province(self):
         '''
         cef by province
         '''
@@ -659,7 +662,7 @@ class Lmdi(object):
         numerator1 = log(number1 / number2)
         numerator2 = self._l_i_j(idx, j)
         return numerator1 * numerator2 / self._ll_i(idx)
-    def pei_province(self):
+    def pei_by_province(self):
         '''
         pei by province
         '''
@@ -674,7 +677,7 @@ class Lmdi(object):
         numerator1 = log(self.lambda_t1_t1[idx] / self.lambda_t_t[idx])
         numerator2 = self._l_i_j(idx, j)
         return numerator1 * numerator2 / self._ll_i(idx)
-    def eue_province(self):
+    def eue_by_province(self):
         '''
         eue by province
         '''
@@ -691,7 +694,7 @@ class Lmdi(object):
         numerator1 = log(number1 / number2)
         numerator2 = self._l_i_j(idx, j)
         return numerator1 * numerator2 / self._ll_i(idx)
-    def est_province(self):
+    def est_by_province(self):
         '''
         est by province
         '''
@@ -715,7 +718,7 @@ class Lmdi(object):
             return -1.0 * dmu_t.co2[j] / (dmu_t.co2.total* self._ll_i(idx))
         else:
             return 0.0
-    def emx_province(self):
+    def emx_by_province(self):
         '''
         emx by province
         '''
@@ -723,7 +726,7 @@ class Lmdi(object):
         for idx, t_t1  in enumerate(zip(self._dmus_t, self._dmus_t1)):
             value = 0.0
             for j in range(self.energy_count):
-                value += self._emx(t_t1[0], t_t1[1], j, idx)
+                value += self._emx_province(t_t1[0], t_t1[1], idx, j)
             result.append(value)
         return result
 

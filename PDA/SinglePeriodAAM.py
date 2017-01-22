@@ -581,6 +581,26 @@ class Spaam(object):
     @property
     def yct_province(self):
         return list(self._lmdi.yct())
+#  各个省份的能源指数分解合并
+    @property
+    def ci_by_province(self):
+        return self._lmdi.ci_province()
+    @property
+    def cef_by_province(self):
+        return self._lmdi.cef_by_province()
+    @property
+    def pei_by_province(self):
+        return self._lmdi.pei_by_province()
+    @property
+    def eue_by_province(self):
+        return self._lmdi.eue_by_province()
+    @property
+    def est_by_province(self):
+        return self._lmdi.est_by_province()
+    @property
+    def emx_by_province(self):
+        return self._lmdi.emx_by_province()
+    
 class Spaam_Factory(object):
     '''
     Spaam factory
