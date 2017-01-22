@@ -84,14 +84,14 @@ class Lmdi(object):
         '''
         calc the linear programming index
         '''
-        self._lambda_t_t = lambda_min([self._dmus_t, ], self._dmus_t)
-        self._lambda_t_t1 = lambda_min([self._dmus_t, ], self._dmus_t1)
-        self._lambda_t1_t = lambda_min([self._dmus_t1, ], self._dmus_t)
-        self._lambda_t1_t1 = lambda_min([self._dmus_t1, ], self._dmus_t1)
-        self._theta_t_t = theta_max([self._dmus_t, ], self._dmus_t)
-        self._theta_t_t1 = theta_max([self._dmus_t, ], self._dmus_t1)
-        self._theta_t1_t = theta_max([self._dmus_t1, ], self._dmus_t)
-        self._theta_t1_t1 = theta_max([self._dmus_t1, ], self._dmus_t1)
+        self._lambda_t_t = lambda_min([self._dmus_t, ], self._dmus_t, True)
+        self._lambda_t_t1 = lambda_min([self._dmus_t, ], self._dmus_t1, False)
+        self._lambda_t1_t = lambda_min([self._dmus_t1, ], self._dmus_t, False)
+        self._lambda_t1_t1 = lambda_min([self._dmus_t1, ], self._dmus_t1, True)
+        self._theta_t_t = theta_max([self._dmus_t, ], self._dmus_t, True)
+        self._theta_t_t1 = theta_max([self._dmus_t, ], self._dmus_t1, False)
+        self._theta_t1_t = theta_max([self._dmus_t1, ], self._dmus_t, False)
+        self._theta_t1_t1 = theta_max([self._dmus_t1, ], self._dmus_t1, True)
 
     def _init_y_sum(self):
         '''
@@ -600,7 +600,14 @@ class Lmdi(object):
         ci_t = self.co2_sum_t / self.pro_sum_t
         ci_t1 = self.co2_sum_t1 / self.pro_sum_t1
         return ci_t1 / ci_t
-
+    def ci_province(self):
+        result = []
+        for dmu_t, dmu_t1 in zip(self._dmus_t, self._dmus_t1):
+            ci_t = dmu_t.co2.total / dmu_t.pro.production
+            ci_t1 = dmu_t1.co2.total / dmu_t1.pro.production
+            result.append(ci_t1 / ci_t)
+        return result
+    
 '''
 LMDI 工厂
 通过内部的一个字典项重复使用的 LMDI 对象保存下来

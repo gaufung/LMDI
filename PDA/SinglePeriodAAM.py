@@ -551,7 +551,36 @@ class Spaam(object):
             self._cache['cef_attributions'] = [k * v for k, v
                                                in zip(self.rcef(), self.cef_ratio())]
         return self._cache['cef_attributions']
-
+    @property
+    def ci_province(self):
+        return self._lmdi.ci_province()
+    @property
+    def cef_province(self):
+        return list(self._lmdi.cef())
+    @property
+    def emx_province(self):
+        return list(self._lmdi.emx())
+    @property
+    def pei_province(self):
+        return list(self._lmdi.pei())
+    @property
+    def pis_province(self):
+        return list(self._lmdi.pis())
+    @property
+    def isg_province(self):
+        return list(self._lmdi.isg())
+    @property
+    def eue_province(self):
+        return list(self._lmdi.eue())
+    @property
+    def est_province(self):
+        return list(self._lmdi.est())
+    @property
+    def yoe_province(self):
+        return list(self._lmdi.yoe())
+    @property
+    def yct_province(self):
+        return list(self._lmdi.yct())
 class Spaam_Factory(object):
     '''
     Spaam factory

@@ -638,13 +638,11 @@ class AppLmdi(object):
             row += 1
     
 if __name__ == '__main__':
-    app = AppLmdi()
-    '''
+    app = AppLmdi() 
     workbook = Workbook(encoding='utf8')
     app.write_lmdi_single(workbook.add_sheet('单期LMDI'))
     app.write_lmdi_multi(workbook.add_sheet('跨期LMDI'))
-    workbook.save('LMDI单期和跨期.xls')
-    
-    app.write_multi_lmdi('省份lmdi明细.xls')
-    '''
-    app.write_multi_attribution('multi_attribution.xls')
+    workbook.save('output/LMDI单期和跨期.xls')
+    app.write_multi_lmdi('output/省份lmdi明细.xls')
+    app.write_single_attribution('output/单期归因.xls')
+    app.write_multi_attribution('output/跨期归因.xls')

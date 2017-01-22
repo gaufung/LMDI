@@ -4,6 +4,7 @@
 Test module
 '''
 import unittest
+import math
 from config import *
 import DataRead
 import Model
@@ -96,5 +97,24 @@ class TestAttribute(unittest.TestCase):
         test ci
         '''
         self.assertAlmostEqual(self.spaam_2006_2007.ci, reduce(mul, self.spaam_2006_2007.indexes))
+    def test_ci_province(self):
+        '''
+        test ci by province 
+        '''
+        ci_province = self.spaam_2006_2007.ci_province
+        emx_province = self.spaam_2006_2007.emx_province
+        cef_province = self.spaam_2006_2007.cef_province
+        pei_province = self.spaam_2006_2007.pei_province
+        pis_province = self.spaam_2006_2007.pis_province
+        isg_province = self.spaam_2006_2007.isg_province
+        eue_province = self.spaam_2006_2007.eue_province
+        est_province = self.spaam_2006_2007.est_province
+        yoe_province = self.spaam_2006_2007.yoe_province
+        yct_province = self.spaam_2006_2007.yct_province
+        for idx, _ in enumerate(ci_province):
+            product = emx_province[idx] + cef_province[idx] + pei_province[idx] + \
+                      0 + 0 + eue_province[idx] + \
+                      est_province[idx] + 0 + 0
+            self.assertAlmostEqual(ci_province[idx], math.exp(product))
 if __name__ == '__main__':
     unittest.main()

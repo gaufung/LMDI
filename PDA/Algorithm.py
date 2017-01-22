@@ -38,8 +38,49 @@ def _lambda_min(enengies, productions, co2s, energy_right, production_right, co2
         raise UserWarning
     return prob.objective.value() / energy_right
 
+def _lambda_min_same_year(energies, productions, co2s, dmus_right, is_raise_exception=False):
+    '''
+    lambda min in same years
+    '''
+    energies_backup = energies[:]
+    productions_backup = productions[:]
+    co2s_backup = co2s[:]
+    _addelements(energies_backup, 1.0)
+    _addelements(productions_backup, 0.0)
+    _addelements(co2s_backup, 0.0)
+    result = []
+    for dmu in dmus_right:
+        try:
+            result.append(_lambda_min(energies_backup, productions_backup, co2s_backup,
+                                      dmu.ene.total, dmu.pro.production, dmu.co2.total))
+        except UserWarning:
+            if is_raise_exception:
+                logging.error("unsolve occurs")
+                raise Exception
+            else:
+                result.append(-1.0)
+    return result
+def _lambda_min_different_year(energies, productions, co2s, dmus_right):
+    '''
+    lambda min in different years
+    '''
+    energies_backup = energies[:]
+    productions_backup = productions[:]
+    co2s_backup = co2s[:]
+    _addelements(energies_backup, 1.0, 0.0)
+    _addelements(productions_backup, 0.0, 0.0)
+    _addelements(co2s_backup, 0.0, -1.0)
+    result = []
+    for dmu in dmus_right:
+        try:
+            result.append(_lambda_min(energies_backup, productions_backup, co2s_backup,
+                                      dmu.ene.total, dmu.pro.production, dmu.co2.total))
+        except UserWarning:
+            logging.error("unsolve occurs")
+            raise Exception
+    return result
 
-def lambda_min(dmus_s, dmus_right):
+def lambda_min(dmus_s, dmus_right, is_same_year=False):
     '''
     the min of energy
     '''
@@ -51,19 +92,15 @@ def lambda_min(dmus_s, dmus_right):
             energies.append(dmu.ene.total)
             productions.append(dmu.pro.production)
             co2s.append(dmu.co2.total)
-    # add slack varibales
-    _addelements(energies, 1.0, 0.0)
-    _addelements(productions, 0.0, 0.0)
-    _addelements(co2s, 0.0, -1.0)
-    result = []
-    for dmu in dmus_right:
-        try:
-            result.append(_lambda_min(energies, productions, co2s,
-                                      dmu.ene.total, dmu.pro.production, dmu.co2.total))
-        except UserWarning:
-            logging.error("unsolve occurs")
-            raise Exception
-    return result
+    if is_same_year:
+        return _lambda_min_same_year(energies, productions, co2s, dmus_right, True)
+    else:
+        result = _lambda_min_same_year(energies, productions, co2s, dmus_right, False)
+        lambda_differtent = _lambda_min_different_year(energies, productions, co2s, dmus_right)
+        for idx, value in enumerate(result):
+            if value == -1.0:
+                result[idx] = lambda_differtent[idx]
+        return result
 
 
 def _theta_max(enengies, productions, co2s, energy_right, production_right, co2_right):
@@ -88,8 +125,42 @@ def _theta_max(enengies, productions, co2s, energy_right, production_right, co2_
     else:
         return prob.objective.value() / production_right
 
-
-def theta_max(dmus_s, dmus_right):
+def _theta_max_same_year(energies, productions, co2s, dmus_right, is_raise_exception=False):
+    energies_backup = energies[:]
+    productions_backup = productions[:]
+    co2s_backup = co2s[:]
+    _addelements(energies_backup, 0.0)
+    _addelements(productions_backup, -1.0)
+    _addelements(co2s_backup, 0.0)
+    result = []
+    for dmu in dmus_right:
+        try:
+            result.append(_theta_max(energies_backup, productions_backup, co2s_backup,
+                                     dmu.ene.total, dmu.pro.production, dmu.co2.total))
+        except UserWarning:
+            if is_raise_exception:
+                logging.error("unsolve occurs")
+                raise Exception
+            else:
+                result.append(-1.0)
+    return result
+def _theta_max_different_year(energies, productions, co2s, dmus_right):
+    energies_backup = energies[:]
+    productions_backup = productions[:]
+    co2s_backup = co2s[:]
+    _addelements(energies_backup, 0.0, -1.0)
+    _addelements(productions_backup, -1.0, 0.0)
+    _addelements(co2s_backup, 0.0, 0.0)
+    result = []
+    for dmu in dmus_right:
+        try:
+            result.append(_theta_max(energies_backup, productions_backup, co2s_backup,
+                                     dmu.ene.total, dmu.pro.production, dmu.co2.total))
+        except UserWarning:
+            logging.error("unsolve occurs")
+            raise Exception
+    return result
+def theta_max(dmus_s, dmus_right, is_same_year=False):
     '''
     the production max
     '''
@@ -102,16 +173,12 @@ def theta_max(dmus_s, dmus_right):
             productions.append(dmu.pro.production)
             co2s.append(dmu.co2.total)
     # add slack variables
-    _addelements(energies, 0, -1.0)
-    _addelements(productions, -1.0, 0.0)
-    _addelements(co2s, 0.0, 0.0)
-    result = []
-    for dmu in dmus_right:
-        try:
-            result.append(_theta_max(energies, productions, co2s,
-                                     dmu.ene.total, dmu.pro.production, dmu.co2.total))
-        except UserWarning:
-            logging.error("unsolve occurs")
-            raise Exception
-    return result
-    
+    if is_same_year:
+        return _theta_max_same_year(energies, productions, co2s, dmus_right, True)
+    else:
+        result = _theta_max_same_year(energies, productions, co2s, dmus_right, False)
+        theta_different = _theta_max_different_year(energies, productions, co2s, dmus_right)
+        for idx, value in enumerate(result):
+            if value == -1.0:
+                result[idx] = theta_different[idx]
+        return result
