@@ -27,6 +27,7 @@ class Lmdi(object):
         self._dmus_t = dmus_t
         self._dmus_t1 = dmus_t1
         self._cache = {}
+        self._w_cache = {}
         self._init()
         self._init_ll()
         self._init_linear_programming()
@@ -608,6 +609,124 @@ class Lmdi(object):
             result.append(ci_t1 / ci_t)
         return result
     
+    def _l_i_j(self, idx, j):
+        '''
+        计算单个省份的L函数值
+        L(C_{ij}^{T}/C_{i}^{T}, C_{ij}^{T+1}/C_{i}^{T+1})
+        '''
+        dmu_t = self._dmus_t[idx]
+        dmu_t1 = self._dmus_t1[idx]
+        if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
+            return Lmdi.l_function(dmu_t.co2[j] / dmu_t.co2.total,
+                                   dmu_t1.co2[j] / dmu_t1.co2.total)
+        else:
+            return 0.0
+    def _ll_i(self, idx):
+        if not self._w_cache.has_key(idx):
+            result = 0.0
+            for j in range(self.energy_count):
+                result += self._l_i_j(idx, j)
+            self._w_cache[idx] = result
+        return self._w_cache[idx]
+
+    def _cef_province(self, dmut, dmu_t1, idx, j):
+        number1 = self._t1_cef[idx, j]
+        number2 = self._t_cef[idx, j]
+        if number1 == number2:
+            return 0.0
+        else:
+            numberator1 = log(number1 / number2)
+            numberator2 = self._l_i_j(idx, j)
+            return numberator1 * numberator2 / self._ll_i(idx)
+    def cef_province(self):
+        '''
+        cef by province
+        '''
+        result = []
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            value = 0.0
+            for j in range(self.energy_count):
+                value += self._cef_province(t_t1[0], t_t1[1], idx, j)
+            result.append(value)
+        return result
+    def _pei_province(self, dmu_t, dmu_t1, idx, j):
+        number1 = dmu_t1.ene.total / \
+                sqrt(self.lambda_t1_t1
+                     [idx] * self.lambda_t_t1[idx]) / dmu_t1.pro.production
+        number2 = dmu_t.ene.total / \
+                sqrt(self.lambda_t1_t[idx] *
+                     self.lambda_t_t[idx]) / dmu_t.pro.production
+        numerator1 = log(number1 / number2)
+        numerator2 = self._l_i_j(idx, j)
+        return numerator1 * numerator2 / self._ll_i(idx)
+    def pei_province(self):
+        '''
+        pei by province
+        '''
+        result = []
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            value = 0.0
+            for j in range(self.energy_count):
+                value += self._pei_province(t_t1[0], t_t1[1], idx, j)
+            result.append(value)
+        return result
+    def _eue_province(self, dmu_t, dmu_t1, idx, j):
+        numerator1 = log(self.lambda_t1_t1[idx] / self.lambda_t_t[idx])
+        numerator2 = self._l_i_j(idx, j)
+        return numerator1 * numerator2 / self._ll_i(idx)
+    def eue_province(self):
+        '''
+        eue by province
+        '''
+        result = []
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            value = 0.0
+            for j in range(self.energy_count):
+                value += self._eue_province(t_t1[0], t_t1[1], idx, j)
+            result.append(value)
+        return result
+    def _est_province(self, dmu_t, dmu_t1, idx, j):
+        number1 = sqrt(self.lambda_t_t1[idx] / self.lambda_t1_t1[idx])
+        number2 = sqrt(self.lambda_t1_t[idx] / self.lambda_t_t[idx])
+        numerator1 = log(number1 / number2)
+        numerator2 = self._l_i_j(idx, j)
+        return numerator1 * numerator2 / self._ll_i(idx)
+    def est_province(self):
+        '''
+        est by province
+        '''
+        result = []
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            value = 0.0
+            for j in range(self.energy_count):
+                value += self._est_province(t_t1[0], t_t1[1], idx, j)
+            result.append(value)
+        return result
+    def _emx_province(self, dmu_t, dmu_t1, idx, j):
+        if dmu_t.ene[j] != 0.0 and dmu_t1.ene[j] != 0.0:
+            number1 = dmu_t1.ene[j] / dmu_t1.ene.total
+            number2 = dmu_t.ene[j] / dmu_t.ene.total
+            numberator1 = log(number1 / number2)
+            numberator2 = self._l_i_j(idx, j)
+            return numberator1 * numberator2 / self._ll_i(idx)
+        elif dmu_t.ene[j] == 0.0 and dmu_t1.ene[j] != 0.0:
+            return dmu_t1.co2[j] / (dmu_t1.co2.total * self._ll_i(idx))
+        elif dmu_t.ene[j] != 0.0 and dmu_t1.ene[j] == 0.0:
+            return -1.0 * dmu_t.co2[j] / (dmu_t.co2.total* self._ll_i(idx))
+        else:
+            return 0.0
+    def emx_province(self):
+        '''
+        emx by province
+        '''
+        result = []
+        for idx, t_t1  in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            value = 0.0
+            for j in range(self.energy_count):
+                value += self._emx(t_t1[0], t_t1[1], j, idx)
+            result.append(value)
+        return result
+
 '''
 LMDI 工厂
 通过内部的一个字典项重复使用的 LMDI 对象保存下来
