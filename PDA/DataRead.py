@@ -12,6 +12,7 @@ from config import ENE_CO2_START_COLUMN, ENE_CO2_END_COLUMN
 from config import CO2_START_ROW, CO2_END_ROW
 
 
+
 def read_produciton(year):
     '''
     read from industry.xlxs Production
