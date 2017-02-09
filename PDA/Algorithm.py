@@ -5,6 +5,7 @@ lambda min
 theta max
 '''
 from __future__ import division
+from itertools import chain
 import logging
 from pulp import LpProblem, lpSum, LpVariable, LpMinimize, LpMaximize
 
@@ -14,6 +15,12 @@ def _addelements(sequence, *elements):
     '''
     for element in elements:
         sequence.append(element)
+
+def _reciprocal(func):
+    def _wrapper(*args, **kw):
+        result = func(*args, **kw)
+        return [1.0 / x for x in result]
+    return _wrapper
 
 
 def _lambda_min(enengies, productions, co2s, energy_right, production_right, co2_right):
@@ -80,6 +87,7 @@ def _lambda_min_different_year(energies, productions, co2s, dmus_right):
             raise Exception
     return result
 
+@_reciprocal
 def lambda_min(dmus_s, dmus_right, is_same_year=False):
     '''
     the min of energy
@@ -160,6 +168,8 @@ def _theta_max_different_year(energies, productions, co2s, dmus_right):
             logging.error("unsolve occurs")
             raise Exception
     return result
+
+@_reciprocal
 def theta_max(dmus_s, dmus_right, is_same_year=False):
     '''
     the production max
@@ -182,3 +192,19 @@ def theta_max(dmus_s, dmus_right, is_same_year=False):
             if value == -1.0:
                 result[idx] = theta_different[idx]
         return result
+
+def theta_min(dmus_s, dmus_right, is_same_year=False):
+    '''
+    theta min
+    '''
+    energies = []
+    productions = []
+    co2s = []
+    for dmu in chain(dmus_s):
+        energies.append(dmu.ene.total)
+        productions.append(dmu.pro.production)
+        co2s.append(dmu.co2.total)
+    if is_same_year:
+        pass
+    else:
+        pass
