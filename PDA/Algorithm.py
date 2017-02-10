@@ -5,7 +5,6 @@ lambda min
 theta max
 '''
 from __future__ import division
-from itertools import chain
 import logging
 from pulp import LpProblem, lpSum, LpVariable, LpMinimize, LpMaximize
 
@@ -192,19 +191,3 @@ def theta_max(dmus_s, dmus_right, is_same_year=False):
             if value == -1.0:
                 result[idx] = theta_different[idx]
         return result
-
-def theta_min(dmus_s, dmus_right, is_same_year=False):
-    '''
-    theta min
-    '''
-    energies = []
-    productions = []
-    co2s = []
-    for dmu in chain(dmus_s):
-        energies.append(dmu.ene.total)
-        productions.append(dmu.pro.production)
-        co2s.append(dmu.co2.total)
-    if is_same_year:
-        pass
-    else:
-        pass
