@@ -6,7 +6,7 @@ theta max
 '''
 from __future__ import division
 import logging
-from pulp import LpProblem, lpSum, LpVariable, LpMinimize, LpMaximize
+from pulp import LpProblem, lpSum, LpVariable, LpMinimize, LpMaximize, GLPK, LpStatus,value
 
 def _addelements(sequence, *elements):
     '''
@@ -42,7 +42,10 @@ def _lambda_min(enengies, productions, co2s, energy_right, production_right, co2
     prob += lpSum([co2_dict[i] * symbols[i] for i in ingredients]) == co2_right
     if prob.solve() != 1:
         raise UserWarning
-    return prob.objective.value() / energy_right
+    else:
+        #varibales = [x.varValue for x in prob.variables()]
+        #print varibales
+        return prob.objective.value() / energy_right
 
 def _lambda_min_same_year(energies, productions, co2s, dmus_right, is_raise_exception=False):
     '''
@@ -191,3 +194,64 @@ def theta_max(dmus_s, dmus_right, is_same_year=False):
             if value == -1.0:
                 result[idx] = theta_different[idx]
         return result
+
+def _linear_program(energies, productions, co2s, energy, production, co2):
+    # object
+    factors1 = []
+    for dmu in zip(productions, energies, co2s):
+        factors1.append(dmu[0]/production - dmu[1]/energy - dmu[2] / co2)
+    _addelements(factors1, -1.0 / energy, -1.0 / production)
+    # subject to alpha
+    factors2 = [x/energy for x in energies]
+    _addelements(factors2, 1.0/energy, 0.0)
+    # subject to beta
+    factors3 = [x/production for x in productions]
+    _addelements(factors3, 0.0, -1.0/production)
+    # subject to omega
+    factors4 = [x/co2 for x in co2s]
+    _addelements(factors4, 0.0, 0.0)
+
+    # start linear_programming
+    prob = LpProblem('max', LpMaximize)
+    ingredinets = [str(symbols + 1) for symbols in range(len(factors1))]
+    symbols = LpVariable.dict('x_%s', ingredinets, lowBound=0)
+    cost = dict(zip(ingredinets, factors1))
+    prob += lpSum([cost[i] * symbols[i] for i in ingredinets])
+    # subject dict
+    sub_dict_alpha = dict(zip(ingredinets, factors2))
+    sub_dict_beta = dict(zip(ingredinets, factors3))
+    sub_dict_omega = dict(zip(ingredinets, factors4))
+    prob += lpSum([sub_dict_alpha[i] *symbols[i]
+                   for i in ingredinets]) <= 1.0
+    prob += lpSum([sub_dict_beta[i] * symbols[i]
+                   for i in ingredinets]) >= 1.0
+    prob += lpSum([sub_dict_omega[i] * symbols[i]
+                   for i in ingredinets]) <= 1.0
+    if prob.solve(GLPK(msg=2)) != 1:
+        raise UserWarning
+    else:
+        varibales = {v.name : v.varValue for v in prob.variables()}
+        alpha = 1 - sum([sub_dict_alpha[i] * varibales['x_'+str(i)] for i in ingredinets])
+        beta = sum([sub_dict_beta[i] * varibales['x_'+str(i)] for i in ingredinets]) - 1
+        omega = 1 - sum([sub_dict_omega[i] * varibales['x_'+str(i)] for i in ingredinets])
+        #print alpha+beta+omega, prob.objective.value() + 1.0
+        return alpha, beta, omega
+        #return 0.0, 0.0, 0.0
+        #return (prob.objective.value() + 1.0) / 3.0
+
+def linear_program(dmus_left, dmus_right):
+    '''
+    linear_program
+    '''
+    energies = [dmu.ene.total for dmu in dmus_left]
+    productions = [dmu.pro.production for dmu in dmus_left]
+    co2s = [dmu.co2.total for dmu in dmus_left]
+    result = []
+    for dmu in dmus_right:
+        try:
+            result.append(_linear_program(energies, productions, co2s,
+                          dmu.ene.total, dmu.pro.production, dmu.co2.total))
+        except UserWarning:
+            result.append((-1.0, -1.0, -1.0))
+    return result
+
