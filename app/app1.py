@@ -8,7 +8,7 @@ sys.path.append('..')
 import xlrd
 import xlwt
 from PDA.Model import *
-from PDA.Algorithm import linear_program
+from PDA.Algorithm import linear_program, lambda_min, theta_min
 
 def format_dmu(row):
     name = row[0]
@@ -89,6 +89,40 @@ def write():
         sheet.write(idx+2, 10, label=value[4][0])
         sheet.write(idx+2, 11, label=value[4][1])
         sheet.write(idx+2, 12, label=value[4][2])        
-    workbook.save('lp2.xls')                
+    workbook.save('lp2.xls')
+def write1():
+    dmus_t, dmus_t1 = read_dmus1()
+    lambda_t_t = lambda_min([dmus_t,], dmus_t, True)
+    lambda_t_t1 = lambda_min([dmus_t,], dmus_t1, True)
+    lambda_t1_t = lambda_min([dmus_t1,], dmus_t, True)
+    lambda_t1_t1 = lambda_min([dmus_t1,], dmus_t1, True)
+    theta_t_t = theta_min([dmus_t,], dmus_t)
+    theta_t_t1 = theta_min([dmus_t,], dmus_t1)
+    theta_t1_t = theta_min([dmus_t1,], dmus_t)
+    theta_t1_t1 = theta_min([dmus_t1,], dmus_t1)
+    workbook = xlwt.Workbook(encoding='utf8')
+    sheet = workbook.add_sheet('线性规划')
+    sheet.write(0, 0, label='Province')
+    sheet.write(0, 1, label='lambda_T_T')
+    sheet.write(0, 2, label='lambda_T_T1')
+    sheet.write(0, 3, label='lambda_T1_T')
+    sheet.write(0, 4, label='lambda_T1_T1')
+    sheet.write(0, 5, label='theta_T_T')
+    sheet.write(0, 6, label='theta_T_T1')
+    sheet.write(0, 7, label='theta_T1_T')
+    sheet.write(0, 8, label='theta_T1_T1')
+    for idx, value in enumerate(zip(dmus_t, lambda_t_t, lambda_t_t1,
+                                    lambda_t1_t, lambda_t1_t1, theta_t_t,
+                                    theta_t_t1, theta_t1_t, theta_t1_t1)):
+        sheet.write(idx+1, 0, label=value[0].name)
+        sheet.write(idx+1, 1, label=value[1])
+        sheet.write(idx+1, 2, label=value[2])
+        sheet.write(idx+1, 3, label=value[3])
+        sheet.write(idx+1, 4, label=value[4])
+        sheet.write(idx+1, 5, label=value[5])
+        sheet.write(idx+1, 6, label=value[6])
+        sheet.write(idx+1, 7, label=value[7])
+        sheet.write(idx+1, 8, label=value[8]) 
+    workbook.save('linear_program.xls')       
 if __name__ == '__main__':
-    write()
+    write1()

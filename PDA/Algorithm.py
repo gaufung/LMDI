@@ -103,7 +103,7 @@ def lambda_min(dmus_s, dmus_right, is_same_year=False):
             productions.append(dmu.pro.production)
             co2s.append(dmu.co2.total)
     if is_same_year:
-        return _lambda_min_same_year(energies, productions, co2s, dmus_right, True)
+        return _lambda_min_same_year(energies, productions, co2s, dmus_right, False)
     else:
         result = _lambda_min_same_year(energies, productions, co2s, dmus_right, False)
         lambda_differtent = _lambda_min_different_year(energies, productions, co2s, dmus_right)
@@ -253,5 +253,51 @@ def linear_program(dmus_left, dmus_right):
                           dmu.ene.total, dmu.pro.production, dmu.co2.total))
         except UserWarning:
             result.append((-1.0, -1.0, -1.0))
+    return result
+
+# theta_min
+def _theta_min(enengies, productions, co2s, energy_right, production_right, co2_right):
+    '''
+    theta min
+    '''
+    # the linear programming objective is minimize
+    prob = LpProblem('theta_min', LpMinimize)
+    variablecount = len(enengies)
+    ingredients = [str(symbols+1) for symbols in range(variablecount)]
+    # the variable symbols such as x1, x2, x3 ... xn
+    symbols = LpVariable.dict('x_%s', ingredients, lowBound=0)
+    cost = dict(zip(ingredients, co2s))
+    prob += lpSum([cost[i] * symbols[i] for i in ingredients])
+    ene_dict = dict(zip(ingredients, enengies))
+    pro_dict = dict(zip(ingredients, productions))
+    prob += lpSum([ene_dict[i] * symbols[i]
+                   for i in ingredients]) <= energy_right
+    prob += lpSum([pro_dict[i] * symbols[i]
+                   for i in ingredients]) >= production_right
+    if prob.solve() != 1:
+        raise UserWarning
+    return prob.objective.value() / co2_right
+
+
+@_reciprocal
+def theta_min(dmus_s, dmus_right):
+    '''
+    theta min
+    '''
+    energies = []
+    productions = []
+    co2s = []
+    for dmus in dmus_s:
+        for dmu in dmus:
+            energies.append(dmu.ene.total)
+            productions.append(dmu.pro.production)
+            co2s.append(dmu.co2.total)
+    result = []
+    for dmu in dmus_right:
+        try:
+            result.append(_theta_min(energies, productions, co2s,
+                                     dmu.ene.total, dmu.pro.production, dmu.co2.total))
+        except UserWarning:
+            result.append(-1.0)
     return result
 
