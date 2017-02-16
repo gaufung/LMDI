@@ -106,3 +106,6 @@ ENERGY_TYPE_INDEX = {
 CEF = {}
 for k, v in ENERGY_TYPE_INDEX.iteritems():
     CEF[v] = CO2_COEFFICIENT[k] / STATND_COAL_COEFFICIENT[k]
+
+if __name__ == '__main__':
+    print XLXS_FILE_PATH
