@@ -6,8 +6,8 @@ test PDA read module
 import sys
 sys.path.append('..')
 import unittest
-from PDA.config import PRO_2006_COL, SHEET_2006
-import PDA.DataRead
+from PDA_Industry.config import PRO_2006_COL, SHEET_2006
+import PDA_Industry.DataRead
 
 
 
@@ -19,13 +19,13 @@ class TestDataRead(unittest.TestCase):
         '''
         test count
         '''
-        dmu_2006 = PDA.DataRead.read_dmus(PRO_2006_COL, SHEET_2006)
+        dmu_2006 = PDA_Industry.DataRead.read_dmus(PRO_2006_COL, SHEET_2006)
         self.assertEqual(len(dmu_2006), 30)
     def test_value(self):
         '''
         test value
         '''
-        dmu_2006 = PDA.DataRead.read_dmus(PRO_2006_COL,
+        dmu_2006 = PDA_Industry.DataRead.read_dmus(PRO_2006_COL,
                                           SHEET_2006)
         dmu = dmu_2006[0]
         self.assertAlmostEquals(dmu.pro.production, 1821.86, places=2)

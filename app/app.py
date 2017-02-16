@@ -2,19 +2,19 @@
 
 import sys
 sys.path.append('..')
-from PDA.DataRead import read_dmus
+from PDA_Industry.DataRead import read_dmus
 import xlrd
-import PDA.config as config
-import PDA.LMDI as LMDI
+import PDA_Industry.config as config
+import PDA_Industry.LMDI as LMDI
 import logging
 from xlwt import *
 import math
 import operator
-import PDA.Algorithm as Algorithm
+import PDA_Industry.Algorithm as Algorithm
 import numpy as np
 import pandas as pd
-from PDA.SinglePeriodAAM import Spaam
-from PDA.MultiPeriodAAM import Mpaam
+from PDA_Industry.SinglePeriodAAM import Spaam
+from PDA_Industry.MultiPeriodAAM import Mpaam
 import PDA.WriteData as WriteData
 logging.basicConfig(level=logging.ERROR)
 class AppLmdi(object):

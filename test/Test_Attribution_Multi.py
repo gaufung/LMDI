@@ -6,10 +6,10 @@ Test module
 import sys
 sys.path.append('..')
 import unittest
-from PDA.config import *
-import PDA.DataRead
-from PDA.MultiPeriodAAM import Mpaam
-from PDA.WriteData import WriteLmdiData
+from PDA_Industry.config import *
+import PDA_Industry.DataRead
+from PDA_Industry.MultiPeriodAAM import Mpaam
+from PDA_Industry.WriteData import WriteLmdiData
 
 class Test_Attribuioin_Multi(unittest.TestCase):
     '''
@@ -19,15 +19,15 @@ class Test_Attribuioin_Multi(unittest.TestCase):
         '''
         初始化条件
         '''
-        dmus_2006 = PDA.DataRead.read_dmus(PRO_2006_COL, SHEET_2006)
-        dmus_2007 = PDA.DataRead.read_dmus(PRO_2007_COL, SHEET_2007)
-        dmus_2008 = PDA.DataRead.read_dmus(PRO_2008_COL, SHEET_2008)
-        dmus_2009 = PDA.DataRead.read_dmus(PRO_2009_COL, SHEET_2009)
-        dmus_2010 = PDA.DataRead.read_dmus(PRO_2010_COL, SHEET_2010)
-        dmus_2011 = PDA.DataRead.read_dmus(PRO_2011_COL, SHEET_2011)
-        dmus_2012 = PDA.DataRead.read_dmus(PRO_2012_COL, SHEET_2012)
-        dmus_2013 = PDA.DataRead.read_dmus(PRO_2013_COL, SHEET_2013)
-        dmus_2014 = PDA.DataRead.read_dmus(PRO_2014_COL, SHEET_2014)
+        dmus_2006 = PDA_Industry.DataRead.read_dmus(PRO_2006_COL, SHEET_2006)
+        dmus_2007 = PDA_Industry.DataRead.read_dmus(PRO_2007_COL, SHEET_2007)
+        dmus_2008 = PDA_Industry.DataRead.read_dmus(PRO_2008_COL, SHEET_2008)
+        dmus_2009 = PDA_Industry.DataRead.read_dmus(PRO_2009_COL, SHEET_2009)
+        dmus_2010 = PDA_Industry.DataRead.read_dmus(PRO_2010_COL, SHEET_2010)
+        dmus_2011 = PDA_Industry.DataRead.read_dmus(PRO_2011_COL, SHEET_2011)
+        dmus_2012 = PDA_Industry.DataRead.read_dmus(PRO_2012_COL, SHEET_2012)
+        dmus_2013 = PDA_Industry.DataRead.read_dmus(PRO_2013_COL, SHEET_2013)
+        dmus_2014 = PDA_Industry.DataRead.read_dmus(PRO_2014_COL, SHEET_2014)
         self.mpaam = Mpaam([dmus_2006, dmus_2007, dmus_2008, dmus_2009, dmus_2010, dmus_2011
                             , dmus_2012, dmus_2013, dmus_2014], '2006-2004')
     def test_emx(self):

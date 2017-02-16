@@ -6,7 +6,7 @@ Test module
 import sys
 import unittest
 sys.path.append('..')
-import PDA.Model
+import PDA_Industry.Model
 
 
 
@@ -18,7 +18,7 @@ class TestModel(unittest.TestCase):
         '''
         test energy model
         '''
-        energy = PDA.Model.Energy('北京', [10.2, 33.0, 43.2])
+        energy = PDA_Industry.Model.Energy('北京', [10.2, 33.0, 43.2])
         self.assertEqual(energy.name, '北京')
         self.assertEqual(len(energy), 3)
         self.assertEqual(energy[0], 10.2)
@@ -27,7 +27,7 @@ class TestModel(unittest.TestCase):
         '''
         test co2 model
         '''
-        co2 = PDA.Model.Co2('上海', [88.2, 10.2, 98.4])
+        co2 = PDA_Industry.Model.Co2('上海', [88.2, 10.2, 98.4])
         self.assertEqual(co2.name, '上海')
         self.assertEqual(len(co2), 3)
         self.assertEqual(co2[0], 88.2)
@@ -36,7 +36,7 @@ class TestModel(unittest.TestCase):
         '''
         test production model
         '''
-        pro = PDA.Model.Production('江苏', 66)
+        pro = PDA_Industry.Model.Production('江苏', 66)
         self.assertEqual(pro.name, '江苏')
         self.assertEqual(pro.production, 66)
 if __name__ == '__main__':

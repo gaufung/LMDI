@@ -10,13 +10,13 @@ Test module
 '''
 import unittest
 import math
-from PDA.config import *
-import PDA.DataRead
-import PDA.Model
-import PDA.LMDI
-from PDA.SinglePeriodAAM import Spaam
-from PDA.MultiPeriodAAM import Mpaam
-from PDA.WriteData import WriteLmdiData, WriteSpaamData
+from PDA_Industry.config import *
+import PDA_Industry.DataRead
+import PDA_Industry.Model
+import PDA_Industry.LMDI
+from PDA_Industry.SinglePeriodAAM import Spaam
+from PDA_Industry.MultiPeriodAAM import Mpaam
+from PDA_Industry.WriteData import WriteLmdiData, WriteSpaamData
 from operator import mul
 class TestAttribute(unittest.TestCase):
     '''
@@ -26,8 +26,8 @@ class TestAttribute(unittest.TestCase):
         '''
         初始化条件
         '''
-        dmus_2006 = PDA.DataRead.read_dmus(PRO_2006_COL, SHEET_2006)
-        dmus_2007 = PDA.DataRead.read_dmus(PRO_2007_COL, SHEET_2007)
+        dmus_2006 = PDA_Industry.DataRead.read_dmus(PRO_2006_COL, SHEET_2006)
+        dmus_2007 = PDA_Industry.DataRead.read_dmus(PRO_2007_COL, SHEET_2007)
         self.spaam_2006_2007 = Spaam(dmus_2006, dmus_2007, '2006-2007')
     def test_province_name(self):
         '''
