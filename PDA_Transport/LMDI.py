@@ -127,6 +127,9 @@ class Lmdi(object):
         '''
         return self._province_count
     @property
+    def province_names(self):
+        return self._province_names
+    @property
     def ll(self):
         '''
         ll value
