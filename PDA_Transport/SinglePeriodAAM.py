@@ -59,7 +59,6 @@ class Spaam(object):
         the province names
         '''
         return self._lmdi.province_names
-    
     def _wi(self, idx):
         '''
         wi factor
@@ -209,6 +208,30 @@ class Spaam(object):
             self._cache['cef_attributions'] = [k * v for k, v
                                                in zip(self.rcef(), self.cef_ratio())]
         return self._cache['cef_attributions']
+    # attribution
+    def _attribution_r(self, func, index):
+        index_key = 'r'+index
+        if  not self._cache.has_key(index_key):
+            result = []
+            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+                __wi = self._wi(idx)
+                value_t = func(dmu_t_t1[0], idx)
+                value_t1 = func(dmu_t_t1[1], idx, False)
+                pii = __wi / Lmdi.l_function(value_t1, value_t*getattr(self, index))
+                result.append(pii * value_t)
+            total = sum(result)
+            self._cache[index_key] = [item/total for item in result]
+        return self._cache[index_key]
+    def _attribution_ratio(self, func, index):
+        index_key = index+'ratio'
+        if not self._cache.has_key(index_key):
+            result = []
+            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+                value_t = func(dmu_t_t1[0], idx)
+                value_t1 = func(dmu_t_t1[1], idx, False)
+                result.append(value_t1 / value_t - 1)
+            self._cache[index_key] = result
+        return self._cache[index_key]
     #pei
     @property
     def pei(self):
@@ -227,29 +250,12 @@ class Spaam(object):
         '''
         r pei
         '''
-        if not self._cache.has_key('rpei'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                __wi = self._wi(idx)
-                pei_t = self._pei_t_t1(dmu_t_t1[0], idx)
-                pei_t1 = self._pei_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi / Lmdi.l_function(pei_t1, pei_t*self.pei)
-                result.append(pii * pei_t)
-            total = sum(result)
-            self._cache['rpei'] = [item/total for item in result]
-        return self._cache['rpei']
+        return self._attribution_r(self._pei_t_t1, 'pei')
     def pei_ratio(self):
         '''
         yct ratio
         '''
-        if not self._cache.has_key('peiRatio'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                pei_t = self._pei_t_t1(dmu_t_t1[0], idx)
-                pei_t1 = self._pei_t_t1(dmu_t_t1[1], idx, False)
-                result.append(pei_t1 / pei_t - 1)
-            self._cache['peiRatio'] = result
-        return self._cache['peiRatio']
+        return self._attribution_ratio(self._pei_t_t1, 'pei')
     @property
     def pei_attributions(self):
         if not self._cache.has_key('pei_contribution'):
@@ -275,26 +281,11 @@ class Spaam(object):
         '''
         rest
         '''
-        if not self._cache.has_key('rest'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                __wi = self._wi(idx)
-                est_t = self._est_t_t1(dmu_t_t1[0], idx)
-                est_t1 = self._est_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi / Lmdi.l_function(est_t1, est_t * self.est)
-                result.append(pii * est_t)
-            total = sum(result)
-            self._cache['rest'] = [item/total for item in result]
-        return self._cache['rest']
+        return self._attribution_r(self._est_t_t1, 'est')
     def est_ratio(self):
-        if not self._cache.has_key('est_ratio'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                est_t = self._est_t_t1(dmu_t_t1[0], idx)
-                est_t1 = self._est_t_t1(dmu_t_t1[1], idx, False)
-                result.append(est_t1/est_t - 1)
-            self._cache['est_ratio'] = result
-        return self._cache['est_ratio']   
+        '''
+        '''
+        return self._attribution_ratio(self._est_t_t1, 'est')
     @property
     def est_attributions(self):
         if not self._cache.has_key('est_contribution'):
@@ -313,26 +304,15 @@ class Spaam(object):
         else:
             return self._lmdi.psi_t1_t1[idx]
     def reue(self):
-        if not self._cache.has_key('reue'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                __wi = self._wi(idx)
-                eue_t = self._eue_t_t1(dmu_t_t1[0], idx)
-                eue_t1 = self._eue_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi/ Lmdi.l_function(eue_t1, eue_t*self.eue)
-                result.append(pii * eue_t)
-            total = sum(result)
-            self._cache['reue'] = [item/total for item in result]
-        return self._cache['reue']
+        '''
+       
+        '''
+        return self._attribution_r(self._eue_t_t1, 'eue')
     def eue_ratio(self):
-        if not self._cache.has_key('eue_ratio'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                eue_t = self._eue_t_t1(dmu_t_t1[0], idx)
-                eue_t1 = self._eue_t_t1(dmu_t_t1[1], idx, False)
-                result.append(eue_t1/eue_t - 1)
-            self._cache['eue_ratio'] = result
-        return self._cache['eue_ratio']
+        '''
+       
+        '''
+        return self._attribution_ratio(self._eue_t_t1, 'eue')
     @property
     def eue_attributions(self):
         return [k*v for k, v in zip(self.reue(), self.eue_ratio())]
@@ -350,26 +330,15 @@ class Spaam(object):
             return dmu.turn_over.turn_over / (dmu.production.production /
                                               self._lmdi.eta_global_t1[idx])
     def rpti(self):
-        if not self._cache.has_key('rpti'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                __wi = self._wi(idx)
-                pti_t = self._pti_t_t1(dmu_t_t1[0], idx)
-                pti_t1 = self._pti_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi / Lmdi.l_function(pti_t1, pti_t*self.pti)
-                result.append(pii*pti_t)
-            total = sum(result)
-            self._cache['rpti'] = [item/total for item in result]
-        return self._cache['rpti']
+        '''
+       
+        '''
+        return self._attribution_r(self._pti_t_t1, 'pti')
     def pti_ratio(self):
-        if not self._cache.has_key('pti_ratio'):
-            result =[]
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                pti_t = self._pti_t_t1(dmu_t_t1[0], idx)
-                pti_t1 = self._pti_t_t1(dmu_t_t1[1], idx, False)
-                result.append(pti_t1/pti_t - 1)
-            self._cache['pti_ratio'] = result
-        return self._cache['pti_ratio']
+        '''
+        
+        '''
+        return self._attribution_ratio(self._pti_t_t1, 'pti')
     @property
     def pti_attributions(self):
         return [k*v for k, v in zip(self.rpti(), self.pti_ratio())]
@@ -385,26 +354,15 @@ class Spaam(object):
         else:
             return 1.0 / self._lmdi.eta_t1_t1[idx]
     def ryoe(self):
-        if not self._cache.has_key('ryoe'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                __wi = self._wi(idx)
-                yoe_t = self._yoe_t_t1(dmu_t_t1[0], idx)
-                yoe_t1 = self._yoe_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi / Lmdi.l_function(yoe_t1, yoe_t*self.yoe)
-                result.append(pii*yoe_t)
-            total = sum(result)
-            self._cache['ryoe'] = [item/total for item in result]
-        return self._cache['ryoe']
+        '''
+       
+        '''
+        return self._attribution_r(self._yoe_t_t1, 'yoe')
     def yoe_ratio(self):
-        if not self._cache.has_key('yoe_ratio'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                yoe_t = self._yoe_t_t1(dmu_t_t1[0], idx)
-                yoe_t1 = self._yoe_t_t1(dmu_t_t1[1], idx, False)
-                result.append(yoe_t1/yoe_t - 1)
-            self._cache['yoe_ratio'] = result
-        return self._cache['yoe_ratio']
+        '''
+       
+        '''
+        return self._attribution_ratio(self._yoe_t_t1, 'yoe')
     @property
     def yoe_attributions(self):
         return [k*v for k, v in zip(self.yoe_ratio(), self.ryoe())]
@@ -420,26 +378,15 @@ class Spaam(object):
         else:
             return self._lmdi.eta_t1_t1[idx] / self._lmdi.eta_global_t1[idx]
     def ryct(self):
-        if not self._cache.has_key('ryct'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                __wi = self._wi(idx)
-                yct_t = self._yct_t_t1(dmu_t_t1[0], idx)
-                yct_t1 = self._yct_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi / Lmdi.l_function(yct_t1, yct_t*self.yct)
-                result.append(pii*yct_t)
-            total = sum(result)
-            self._cache['ryct'] = [item/total for item in result]
-        return self._cache['ryct']
+        '''
+       
+        '''
+        return self._attribution_r(self._yct_t_t1, 'yct')
     def yct_ratio(self):
-        if not self._cache.has_key('yct_ratio'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                yct_t = self._yct_t_t1(dmu_t_t1[0], idx)
-                yct_t1 = self._yct_t_t1(dmu_t_t1[1], idx, False)
-                result.append(yct_t1/yct_t - 1)
-            self._cache['yct_ratio'] = result
-        return self._cache['yct_ratio']
+        '''
+        
+        '''
+        return self._attribution_ratio(self._yct_t_t1, 'yct')
     @property
     def yct_attributions(self):
         return [k*v for k, v in zip(self.ryct(), self.yct_ratio())]
@@ -455,26 +402,15 @@ class Spaam(object):
         else:
             return dmu.production.production / self._lmdi.pro_sum_t1
     def rrts(self):
-        if not self._cache.has_key('rrts'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                __wi = self._wi(idx)
-                rts_t = self._rts_t_t1(dmu_t_t1[0], idx)
-                rts_t1 = self._rts_t_t1(dmu_t_t1[1], idx, False)
-                pii = __wi / Lmdi.l_function(rts_t1, rts_t*self.rts)
-                result.append(pii*rts_t)
-            total = sum(result)
-            self._cache['rrts'] = [item/total for item in result]
-        return self._cache['rrts']
+        '''
+       
+        '''
+        return self._attribution_r(self._rts_t_t1, 'rts')
     def rts_ratio(self):
-        if not self._cache.has_key('rts_ratio'):
-            result = []
-            for idx, dmu_t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-                rst_t = self._rts_t_t1(dmu_t_t1[0], idx)
-                rst_t1 = self._rts_t_t1(dmu_t_t1[1], idx, False)
-                result.append(rst_t1/rst_t - 1)
-            self._cache['rts_ratio'] = result
-        return self._cache['rts_ratio']
+        '''
+        
+        '''
+        return self._attribution_ratio(self._rts_t_t1, 'rts')
     @property
     def rts_attributions(self):
         '''

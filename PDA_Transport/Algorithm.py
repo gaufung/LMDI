@@ -1,4 +1,7 @@
 # -*- coding:utf8 -*-
+'''
+linear programming
+'''
 from __future__ import division
 import logging
 from pulp import LpProblem, lpSum, LpVariable, LpMinimize, LpMaximize
@@ -41,6 +44,7 @@ def _pis_min(energies, productions, co2s, turn_overs, dmu_right):
     prob += lpSum([co2_dict[i] * symbols[i]
                    for i in ingredients]) == co2_right
     if prob.solve() != 1:
+        logging.error('psi min unsolved situation occurs')
         raise UserWarning
     else:
         return prob.objective.value() / energy_right
@@ -92,6 +96,7 @@ def _eta_max(energies, productions, co2s, turn_overs, dmu_right):
     prob += lpSum([co2_dict[i] * symbols[i]
                    for i in ingredients]) == co2_right
     if prob.solve() != 1:
+        logging.error('eta max unsolved situation occurs')
         raise UserWarning
     else:
         return prob.objective.value() / produciton_right

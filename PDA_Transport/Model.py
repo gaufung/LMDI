@@ -1,4 +1,8 @@
 # -*- coding:utf8 -*-
+'''
+the model for this project
+energy, production, turn_over, co2
+'''
 from __future__ import unicode_literals
 
 class Energy(object):

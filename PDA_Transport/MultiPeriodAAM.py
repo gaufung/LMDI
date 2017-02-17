@@ -46,276 +46,122 @@ class Mpaam(object):
                                              self._year[left]+'-'+self._year[right],
                                              self._dmus_global)
         return self._cache[label]
+    def _index_t(self, t, index_name):
+        result = 1.0
+        for i in range(1, t+1):
+            result *= getattr(self._get_spaam(i-1, i), index_name)
+        return result
+    def _index(self, index_name):
+        result = []
+        for i in range(self._province_count):
+            value = 0.0
+            for t in range(1, self._period_count):
+                aggerate_value = self._index_t(t-1, index_name)
+                spaam_t_1_t = self._get_spaam(t-1, t)
+                contribution = (getattr(spaam_t_1_t, 'r'+index_name)()[i] *
+                                getattr(spaam_t_1_t, index_name+'_ratio')()[i])
+                value += aggerate_value * contribution
+            result.append(value)
+        return result
     # emx
     def emx(self):
         '''
         emx contribution
         '''
-        result = []
-        for i in range(self._province_count):
-            value = 0.0
-            for t in range(1, self._period_count):
-                if t-1 != 0:
-                    #spaam_0_t_1 = self._get_spaam(0, t-1)
-                    emx = self.emx_t(t-1)
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.remx()[i] * spaam_t_1_t.emx_ratio()[i]
-                    value += emx * contribution
-                else:
-                    emx = 1.0
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.remx()[i] * spaam_t_1_t.emx_ratio()[i]
-                    value += emx * contribution
-            result.append(value)
-        return result
+        return self._index('emx')
     def emx_t(self, t):
         '''
         计算跨期的emx
         '''
-        emx = 1.0
-        for i in range(1, t+1):
-            emx *= self._get_spaam(i-1, i).emx
-        return emx
+        return self._index_t(t, 'emx')
     # cef
     def cef(self):
         '''
         the cef contribution
         '''
-        result = []
-        for i in range(self._province_count):
-            value = 0.0
-            for t in range(1, self._period_count):
-                if t-1 != 0:
-                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    cef = self.cef_t(t-1)
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rcef()[i] * spaam_t_1_t.cef_ratio()[i]
-                    value += cef * contribution
-                else:
-                    cef = 1.0
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rcef()[i] * spaam_t_1_t.cef_ratio()[i]
-                    value += cef * contribution
-            result.append(value)
-        return result
+        return self._index('cef')
     def cef_t(self, t):
         '''
         计算跨期
         '''
-        cef = 1.0
-        for i in range(1, t+1):
-            cef *= self._get_spaam(i-1, i).cef
-        return cef
+        return self._index_t(t, 'cef')
     # pei
     def pei_t(self, t):
         '''
         pei multi period
         '''
-        pei = 1.0
-        for i in range(1, t+1):
-            pei *= self._get_spaam(i-1, i).pei
-        return pei
+        return self._index_t(t, 'pei')
     def pei(self):
         '''
         pei
         '''
-        result = []
-        for i in range(self._province_count):
-            value = 0.0
-            for t in range(1, self._period_count):
-                if t-1 != 0:
-                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    pei = self.pei_t(t-1)
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rpei()[i] * spaam_t_1_t.pei_ratio()[i]
-                    value += pei * contribution
-                else:
-                    pei = 1.0
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rpei()[i] * spaam_t_1_t.pei_ratio()[i]
-                    value += pei * contribution
-            result.append(value)
-        return result
+        return self._index('pei')
     #est
     def est_t(self, t):
         '''
         计算跨期
         '''
-        est = 1.0
-        for i in range(1, t+1):
-            est *= self._get_spaam(i-1, i).est
-        return est
+        return self._index_t(t, 'est')
     def est(self):
         '''
         est
         '''
-        result = []
-        for i in range(self._province_count):
-            value = 0.0
-            for t in range(1, self._period_count):
-                if t-1 != 0:
-                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    est = self.est_t(t-1)
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rest()[i] * spaam_t_1_t.est_ratio()[i]
-                    value += est * contribution
-                else:
-                    est = 1.0
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rest()[i] * spaam_t_1_t.est_ratio()[i]
-                    value += est * contribution
-            result.append(value)
-        return result
+        return self._index('est')
     # eue
     def eue_t(self, t):
         '''
         计算跨期
         '''
-        eue = 1.0
-        for i in range(1, t+1):
-            eue *= self._get_spaam(i-1, i).eue
-        return eue
+        return self._index_t(t, 'eue')
     def eue(self):
         '''
         eue
         '''
-        result = []
-        for i in range(self._province_count):
-            value = 0.0
-            for t in range(1, self._period_count):
-                if t-1 != 0:
-                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    eue = self.eue_t(t-1)
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.reue()[i] * spaam_t_1_t.eue_ratio()[i]
-                    value += eue * contribution
-                else:
-                    eue = 1.0
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.reue()[i] * spaam_t_1_t.eue_ratio()[i]
-                    value += eue * contribution
-            result.append(value)
-        return result
+        return self._index('eue')
     # pti
     def pti_t(self, t):
         '''
         计算跨期
         '''
-        pti = 1.0
-        for i in range(1, t+1):
-            pti *= self._get_spaam(i-1, i).pti
-        return pti
+        return self._index_t(t, 'pti')
     def pti(self):
         '''
         pti
         '''
-        result = []
-        for i in range(self._province_count):
-            value = 0.0
-            for t in range(1, self._period_count):
-                if t-1 != 0:
-                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    pti = self.pti_t(t-1)
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rpti()[i] * spaam_t_1_t.pti_ratio()[i]
-                    value += pti * contribution
-                else:
-                    pti = 1.0
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rpti()[i] * spaam_t_1_t.pti_ratio()[i]
-                    value += pti * contribution
-            result.append(value)
-        return result
+        return self._index('pti')
     # yoe
     def yoe_t(self, t):
         '''
         计算跨期
         '''
-        yoe = 1.0
-        for i in range(1, t+1):
-            yoe *= self._get_spaam(i-1, i).yoe
-        return yoe
+        return self._index_t(t, 'yoe')
     def yoe(self):
         '''
         yoe
         '''
-        result = []
-        for i in range(self._province_count):
-            value = 0.0
-            for t in range(1, self._period_count):
-                if t-1 != 0:
-                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    yoe = self.yoe_t(t-1)
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.ryoe()[i] * spaam_t_1_t.yoe_ratio()[i]
-                    value += yoe * contribution
-                else:
-                    yoe = 1.0
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.ryoe()[i] * spaam_t_1_t.yoe_ratio()[i]
-                    value += yoe * contribution
-            result.append(value)
-        return result
+        return self._index('yoe')
     # yct
-    def yct_t(self,t):
+    def yct_t(self, t):
         '''
         计算跨期
         '''
-        yct = 1.0
-        for i in range(1, t+1):
-            yct *= self._get_spaam(i-1, i).yct
-        return yct
+        return self._index_t(t, 'yct')
     def yct(self):
         '''
         yct
         '''
-        result = []
-        for i in range(self._province_count):
-            value = 0.0
-            for t in range(1, self._period_count):
-                if t-1 != 0:
-                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    yct = self.yct_t(t-1)
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.ryct()[i] * spaam_t_1_t.yct_ratio()[i]
-                    value += yct * contribution
-                else:
-                    yct = 1.0
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.ryct()[i] * spaam_t_1_t.yct_ratio()[i]
-                    value += yct * contribution
-            result.append(value)
-        return result
+        return self._index('yct')
     #rts
     def rts_t(self, t):
         '''
         计算跨期
         '''
-        rts = 1.0
-        for i in range(1, t+1):
-            rts *= self._get_spaam(i-1, i).rts
-        return rts
+        return self._index_t(t, 'rts')
     def rts(self):
         '''
         rts
         '''
-        result = []
-        for i in range(self._province_count):
-            value = 0.0
-            for t in range(1, self._period_count):
-                if t-1 != 0:
-                    #spaam_0_t_1 = self._get_spaam(0, t - 1)
-                    rts = self.rts_t(t-1)
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rrts()[i] * spaam_t_1_t.rts_ratio()[i]
-                    value += rts * contribution
-                else:
-                    rts = 1.0
-                    spaam_t_1_t = self._get_spaam(t-1, t)
-                    contribution = spaam_t_1_t.rrts()[i] * spaam_t_1_t.rts_ratio()[i]
-                    value += rts * contribution
-            result.append(value)
-        return result
+        return self._index('rts')
     def indexes(self, t):
         '''
         返回系数

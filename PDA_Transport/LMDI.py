@@ -103,6 +103,9 @@ class Lmdi(object):
                 self._dmus_t1[i].co2[-2] = magic_number* self._t1_cef[i, self.energy_count-2]
     @property
     def name(self):
+        '''
+        the name of this lmdi, such as 206-2007, 2007-2008
+        '''
         return self._name
     @property
     def co2_sum_t(self):
@@ -131,6 +134,9 @@ class Lmdi(object):
         return self._province_count
     @property
     def province_names(self):
+        '''
+        the list of province names
+        '''
         return self._province_names
     @property
     def ll(self):
@@ -176,6 +182,15 @@ class Lmdi(object):
     def eta_global_t1(self):
         return self._eta_global_t1
 
+    def _decomposition_index(self, func):
+        '''
+        the template function of this
+        '''
+        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
+            result = 0.0
+            for j in range(self.energy_count):
+                result += func(t_t1[0], t_t1[1], j, idx)
+            yield result
     # calculate the Index
     # cef
     def _cef(self, dmu_t, dmu_t1, j, i):
@@ -193,11 +208,7 @@ class Lmdi(object):
         '''
         cef factor for every dmu
         '''
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            result = 0.0
-            for j in range(self.energy_count):
-                result += self._cef(t_t1[0], t_t1[1], j, idx)
-            yield result
+        return self._decomposition_index(self._cef)
 
     # emx
     def _emx(self, dmu_t, dmu_t1, j, i):
@@ -232,11 +243,7 @@ class Lmdi(object):
         '''
         emx factor for every dmu
         '''
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            result = 0.0
-            for j in range(self.energy_count):
-                result += self._emx(t_t1[0], t_t1[1], j, idx)
-            yield result
+        return self._decomposition_index(self._emx)
     #pei
     def _pei(self, dmu_t, dmu_t1, j, i):
         '''
@@ -265,11 +272,7 @@ class Lmdi(object):
         '''
         pei factor each dmu
         '''
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            result = 0.0
-            for j in range(self.energy_count):
-                result += self._pei(t_t1[0], t_t1[1], j, idx)
-            yield result
+        return self._decomposition_index(self._pei)
     #est
     def _est(self, dmu_t, dmu_t1, j, i):
         '''
@@ -299,11 +302,7 @@ class Lmdi(object):
         '''
         est for each dmu
         '''
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            result = 0.0
-            for j in range(self.energy_count):
-                result += self._est(t_t1[0], t_t1[1], j, idx)
-            yield result
+        return self._decomposition_index(self._est)
     #eue
     def _eue(self, dmu_t, dmu_t1, j, i):
         '''
@@ -333,11 +332,7 @@ class Lmdi(object):
         '''
         eue factor for each dmu
         '''
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            result = 0.0
-            for j in range(self.energy_count):
-                result += self._eue(t_t1[0], t_t1[1], j, idx)
-            yield result
+        return self._decomposition_index(self._eue)
     # pti
     def _pti(self, dmu_t, dmu_t1, j, i):
         if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
@@ -358,11 +353,7 @@ class Lmdi(object):
         '''
         pti factor for each dmu
         '''
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            result = 0.0
-            for j in range(self.energy_count):
-                result += self._pti(t_t1[0], t_t1[1], j, idx)
-            yield result
+        return self._decomposition_index(self._pti)
     # yoe
     def _yoe(self, dmu_t, dmu_t1, j, i):
         '''
@@ -392,11 +383,7 @@ class Lmdi(object):
         '''
         yoe factor for each dmu
         '''
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            result = 0.0
-            for j in range(self._energy_count):
-                result += self._yoe(t_t1[0], t_t1[1], j, idx)
-            yield result
+        return self._decomposition_index(self._yoe)
     # yct 
     def _yct(self, dmu_t, dmu_t1, j, i):
         '''
@@ -425,12 +412,7 @@ class Lmdi(object):
         '''
         yct factor for each dmu
         '''
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            result = 0.0
-            for j in range(self.energy_count):
-                result += self._yct(t_t1[0], t_t1[1], j, idx)
-            yield result
-    
+        return self._decomposition_index(self._yct)
     def _rts(self, dmu_t, dmu_t1, j, i):
         '''
         calc the rts Index
@@ -458,11 +440,7 @@ class Lmdi(object):
         '''
         rts factor for each dmu
         '''
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            result = 0.0
-            for j in range(self.energy_count):
-                result += self._rts(t_t1[0], t_t1[1], j, idx)
-            yield result
+        return self._decomposition_index(self._rts)
     def index(self):
         '''
         the index list
@@ -485,190 +463,3 @@ class Lmdi(object):
         ci_t = self.co2_sum_t / self.pro_sum_t
         ci_t1 = self.co2_sum_t1 / self.pro_sum_t1
         return ci_t1 / ci_t
-   ### index by seperate province
-    def ci_province(self):
-        '''
-        C_{i}^{T+1} / C_{i}^{T} by province
-        '''
-        result = []
-        for dmu_t, dmu_t1 in zip(self._dmus_t, self._dmus_t1):
-            ci_t = dmu_t.co2.total / dmu_t.pro.production
-            ci_t1 = dmu_t1.co2.total / dmu_t1.pro.production
-            result.append(ci_t1 / ci_t)
-        return result
-    def _l_i_j(self, idx, j):
-        '''
-        计算单个省份的L函数值
-        L(C_{ij}^{T}/C_{i}^{T}, C_{ij}^{T+1}/C_{i}^{T+1})
-        '''
-        dmu_t = self._dmus_t[idx]
-        dmu_t1 = self._dmus_t1[idx]
-        if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
-            return Lmdi.l_function(dmu_t.co2[j] / dmu_t.co2.total,
-                                   dmu_t1.co2[j] / dmu_t1.co2.total)
-        else:
-            return 0.0
-    def _ll_i(self, idx):
-        if not self._w_cache.has_key(idx):
-            result = 0.0
-            for j in range(self.energy_count):
-                result += self._l_i_j(idx, j)
-            self._w_cache[idx] = result
-        return self._w_cache[idx]
-    # cef by province
-    def _cef_province(self, dmut, dmu_t1, idx, j):
-        number1 = self._t1_cef[idx, j]
-        number2 = self._t_cef[idx, j]
-        if number1 == number2:
-            return 0.0
-        else:
-            numberator1 = log(number1 / number2)
-            numberator2 = self._l_i_j(idx, j)
-            return numberator1 * numberator2 / self._ll_i(idx)
-    def cef_by_province(self):
-        '''
-        cef by province
-        '''
-        result = []
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            value = 0.0
-            for j in range(self.energy_count):
-                value += self._cef_province(t_t1[0], t_t1[1], idx, j)
-            result.append(value)
-        return result
-    # emx by province
-    def _emx_province(self, dmu_t, dmu_t1, idx, j):
-        if dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] != 0.0:
-            number1 = dmu_t1.ene[j] / dmu_t1.ene.total
-            number2 = dmu_t.ene[j] / dmu_t.ene.total
-            numberator1 = log(number1 / number2)
-            numberator2 = self._l_i_j(idx, j)
-            return numberator1 * numberator2 / self._ll_i(idx)
-        elif dmu_t.co2[j] == 0.0 and dmu_t1.co2[j] != 0.0:
-            return dmu_t1.co2[j] / (dmu_t1.co2.total * self._ll_i(idx))
-        elif dmu_t.co2[j] != 0.0 and dmu_t1.co2[j] == 0.0:
-            return -1.0 * dmu_t.co2[j] / (dmu_t.co2.total* self._ll_i(idx))
-        else:
-            return 0.0
-    def emx_by_province(self):
-        '''
-        emx by province
-        '''
-        result = []
-        for idx, t_t1  in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            value = 0.0
-            for j in range(self.energy_count):
-                value += self._emx_province(t_t1[0], t_t1[1], idx, j)
-            result.append(value)
-        return result
-    # pei by province
-    def _pei_province(self, dmu_t, dmu_t1, idx, j):
-        number1 = dmu_t1.energy.total / self.psi_global_t1[idx] / dmu_t1.turn_over.turn_over
-        number2 = dmu_t.energy.total / self.psi_global_t[idx] / dmu_t.turn_over.turn_over
-        numerator1 = log(number1 / number2)
-        numerator2 = self._l_i_j(idx, j)
-        return numerator1 * numerator2 / self._ll_i(idx)
-    def pei_by_province(self):
-        '''
-        pei by province
-        '''
-        result = []
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            value = 0.0
-            for j in range(self.energy_count):
-                value += self._pei_province(t_t1[0], t_t1[1], idx, j)
-            result.append(value)
-        return result
-    # est by province
-    def _est_province(self, dmu_t, dmu_t1, idx, j):
-        number1 = self.psi_global_t1[idx] / self.psi_t1_t1[idx]
-        number2 = self.psi_global_t[idx] / self.psi_t_t[idx]
-        numerator1 = log(number1 / number2)
-        numerator2 = self._l_i_j(idx, j)
-        return numerator1 * numerator2 / self._ll_i(idx)
-    def est_by_province(self):
-        '''
-        est by province
-        '''
-        result = []
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            value = 0.0
-            for j in range(self.energy_count):
-                value += self._est_province(t_t1[0], t_t1[1], idx, j)
-            result.append(value)
-        return result
-    # eue by province
-    def _eue_province(self, dmu_t, dmu_t1, idx, j):
-        number1 = self.psi_t1_t1[idx]
-        number2 = self.psi_t_t[idx]
-        numerator1 = log(number1 / number2)
-        numerator2 = self._l_i_j(idx, j)
-        return numerator1 * numerator2 / self._ll_i(idx)
-    def eue_by_province(self):
-        '''
-        eue by province
-        '''
-        result = []
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            value = 0.0
-            for j in range(self.energy_count):
-                value += self._eue_province(t_t1[0], t_t1[1], idx, j)
-            result.append(value)
-        return result
-    #pti by province
-    def _pti_province(self, dmu_t, dmu_t1, idx, j):
-        number1 = dmu_t1.turn_over.turn_over / (dmu_t1.production.production /
-                                                self.eta_global_t1[idx])
-        number2 = dmu_t.turn_over.turn_over / (dmu_t.production.production /
-                                               self.eta_global_t[idx])
-        numerator1 = log(number1 / number2)
-        numerator2 = self._l_i_j(idx, j)
-        return numerator1 * numerator2 / self._ll_i(idx)
-    def pti_privince(self):
-        '''
-        pti by province
-        '''
-        result = []
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            value = 0.0
-            for j in range(self.energy_count):
-                value += self._pti_province(t_t1[0], t_t1[1], idx, j)
-            result.append(value)
-        return result
-    def _yoe_province(self, dmu_t, dmu_t1, idx, j):
-        number1 = 1.0 / self.eta_t1_t1[idx]
-        number2 = 1.0 / self.eta_t_t[idx]
-        numerator1 = log(number1 / number2)
-        numerator2 = self._l_i_j(idx, j)
-        return numerator1 * numerator2 / self._ll_i(idx)
-    def yoe_province(self):
-        '''
-        yoe by province
-        '''
-        result = []
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            value = 0.0
-            for j in range(self.energy_count):
-                value += self._yoe_province(t_t1[0], t_t1[1], idx, j)
-            result.append(value)
-        return result
-    def _yct_province(self, dmu_t, dmu_t1, idx, j):
-        number1 = self.eta_t1_t1[idx] / self.eta_global_t1[idx]
-        number2 = self.eta_t_t[idx] / self.eta_global_t[idx]
-        numerator1 = log(number1 / number2)
-        numerator2 = self._l_i_j(idx, j)
-        return numerator1 * numerator2 / self._ll_i(idx)
-    def yct_province(self):
-        '''
-        yct by province
-        '''
-        '''
-        yoe by province
-        '''
-        result = []
-        for idx, t_t1 in enumerate(zip(self._dmus_t, self._dmus_t1)):
-            value = 0.0
-            for j in range(self.energy_count):
-                value += self._yct_province(t_t1[0], t_t1[1], idx, j)
-            result.append(value)
-        return result

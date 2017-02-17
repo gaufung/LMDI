@@ -1,15 +1,19 @@
 # -*- coding:utf8 -*-
+'''
+the configuration of this project
+'''
 from __future__ import unicode_literals
-import sys, os
+import sys
+import os
 import numpy as np
 import xlrd
-pwd = sys.path[0]    # 获取当前执行脚本的位置
-os.path.abspath(os.path.join(pwd, os.pardir,'Data'))
+_PWD = sys.path[0]    # 获取当前执行脚本的位置
+os.path.abspath(os.path.join(_PWD, os.pardir, 'Data'))
 
 # data file path
-XLSX_PATH = os.path.abspath(os.path.join(pwd, os.pardir,
+XLSX_PATH = os.path.abspath(os.path.join(_PWD, os.pardir,
                                          'Data', 'transport.xlsx'))
-CO2_FILE_PATH = os.path.abspath(os.path.join(pwd, os.pardir,
+CO2_FILE_PATH = os.path.abspath(os.path.join(_PWD, os.pardir,
                                              'Data', 'co2_coefficient.xls'))
 # sheet1 and sheet2 column
 # sheet1 is turnover
@@ -25,7 +29,7 @@ COL_2012 = 7
 COL_2013 = 8
 COL_2014 = 9
 
-#SHEET 
+#SHEET
 TURNOVER_SHEET = 0
 PRODUCTION_SHEET = 1
 
@@ -33,7 +37,7 @@ PRODUCTION_SHEET = 1
 TRUNOVER_PRO_ROW_START = 1
 TURNOVER_PRO_ROW_END = 30
 
-# sheet 3 and sheet11 
+# sheet 3 and sheet11
 # each year's energy and co2
 SHEET_2006 = 2
 SHEET_2007 = 3
@@ -129,34 +133,34 @@ for k, v in ENERGY_TYPE_INDEX.iteritems():
     CEF[v] = CO2_COEFFICIENT[k] / STATND_COAL_COEFFICIENT[k]
 
 
-_row_start = 1
-_row_end = 30
-_total_province = 30
+_ROW_START = 1
+_ROW_END = 30
+_TOTAL_PROVINCE = 30
 def _read_sheet(sheet):
     data = []
-    for row in range(_row_start, _row_end+1):
-        values = map(float, sheet.row_values(row)[1:3])
+    for row_idx in range(_ROW_START, _ROW_END+1):
+        values = map(float, sheet.row_values(row_idx)[1:3])
         value1 = values[0] / STATND_COAL_COEFFICIENT[u'热力']
         value2 = values[1] / STATND_COAL_COEFFICIENT[u'电力']
         data.append([value1, value2])
     return np.array(data)
-_cef_other = []
-for i in range(_total_province):
+_CEF_OTHER = []
+for i in range(_TOTAL_PROVINCE):
     row = []
     for j in range(11):
         row.append(CEF[j])
-    _cef_other.append(row)
-_cef = np.array(_cef_other)
+    _CEF_OTHER.append(row)
+_CEF = np.array(_CEF_OTHER)
 
-_workbook = xlrd.open_workbook(CO2_FILE_PATH)
+_WORKBOOK = xlrd.open_workbook(CO2_FILE_PATH)
 CEF_DIC = {}
-CEF_DIC['2006'] = np.hstack((_cef, _read_sheet(_workbook.sheets()[0])))
-CEF_DIC['2007'] = np.hstack((_cef, _read_sheet(_workbook.sheets()[1])))
-CEF_DIC['2008'] = np.hstack((_cef, _read_sheet(_workbook.sheets()[2])))
-CEF_DIC['2009'] = np.hstack((_cef, _read_sheet(_workbook.sheets()[3])))
-CEF_DIC['2010'] = np.hstack((_cef, _read_sheet(_workbook.sheets()[4])))
-CEF_DIC['2011'] = np.hstack((_cef, _read_sheet(_workbook.sheets()[5])))
-CEF_DIC['2012'] = np.hstack((_cef, _read_sheet(_workbook.sheets()[6])))
-CEF_DIC['2013'] = np.hstack((_cef, _read_sheet(_workbook.sheets()[7])))
-CEF_DIC['2014'] = np.hstack((_cef, _read_sheet(_workbook.sheets()[8])))
+CEF_DIC['2006'] = np.hstack((_CEF, _read_sheet(_WORKBOOK.sheets()[0])))
+CEF_DIC['2007'] = np.hstack((_CEF, _read_sheet(_WORKBOOK.sheets()[1])))
+CEF_DIC['2008'] = np.hstack((_CEF, _read_sheet(_WORKBOOK.sheets()[2])))
+CEF_DIC['2009'] = np.hstack((_CEF, _read_sheet(_WORKBOOK.sheets()[3])))
+CEF_DIC['2010'] = np.hstack((_CEF, _read_sheet(_WORKBOOK.sheets()[4])))
+CEF_DIC['2011'] = np.hstack((_CEF, _read_sheet(_WORKBOOK.sheets()[5])))
+CEF_DIC['2012'] = np.hstack((_CEF, _read_sheet(_WORKBOOK.sheets()[6])))
+CEF_DIC['2013'] = np.hstack((_CEF, _read_sheet(_WORKBOOK.sheets()[7])))
+CEF_DIC['2014'] = np.hstack((_CEF, _read_sheet(_WORKBOOK.sheets()[8])))
 

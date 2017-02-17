@@ -8,7 +8,7 @@ from PDA_Transport.config import DMUS_2010_DATA, DMUS_2011_DATA, DMUS_2012_DATA,
 from PDA_Transport.Data_Read import read_dmus
 from PDA_Transport.LMDI import Lmdi
 class Test_Lmdi(unittest.TestCase):
-    '''
+    
     def test_index(self):
         dmus_2006 = read_dmus(DMUS_2006_DATA)
         dmus_2007 = read_dmus(DMUS_2007_DATA)
@@ -22,7 +22,7 @@ class Test_Lmdi(unittest.TestCase):
         global_dmus = [dmus_2006, dmus_2007, dmus_2008, dmus_2009, dmus_2010,
                        dmus_2011, dmus_2012, dmus_2013, dmus_2014]
         lmdi = Lmdi.build(dmus_2006, dmus_2007, '2006-2007', global_dmus)
-        ci_except= reduce(operator.mul, lmdi.index())
+        ci_except = reduce(operator.mul, lmdi.index())
         ci_calc = lmdi.ci()
         self.assertAlmostEqual(ci_calc, ci_except)
     '''
@@ -72,6 +72,7 @@ class Test_Lmdi(unittest.TestCase):
               * lmdi_2011[index] * lmdi_2012[index] * lmdi_2013[index] * lmdi_2014[index]
         index = 8
         print 'rts', lmdi_2007[index] * lmdi_2008[index] * lmdi_2009[index] * lmdi_2010[index] \
-              * lmdi_2011[index] * lmdi_2012[index] * lmdi_2013[index] * lmdi_2014[index] 
+              * lmdi_2011[index] * lmdi_2012[index] * lmdi_2013[index] * lmdi_2014[index]
+      '''
 if __name__ == '__main__':
     unittest.main()
