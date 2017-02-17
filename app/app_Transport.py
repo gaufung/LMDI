@@ -112,514 +112,111 @@ class AppLmdi(object):
         write multi lmdi
         '''
         workbook = Workbook(encoding='utf8')
-        self._write_lmid_cef(workbook.add_sheet('cef'))
-        self._write_lmid_emx(workbook.add_sheet('emx'))
-        self._write_lmid_pei(workbook.add_sheet('pei'))
-        self._write_lmid_est(workbook.add_sheet('est'))
-        self._write_lmid_eue(workbook.add_sheet('eue'))
-        self._write_lmid_pti(workbook.add_sheet('pti'))
-        self._write_lmid_yoe(workbook.add_sheet('yoe'))
-        self._write_lmid_yct(workbook.add_sheet('yct'))
-        self._write_lmid_rts(workbook.add_sheet('rts'))
+        self._write_lmdi_index(workbook, 'cef', 'emx', 'pei', 'est',
+                               'eue', 'pti', 'yoe', 'yct', 'rts')
         workbook.save(save_file_name)
-    def _write_lmid_cef(self, sheet):
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007']+list(self.lmdi_2006_2007.cef()))
-        self._write_column(sheet, 2, ['2008']+list(self.lmdi_2007_2008.cef()))
-        self._write_column(sheet, 3, ['2009']+list(self.lmdi_2008_2009.cef()))
-        self._write_column(sheet, 4, ['2010']+list(self.lmdi_2009_2010.cef()))
-        self._write_column(sheet, 5, ['2011']+list(self.lmdi_2010_2011.cef()))
-        self._write_column(sheet, 6, ['2012']+list(self.lmdi_2011_2012.cef()))
-        self._write_column(sheet, 7, ['2013']+list(self.lmdi_2012_2013.cef()))
-        self._write_column(sheet, 8, ['2014']+list(self.lmdi_2013_2014.cef()))
-    def _write_lmid_emx(self, sheet):
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007']+list(self.lmdi_2006_2007.emx()))
-        self._write_column(sheet, 2, ['2008']+list(self.lmdi_2007_2008.emx()))
-        self._write_column(sheet, 3, ['2009']+list(self.lmdi_2008_2009.emx()))
-        self._write_column(sheet, 4, ['2010']+list(self.lmdi_2009_2010.emx()))
-        self._write_column(sheet, 5, ['2011']+list(self.lmdi_2010_2011.emx()))
-        self._write_column(sheet, 6, ['2012']+list(self.lmdi_2011_2012.emx()))
-        self._write_column(sheet, 7, ['2013']+list(self.lmdi_2012_2013.emx()))
-        self._write_column(sheet, 8, ['2014']+list(self.lmdi_2013_2014.emx()))
-    def _write_lmid_pei(self, sheet):
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007']+list(self.lmdi_2006_2007.pei()))
-        self._write_column(sheet, 2, ['2008']+list(self.lmdi_2007_2008.pei()))
-        self._write_column(sheet, 3, ['2009']+list(self.lmdi_2008_2009.pei()))
-        self._write_column(sheet, 4, ['2010']+list(self.lmdi_2009_2010.pei()))
-        self._write_column(sheet, 5, ['2011']+list(self.lmdi_2010_2011.pei()))
-        self._write_column(sheet, 6, ['2012']+list(self.lmdi_2011_2012.pei()))
-        self._write_column(sheet, 7, ['2013']+list(self.lmdi_2012_2013.pei()))
-        self._write_column(sheet, 8, ['2014']+list(self.lmdi_2013_2014.pei()))
-    def _write_lmid_est(self, sheet):
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007']+list(self.lmdi_2006_2007.est()))
-        self._write_column(sheet, 2, ['2008']+list(self.lmdi_2007_2008.est()))
-        self._write_column(sheet, 3, ['2009']+list(self.lmdi_2008_2009.est()))
-        self._write_column(sheet, 4, ['2010']+list(self.lmdi_2009_2010.est()))
-        self._write_column(sheet, 5, ['2011']+list(self.lmdi_2010_2011.est()))
-        self._write_column(sheet, 6, ['2012']+list(self.lmdi_2011_2012.est()))
-        self._write_column(sheet, 7, ['2013']+list(self.lmdi_2012_2013.est()))
-        self._write_column(sheet, 8, ['2014']+list(self.lmdi_2013_2014.est()))
-    def _write_lmid_pti(self, sheet):
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007']+list(self.lmdi_2006_2007.pti()))
-        self._write_column(sheet, 2, ['2008']+list(self.lmdi_2007_2008.pti()))
-        self._write_column(sheet, 3, ['2009']+list(self.lmdi_2008_2009.pti()))
-        self._write_column(sheet, 4, ['2010']+list(self.lmdi_2009_2010.pti()))
-        self._write_column(sheet, 5, ['2011']+list(self.lmdi_2010_2011.pti()))
-        self._write_column(sheet, 6, ['2012']+list(self.lmdi_2011_2012.pti()))
-        self._write_column(sheet, 7, ['2013']+list(self.lmdi_2012_2013.pti()))
-        self._write_column(sheet, 8, ['2014']+list(self.lmdi_2013_2014.pti()))
-    def _write_lmid_eue(self, sheet):
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007']+list(self.lmdi_2006_2007.eue()))
-        self._write_column(sheet, 2, ['2008']+list(self.lmdi_2007_2008.eue()))
-        self._write_column(sheet, 3, ['2009']+list(self.lmdi_2008_2009.eue()))
-        self._write_column(sheet, 4, ['2010']+list(self.lmdi_2009_2010.eue()))
-        self._write_column(sheet, 5, ['2011']+list(self.lmdi_2010_2011.eue()))
-        self._write_column(sheet, 6, ['2012']+list(self.lmdi_2011_2012.eue()))
-        self._write_column(sheet, 7, ['2013']+list(self.lmdi_2012_2013.eue()))
-        self._write_column(sheet, 8, ['2014']+list(self.lmdi_2013_2014.eue()))
-    def _write_lmid_rts(self, sheet):
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007']+list(self.lmdi_2006_2007.rts()))
-        self._write_column(sheet, 2, ['2008']+list(self.lmdi_2007_2008.rts()))
-        self._write_column(sheet, 3, ['2009']+list(self.lmdi_2008_2009.rts()))
-        self._write_column(sheet, 4, ['2010']+list(self.lmdi_2009_2010.rts()))
-        self._write_column(sheet, 5, ['2011']+list(self.lmdi_2010_2011.rts()))
-        self._write_column(sheet, 6, ['2012']+list(self.lmdi_2011_2012.rts()))
-        self._write_column(sheet, 7, ['2013']+list(self.lmdi_2012_2013.rts()))
-        self._write_column(sheet, 8, ['2014']+list(self.lmdi_2013_2014.rts()))
-    def _write_lmid_yoe(self, sheet):
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007']+list(self.lmdi_2006_2007.yoe()))
-        self._write_column(sheet, 2, ['2008']+list(self.lmdi_2007_2008.yoe()))
-        self._write_column(sheet, 3, ['2009']+list(self.lmdi_2008_2009.yoe()))
-        self._write_column(sheet, 4, ['2010']+list(self.lmdi_2009_2010.yoe()))
-        self._write_column(sheet, 5, ['2011']+list(self.lmdi_2010_2011.yoe()))
-        self._write_column(sheet, 6, ['2012']+list(self.lmdi_2011_2012.yoe()))
-        self._write_column(sheet, 7, ['2013']+list(self.lmdi_2012_2013.yoe()))
-        self._write_column(sheet, 8, ['2014']+list(self.lmdi_2013_2014.yoe()))
-    def _write_lmid_yct(self, sheet):
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007']+list(self.lmdi_2006_2007.yct()))
-        self._write_column(sheet, 2, ['2008']+list(self.lmdi_2007_2008.yct()))
-        self._write_column(sheet, 3, ['2009']+list(self.lmdi_2008_2009.yct()))
-        self._write_column(sheet, 4, ['2010']+list(self.lmdi_2009_2010.yct()))
-        self._write_column(sheet, 5, ['2011']+list(self.lmdi_2010_2011.yct()))
-        self._write_column(sheet, 6, ['2012']+list(self.lmdi_2011_2012.yct()))
-        self._write_column(sheet, 7, ['2013']+list(self.lmdi_2012_2013.yct()))
-        self._write_column(sheet, 8, ['2014']+list(self.lmdi_2013_2014.yct()))
-    
-    def write_single_attribution(self, save_file_name):
+    def _write_lmdi_index(self, workbook, *indexes):
+        for index in indexes:
+            sheet = workbook.add_sheet(index)
+            self._write_column(sheet, 0, ['Province']+self.province_names)
+            self._write_column(sheet, 1, ['2007']+list(getattr(self.lmdi_2006_2007, index)()))
+            self._write_column(sheet, 2, ['2008']+list(getattr(self.lmdi_2007_2008, index)()))
+            self._write_column(sheet, 3, ['2009']+list(getattr(self.lmdi_2008_2009, index)()))
+            self._write_column(sheet, 4, ['2010']+list(getattr(self.lmdi_2009_2010, index)()))
+            self._write_column(sheet, 5, ['2011']+list(getattr(self.lmdi_2010_2011, index)()))
+            self._write_column(sheet, 6, ['2012']+list(getattr(self.lmdi_2011_2012, index)()))
+            self._write_column(sheet, 7, ['2013']+list(getattr(self.lmdi_2012_2013, index)()))
+            self._write_column(sheet, 8, ['2014']+list(getattr(self.lmdi_2013_2014, index)()))
+    def write_linear_program(self, save_file_name):
+        '''
+        write linear programming result
+        '''
         workbook = Workbook(encoding='utf8')
-        self._write_single_cef(workbook.add_sheet('cef'))
-        self._write_single_emx(workbook.add_sheet('emx'))
-        self._write_single_pei(workbook.add_sheet('pei'))
-        self._write_single_est(workbook.add_sheet('est'))
-        self._write_single_eue(workbook.add_sheet('eue'))
-        self._write_single_pti(workbook.add_sheet('pti'))
-        self._write_single_yoe(workbook.add_sheet('yoe'))
-        self._write_single_yct(workbook.add_sheet('yct'))
-        self._write_single_rts(workbook.add_sheet('rts'))
+        self._write_lmdi(workbook, self.lmdi_2006_2007)
+        self._write_lmdi(workbook, self.lmdi_2007_2008)
+        self._write_lmdi(workbook, self.lmdi_2008_2009)
+        self._write_lmdi(workbook, self.lmdi_2009_2010)
+        self._write_lmdi(workbook, self.lmdi_2010_2011)
+        self._write_lmdi(workbook, self.lmdi_2011_2012)
+        self._write_lmdi(workbook, self.lmdi_2012_2013)
+        self._write_lmdi(workbook, self.lmdi_2013_2014)
         workbook.save(save_file_name)
-    def _write_single_cef(self, sheet):
+    def _write_lmdi(self, workbook, lmdi):
+        sheet = workbook.add_sheet(lmdi.name)
+        self._write_column(sheet, 0, ['省份']+self.province_names)
+        self._write_column(sheet, 1, ['psi_t_t']+lmdi.psi_t_t)
+        self._write_column(sheet, 2, ['psi_t1_t1']+lmdi.psi_t1_t1)
+        self._write_column(sheet, 3, ['psi_global_t']+lmdi.psi_global_t)
+        self._write_column(sheet, 4, ['psi_global_t1']+ lmdi.psi_global_t1)
+        self._write_column(sheet, 5, ['eta_t_t']+lmdi.eta_t_t)
+        self._write_column(sheet, 6, ['eta_t1_t1']+lmdi.eta_t1_t1)
+        self._write_column(sheet, 7, ['eta_global_t']+lmdi.eta_global_t)
+        self._write_column(sheet, 8, ['eta_global_t1']+ lmdi.eta_global_t1)
+    def write_single_attribution(self, save_file_name):
         '''
-        write single cef
+        single attribution
         '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item * 100 for item
-                                                 in self.spaam_2006_2007.cef_attributions])
-        self._write_column(sheet, 2, ['2008'] + [item * 100 for item
-                                                 in self.spaam_2007_2008.cef_attributions])
-        self._write_column(sheet, 3, ['2009'] + [item * 100 for item
-                                                 in self.spaam_2008_2009.cef_attributions])
-        self._write_column(sheet, 4, ['2010'] + [item * 100 for item
-                                                 in self.spaam_2009_2010.cef_attributions])
-        self._write_column(sheet, 5, ['2011'] + [item * 100 for item
-                                                 in self.spaam_2010_2011.cef_attributions])
-        self._write_column(sheet, 6, ['2012'] + [item * 100 for item
-                                                 in self.spaam_2011_2012.cef_attributions])
-        self._write_column(sheet, 7, ['2013'] + [item * 100 for item
-                                                 in self.spaam_2012_2013.cef_attributions])
-        self._write_column(sheet, 8, ['2014'] + [item * 100 for item
-                                                 in self.spaam_2013_2014.cef_attributions])
-    def _write_single_emx(self, sheet):
-        '''
-        write single emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item * 100 for item
-                                                 in self.spaam_2006_2007.emx_attributions])
-        self._write_column(sheet, 2, ['2008'] + [item * 100 for item
-                                                 in self.spaam_2007_2008.emx_attributions])
-        self._write_column(sheet, 3, ['2009'] + [item * 100 for item
-                                                 in self.spaam_2008_2009.emx_attributions])
-        self._write_column(sheet, 4, ['2010'] + [item * 100 for item
-                                                 in self.spaam_2009_2010.emx_attributions])
-        self._write_column(sheet, 5, ['2011'] + [item * 100 for item
-                                                 in self.spaam_2010_2011.emx_attributions])
-        self._write_column(sheet, 6, ['2012'] + [item * 100 for item
-                                                 in self.spaam_2011_2012.emx_attributions])
-        self._write_column(sheet, 7, ['2013'] + [item * 100 for item
-                                                 in self.spaam_2012_2013.emx_attributions])
-        self._write_column(sheet, 8, ['2014'] + [item * 100 for item
-                                                 in self.spaam_2013_2014.emx_attributions])
-    def _write_single_pei(self, sheet):
-        '''
-        write single emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item * 100 for item
-                                                 in self.spaam_2006_2007.pei_attributions])
-        self._write_column(sheet, 2, ['2008'] + [item * 100 for item
-                                                 in self.spaam_2007_2008.pei_attributions])
-        self._write_column(sheet, 3, ['2009'] + [item * 100 for item
-                                                 in self.spaam_2008_2009.pei_attributions])
-        self._write_column(sheet, 4, ['2010'] + [item * 100 for item
-                                                 in self.spaam_2009_2010.pei_attributions])
-        self._write_column(sheet, 5, ['2011'] + [item * 100 for item
-                                                 in self.spaam_2010_2011.pei_attributions])
-        self._write_column(sheet, 6, ['2012'] + [item * 100 for item
-                                                 in self.spaam_2011_2012.pei_attributions])
-        self._write_column(sheet, 7, ['2013'] + [item * 100 for item
-                                                 in self.spaam_2012_2013.pei_attributions])
-        self._write_column(sheet, 8, ['2014'] + [item * 100 for item
-                                                 in self.spaam_2013_2014.pei_attributions])
-    def _write_single_rts(self, sheet):
-        '''
-        write single emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item * 100 for item
-                                                 in self.spaam_2006_2007.rts_attributions])
-        self._write_column(sheet, 2, ['2008'] + [item * 100 for item
-                                                 in self.spaam_2007_2008.rts_attributions])
-        self._write_column(sheet, 3, ['2009'] + [item * 100 for item
-                                                 in self.spaam_2008_2009.rts_attributions])
-        self._write_column(sheet, 4, ['2010'] + [item * 100 for item
-                                                 in self.spaam_2009_2010.rts_attributions])
-        self._write_column(sheet, 5, ['2011'] + [item * 100 for item
-                                                 in self.spaam_2010_2011.rts_attributions])
-        self._write_column(sheet, 6, ['2012'] + [item * 100 for item
-                                                 in self.spaam_2011_2012.rts_attributions])
-        self._write_column(sheet, 7, ['2013'] + [item * 100 for item
-                                                 in self.spaam_2012_2013.rts_attributions])
-        self._write_column(sheet, 8, ['2014'] + [item * 100 for item
-                                                 in self.spaam_2013_2014.rts_attributions])
-        
-    def _write_single_pti(self, sheet):
-        '''
-        write single emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item * 100 for item
-                                                 in self.spaam_2006_2007.pti_attributions])
-        self._write_column(sheet, 2, ['2008'] + [item * 100 for item
-                                                 in self.spaam_2007_2008.pti_attributions])
-        self._write_column(sheet, 3, ['2009'] + [item * 100 for item
-                                                 in self.spaam_2008_2009.pti_attributions])
-        self._write_column(sheet, 4, ['2010'] + [item * 100 for item
-                                                 in self.spaam_2009_2010.pti_attributions])
-        self._write_column(sheet, 5, ['2011'] + [item * 100 for item
-                                                 in self.spaam_2010_2011.pti_attributions])
-        self._write_column(sheet, 6, ['2012'] + [item * 100 for item
-                                                 in self.spaam_2011_2012.pti_attributions])
-        self._write_column(sheet, 7, ['2013'] + [item * 100 for item
-                                                 in self.spaam_2012_2013.pti_attributions])
-        self._write_column(sheet, 8, ['2014'] + [item * 100 for item
-                                                 in self.spaam_2013_2014.pti_attributions])
-    def _write_single_eue(self, sheet):
-        '''
-        write single emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item * 100 for item
-                                                 in self.spaam_2006_2007.eue_attributions])
-        self._write_column(sheet, 2, ['2008'] + [item * 100 for item
-                                                 in self.spaam_2007_2008.eue_attributions])
-        self._write_column(sheet, 3, ['2009'] + [item * 100 for item
-                                                 in self.spaam_2008_2009.eue_attributions])
-        self._write_column(sheet, 4, ['2010'] + [item * 100 for item
-                                                 in self.spaam_2009_2010.eue_attributions])
-        self._write_column(sheet, 5, ['2011'] + [item * 100 for item
-                                                 in self.spaam_2010_2011.eue_attributions])
-        self._write_column(sheet, 6, ['2012'] + [item * 100 for item
-                                                 in self.spaam_2011_2012.eue_attributions])
-        self._write_column(sheet, 7, ['2013'] + [item * 100 for item
-                                                 in self.spaam_2012_2013.eue_attributions])
-        self._write_column(sheet, 8, ['2014'] + [item * 100 for item
-                                                 in self.spaam_2013_2014.eue_attributions])
-    def _write_single_est(self, sheet):
-        '''
-        write single emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item * 100 for item
-                                                 in self.spaam_2006_2007.est_attributions])
-        self._write_column(sheet, 2, ['2008'] + [item * 100 for item
-                                                 in self.spaam_2007_2008.est_attributions])
-        self._write_column(sheet, 3, ['2009'] + [item * 100 for item
-                                                 in self.spaam_2008_2009.est_attributions])
-        self._write_column(sheet, 4, ['2010'] + [item * 100 for item
-                                                 in self.spaam_2009_2010.est_attributions])
-        self._write_column(sheet, 5, ['2011'] + [item * 100 for item
-                                                 in self.spaam_2010_2011.est_attributions])
-        self._write_column(sheet, 6, ['2012'] + [item * 100 for item
-                                                 in self.spaam_2011_2012.est_attributions])
-        self._write_column(sheet, 7, ['2013'] + [item * 100 for item
-                                                 in self.spaam_2012_2013.est_attributions])
-        self._write_column(sheet, 8, ['2014'] + [item * 100 for item
-                                                 in self.spaam_2013_2014.est_attributions])
-    def _write_single_yoe(self, sheet):
-        '''
-        write single emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item * 100 for item
-                                                 in self.spaam_2006_2007.yoe_attributions])
-        self._write_column(sheet, 2, ['2008'] + [item * 100 for item
-                                                 in self.spaam_2007_2008.yoe_attributions])
-        self._write_column(sheet, 3, ['2009'] + [item * 100 for item
-                                                 in self.spaam_2008_2009.yoe_attributions])
-        self._write_column(sheet, 4, ['2010'] + [item * 100 for item
-                                                 in self.spaam_2009_2010.yoe_attributions])
-        self._write_column(sheet, 5, ['2011'] + [item * 100 for item
-                                                 in self.spaam_2010_2011.yoe_attributions])
-        self._write_column(sheet, 6, ['2012'] + [item * 100 for item
-                                                 in self.spaam_2011_2012.yoe_attributions])
-        self._write_column(sheet, 7, ['2013'] + [item * 100 for item
-                                                 in self.spaam_2012_2013.yoe_attributions])
-        self._write_column(sheet, 8, ['2014'] + [item * 100 for item
-                                                 in self.spaam_2013_2014.yoe_attributions])
-    def _write_single_yct(self, sheet):
-        '''
-        write single emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item * 100 for item
-                                                 in self.spaam_2006_2007.yct_attributions])
-        self._write_column(sheet, 2, ['2008'] + [item * 100 for item
-                                                 in self.spaam_2007_2008.yct_attributions])
-        self._write_column(sheet, 3, ['2009'] + [item * 100 for item
-                                                 in self.spaam_2008_2009.yct_attributions])
-        self._write_column(sheet, 4, ['2010'] + [item * 100 for item
-                                                 in self.spaam_2009_2010.yct_attributions])
-        self._write_column(sheet, 5, ['2011'] + [item * 100 for item
-                                                 in self.spaam_2010_2011.yct_attributions])
-        self._write_column(sheet, 6, ['2012'] + [item * 100 for item
-                                                 in self.spaam_2011_2012.yct_attributions])
-        self._write_column(sheet, 7, ['2013'] + [item * 100 for item
-                                                 in self.spaam_2012_2013.yct_attributions])
-        self._write_column(sheet, 8, ['2014'] + [item * 100 for item
-                                                 in self.spaam_2013_2014.yct_attributions])
-    
+        workbook = Workbook(encoding='utf8')
+        self._write_single_indexes(workbook, 'cef', 'emx', 'pei', 'est',
+                                   'eue', 'pti', 'yoe', 'yct', 'rts')
+        workbook.save(save_file_name)
+    def _write_single_indexes(self, workbook, *indexes):
+        for index in indexes:
+            sheet = workbook.add_sheet(index)
+            index_attributions = index + '_attributions'
+            self._write_column(sheet, 0, ['Province']+self.province_names)
+            self._write_column(sheet, 1, ['2007'] + [item * 100 for item
+                                                     in getattr(self.spaam_2006_2007,
+                                                                index_attributions)])
+            self._write_column(sheet, 2, ['2008'] + [item * 100 for item
+                                                     in getattr(self.spaam_2007_2008,
+                                                                index_attributions)])
+            self._write_column(sheet, 3, ['2009'] + [item * 100 for item
+                                                     in getattr(self.spaam_2008_2009,
+                                                                index_attributions)])
+            self._write_column(sheet, 4, ['2010'] + [item * 100 for item
+                                                    in getattr(self.spaam_2009_2010,
+                                                               index_attributions)])
+            self._write_column(sheet, 5, ['2011'] + [item * 100 for item
+                                                    in getattr(self.spaam_2010_2011,
+                                                               index_attributions)])
+            self._write_column(sheet, 6, ['2012'] + [item * 100 for item
+                                                    in getattr(self.spaam_2011_2012,
+                                                               index_attributions)])
+            self._write_column(sheet, 7, ['2013'] + [item * 100 for item
+                                                    in getattr(self.spaam_2012_2013,
+                                                               index_attributions)])
+            self._write_column(sheet, 8, ['2014'] + [item * 100 for item
+                                                    in getattr(self.spaam_2013_2014,
+                                                               index_attributions)])
     def write_multi_attribution(self, save_file_name):
         '''
         write multi attribution
         '''
         workbook = Workbook(encoding='utf8')
-        self._write_multi_cef(workbook.add_sheet('cef'))
-        self._write_multi_emx(workbook.add_sheet('emx'))
-        self._write_multi_pei(workbook.add_sheet('pei'))
-        self._write_multi_est(workbook.add_sheet('est'))
-        self._write_multi_eue(workbook.add_sheet('eue'))
-        self._write_multi_pti(workbook.add_sheet('pti'))
-        self._write_multi_yoe(workbook.add_sheet('yoe'))
-        self._write_multi_yct(workbook.add_sheet('yct'))
-        self._write_multi_rts(workbook.add_sheet('rts'))
+        self._write_multi_index(workbook, 'cef', 'emx', 'pei', 'est',
+                                'eue', 'pti', 'yoe', 'yct', 'rts')
         workbook.save(save_file_name)
-    def _write_multi_cef(self, sheet):
-        '''
-        write multi cef
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item *100 for item
-                                                 in self.mpaam_2006_2007.cef()])
-        self._write_column(sheet, 2, ['2008'] + [item *100 for item
-                                                 in self.mpaam_2006_2008.cef()])                                     
-        self._write_column(sheet, 3, ['2009'] + [item *100 for item
-                                                 in self.mpaam_2006_2009.cef()])                                       
-        self._write_column(sheet, 4, ['2010'] + [item *100 for item
-                                                 in self.mpaam_2006_2010.cef()])                                     
-        self._write_column(sheet, 5, ['2011'] + [item *100 for item
-                                                 in self.mpaam_2006_2011.cef()])                                     
-        self._write_column(sheet, 6, ['2012'] + [item *100 for item
-                                                 in self.mpaam_2006_2012.cef()])                                       
-        self._write_column(sheet, 7, ['2013'] + [item *100 for item
-                                                 in self.mpaam_2006_2013.cef()])                                   
-        self._write_column(sheet, 8, ['2014'] + [item *100 for item
-                                                 in self.mpaam_2006_2014.cef()])
-    def _write_multi_emx(self, sheet):
-        '''
-        write multi emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item *100 for item
-                                                 in self.mpaam_2006_2007.emx()])
-        self._write_column(sheet, 2, ['2008'] + [item *100 for item
-                                                 in self.mpaam_2006_2008.emx()])
-        self._write_column(sheet, 3, ['2009'] + [item *100 for item
-                                                 in self.mpaam_2006_2009.emx()])
-        self._write_column(sheet, 4, ['2010'] + [item *100 for item
-                                                 in self.mpaam_2006_2010.emx()])
-        self._write_column(sheet, 5, ['2011'] + [item *100 for item
-                                                 in self.mpaam_2006_2011.emx()])
-        self._write_column(sheet, 6, ['2012'] + [item *100 for item
-                                                 in self.mpaam_2006_2012.emx()])
-        self._write_column(sheet, 7, ['2013'] + [item *100 for item
-                                                 in self.mpaam_2006_2013.emx()])
-        self._write_column(sheet, 8, ['2014'] + [item *100 for item
-                                                 in self.mpaam_2006_2014.emx()])
-    def _write_multi_pei(self, sheet):
-        '''
-        write multi emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item *100 for item
-                                                 in self.mpaam_2006_2007.pei()])
-        self._write_column(sheet, 2, ['2008'] + [item *100 for item
-                                                 in self.mpaam_2006_2008.pei()])
-        self._write_column(sheet, 3, ['2009'] + [item *100 for item
-                                                 in self.mpaam_2006_2009.pei()])
-        self._write_column(sheet, 4, ['2010'] + [item *100 for item
-                                                 in self.mpaam_2006_2010.pei()])
-        self._write_column(sheet, 5, ['2011'] + [item *100 for item
-                                                 in self.mpaam_2006_2011.pei()])
-        self._write_column(sheet, 6, ['2012'] + [item *100 for item
-                                                 in self.mpaam_2006_2012.pei()])
-        self._write_column(sheet, 7, ['2013'] + [item *100 for item
-                                                 in self.mpaam_2006_2013.pei()])
-        self._write_column(sheet, 8, ['2014'] + [item *100 for item
-                                                 in self.mpaam_2006_2014.pei()])
-    def _write_multi_pti(self, sheet):
-        '''
-        write multi emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item *100 for item
-                                                 in self.mpaam_2006_2007.pti()])
-        self._write_column(sheet, 2, ['2008'] + [item *100 for item
-                                                 in self.mpaam_2006_2008.pti()])
-        self._write_column(sheet, 3, ['2009'] + [item *100 for item
-                                                 in self.mpaam_2006_2009.pti()])
-        self._write_column(sheet, 4, ['2010'] + [item *100 for item
-                                                 in self.mpaam_2006_2010.pti()])
-        self._write_column(sheet, 5, ['2011'] + [item *100 for item
-                                                 in self.mpaam_2006_2011.pti()])
-        self._write_column(sheet, 6, ['2012'] + [item *100 for item
-                                                 in self.mpaam_2006_2012.pti()])
-        self._write_column(sheet, 7, ['2013'] + [item *100 for item
-                                                 in self.mpaam_2006_2013.pti()])
-        self._write_column(sheet, 8, ['2014'] + [item *100 for item
-                                                 in self.mpaam_2006_2014.pti()])
-    def _write_multi_rts(self, sheet):
-        '''
-        write multi emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item *100 for item
-                                                 in self.mpaam_2006_2007.rts()])
-        self._write_column(sheet, 2, ['2008'] + [item *100 for item
-                                                 in self.mpaam_2006_2008.rts()])
-        self._write_column(sheet, 3, ['2009'] + [item *100 for item
-                                                 in self.mpaam_2006_2009.rts()])
-        self._write_column(sheet, 4, ['2010'] + [item *100 for item
-                                                 in self.mpaam_2006_2010.rts()])
-        self._write_column(sheet, 5, ['2011'] + [item *100 for item
-                                                 in self.mpaam_2006_2011.rts()])
-        self._write_column(sheet, 6, ['2012'] + [item *100 for item
-                                                 in self.mpaam_2006_2012.rts()])
-        self._write_column(sheet, 7, ['2013'] + [item *100 for item
-                                                 in self.mpaam_2006_2013.rts()])
-        self._write_column(sheet, 8, ['2014'] + [item *100 for item
-                                                 in self.mpaam_2006_2014.rts()])
-    def _write_multi_eue(self, sheet):
-        '''
-        write multi emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item *100 for item
-                                                 in self.mpaam_2006_2007.eue()])
-        self._write_column(sheet, 2, ['2008'] + [item *100 for item
-                                                 in self.mpaam_2006_2008.eue()])
-        self._write_column(sheet, 3, ['2009'] + [item *100 for item
-                                                 in self.mpaam_2006_2009.eue()])
-        self._write_column(sheet, 4, ['2010'] + [item *100 for item
-                                                 in self.mpaam_2006_2010.eue()])
-        self._write_column(sheet, 5, ['2011'] + [item *100 for item
-                                                 in self.mpaam_2006_2011.eue()])
-        self._write_column(sheet, 6, ['2012'] + [item *100 for item
-                                                 in self.mpaam_2006_2012.eue()])
-        self._write_column(sheet, 7, ['2013'] + [item *100 for item
-                                                 in self.mpaam_2006_2013.eue()])
-        self._write_column(sheet, 8, ['2014'] + [item *100 for item
-                                                 in self.mpaam_2006_2014.eue()])
-    def _write_multi_est(self, sheet):
-        '''
-        write multi emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item *100 for item
-                                                 in self.mpaam_2006_2007.est()])
-        self._write_column(sheet, 2, ['2008'] + [item *100 for item
-                                                 in self.mpaam_2006_2008.est()])
-        self._write_column(sheet, 3, ['2009'] + [item *100 for item
-                                                 in self.mpaam_2006_2009.est()])
-        self._write_column(sheet, 4, ['2010'] + [item *100 for item
-                                                 in self.mpaam_2006_2010.est()])
-        self._write_column(sheet, 5, ['2011'] + [item *100 for item
-                                                 in self.mpaam_2006_2011.est()])
-        self._write_column(sheet, 6, ['2012'] + [item *100 for item
-                                                 in self.mpaam_2006_2012.est()])
-        self._write_column(sheet, 7, ['2013'] + [item *100 for item
-                                                 in self.mpaam_2006_2013.est()])
-        self._write_column(sheet, 8, ['2014'] + [item *100 for item
-                                                 in self.mpaam_2006_2014.est()])
-    def _write_multi_yoe(self, sheet):
-        '''
-        write multi emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item *100 for item
-                                                 in self.mpaam_2006_2007.yoe()])
-        self._write_column(sheet, 2, ['2008'] + [item *100 for item
-                                                 in self.mpaam_2006_2008.yoe()])
-        self._write_column(sheet, 3, ['2009'] + [item *100 for item
-                                                 in self.mpaam_2006_2009.yoe()])
-        self._write_column(sheet, 4, ['2010'] + [item *100 for item
-                                                 in self.mpaam_2006_2010.yoe()])
-        self._write_column(sheet, 5, ['2011'] + [item *100 for item
-                                                 in self.mpaam_2006_2011.yoe()])
-        self._write_column(sheet, 6, ['2012'] + [item *100 for item
-                                                 in self.mpaam_2006_2012.yoe()])
-        self._write_column(sheet, 7, ['2013'] + [item *100 for item
-                                                 in self.mpaam_2006_2013.yoe()])
-        self._write_column(sheet, 8, ['2014'] + [item *100 for item
-                                                 in self.mpaam_2006_2014.yoe()])
-    def _write_multi_yct(self, sheet):
-        '''
-        write multi emx
-        '''
-        self._write_column(sheet, 0, ['Province']+self.province_names)
-        self._write_column(sheet, 1, ['2007'] + [item *100 for item
-                                                 in self.mpaam_2006_2007.yct()])
-        self._write_column(sheet, 2, ['2008'] + [item *100 for item
-                                                 in self.mpaam_2006_2008.yct()])
-        self._write_column(sheet, 3, ['2009'] + [item *100 for item
-                                                 in self.mpaam_2006_2009.yct()])
-        self._write_column(sheet, 4, ['2010'] + [item *100 for item
-                                                 in self.mpaam_2006_2010.yct()])
-        self._write_column(sheet, 5, ['2011'] + [item *100 for item
-                                                 in self.mpaam_2006_2011.yct()])
-        self._write_column(sheet, 6, ['2012'] + [item *100 for item
-                                                 in self.mpaam_2006_2012.yct()])
-        self._write_column(sheet, 7, ['2013'] + [item *100 for item
-                                                 in self.mpaam_2006_2013.yct()])
-        self._write_column(sheet, 8, ['2014'] + [item *100 for item
-                                                 in self.mpaam_2006_2014.yct()])
+    def _write_multi_index(self, workbook, *indexes):
+        for index in indexes:
+            sheet = workbook.add_sheet(index)
+            self._write_column(sheet, 0, ['Province']+self.province_names)
+            self._write_column(sheet, 1, ['2007'] + [item *100 for item
+                                                     in getattr(self.mpaam_2006_2007, index)()])
+            self._write_column(sheet, 2, ['2008'] + [item *100 for item
+                                                     in getattr(self.mpaam_2006_2008, index)()])                                     
+            self._write_column(sheet, 3, ['2009'] + [item *100 for item
+                                                 in getattr(self.mpaam_2006_2009, index)()])                                       
+            self._write_column(sheet, 4, ['2010'] + [item *100 for item
+                                                 in getattr(self.mpaam_2006_2010, index)()])                                     
+            self._write_column(sheet, 5, ['2011'] + [item *100 for item
+                                                 in getattr(self.mpaam_2006_2011, index)()])                                     
+            self._write_column(sheet, 6, ['2012'] + [item *100 for item
+                                                 in getattr(self.mpaam_2006_2012, index)()])                                       
+            self._write_column(sheet, 7, ['2013'] + [item *100 for item
+                                                 in getattr(self.mpaam_2006_2013, index)()])                                   
+            self._write_column(sheet, 8, ['2014'] + [item *100 for item
+                                                 in getattr(self.mpaam_2006_2014, index)()])
 if __name__ == '__main__':
     app = AppLmdi()
     '''
@@ -628,6 +225,7 @@ if __name__ == '__main__':
     app.write_lmdi_multi(workbook.add_sheet('跨期LMDI'))
     workbook.save('out/LMDI单期和跨期.xls'
     '''
-    app.write_multi_lmdi('out/省份lmdi明细.xls')
-    app.write_single_attribution('out/单期归因.xls')
-    app.write_multi_attribution('out/跨期归因.xls')                                               
+    #app.write_multi_lmdi('out1/省份lmdi明细.xls')
+    app.write_single_attribution('out1/单期归因1.xls')
+    app.write_multi_attribution('out1/跨期归因1.xls')
+    #app.write_linear_program('out/线性规划.xls')

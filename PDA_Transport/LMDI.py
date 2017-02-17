@@ -102,6 +102,9 @@ class Lmdi(object):
                 self._dmus_t1[i].energy[-2] = magic_number
                 self._dmus_t1[i].co2[-2] = magic_number* self._t1_cef[i, self.energy_count-2]
     @property
+    def name(self):
+        return self._name
+    @property
     def co2_sum_t(self):
         '''
         t period co2 emission
