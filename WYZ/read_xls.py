@@ -16,8 +16,12 @@ def read_dmus(year):
     dmus = list()
     for row_idx in range(ROW_START, ROW_END):
         row = sheet.row_values(row_idx)[COLUMN_START:COLUMN_END+1]
-        dmus.append(Dmu(_format_province_name(row[0]), float(row[1]), float(row[2]), float(row[3]),
-                        float(row[4]), float(row[5])))
+        dmus.append(Dmu(name=_format_province_name(row[0]),
+                        energy=float(row[1]),
+                        capital=float(row[2]),
+                        labour=float(row[3]),
+                        production=float(row[4]),
+                        co2=float(row[5])))
     return dmus
 
 def _format_province_name(name):

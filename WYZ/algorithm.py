@@ -29,9 +29,11 @@ def _universal_linprog(kind, object_cost, constrains_left,
     symbols = LpVariable.dict('x_%s', ingredients, lowBound=0)
     cost = dict(zip(ingredients, object_cost))
     prob += lpSum([cost[i] * symbols[i] for i in ingredients])
-    for (constrain_left, constrain_right, constrain_type) in zip(constrains_left,
-                                                                 constrains_right,
-                                                                 constrains_type):
+    for (constrain_left,
+         constrain_right,
+         constrain_type) in zip(constrains_left,
+                                constrains_right,
+                                constrains_type):
         constrain_dict = dict(zip(ingredients, constrain_left))
         if constrain_type == '<=':
             prob += lpSum([constrain_dict[i] * symbols[i] for i in ingredients]) <= constrain_right
@@ -64,32 +66,6 @@ def _theta_min(energies, capitals, labours, productions, co2s,
                               [capitals, labours, productions, co2s],
                               [capital_right, labour_right, production_right, co2_right],
                               ['<=', '<=', '>=', '='], energy_right)
-    ''''
-    prob = LpProblem('theta_min', LpMinimize)
-    variables_count = len(energies)
-    ingredients = [str(symbol+1) for symbol in range(variables_count)]
-    symbols = LpVariable.dict('x_%s', ingredients, lowBound=0)
-    cost = dict(zip(ingredients, energies))
-    prob += lpSum([cost[i] * symbols[i] for i in ingredients])
-    capital_dict = dict(zip(ingredients, capitals))
-    labour_dict = dict(zip(ingredients, labours))
-    production_dict = dict(zip(ingredients, productions))
-    co2s_dict = dict(zip(ingredients, co2s))
-    # constraint
-    prob += lpSum([capital_dict[i] * symbols[i]
-                   for i in ingredients]) <= capital_right
-    prob += lpSum([labour_dict[i] * symbols[i]
-                   for i in ingredients]) <= labour_right
-    prob += lpSum([production_dict[i] * symbols[i]
-                   for i in ingredients]) >= production_right
-    prob += lpSum([co2s_dict[i] * symbols[i]
-                   for i in ingredients]) == co2_right
-    if prob.solve() != 1:
-        logging.error('theta min unsolved situation occurs')
-        raise UserWarning
-    else:
-        return prob.objective.value() / energy_right
-    '''
 
 @_reciprocal
 def theta_min(dmus_s, dmus_right):
@@ -138,32 +114,6 @@ def _eta_max(energies, capitals, labours, productions, co2s,
                               [energy_right, capital_right, labour_right, co2_right],
                               ['<=', '<=', '<=', '='],
                               production_right)
-    '''
-    prob = LpProblem('eta_max', LpMaximize)
-    variables_count = len(productions)
-    ingredients = [str(symbol+1) for symbol in range(variables_count)]
-    symbols = LpVariable.dict('x_%s', ingredients, lowBound=0)
-    cost = dict(zip(ingredients, productions))
-    prob += lpSum([cost[i] * symbols[i] for i in ingredients])
-    energy_dict = dict(zip(ingredients, energies))
-    capital_dict = dict(zip(ingredients, capitals))
-    labour_dict = dict(zip(ingredients, labours))
-    co2s_dict = dict(zip(ingredients, co2s))
-    #constraint
-    prob += lpSum([energy_dict[i] * symbols[i]
-                   for i in ingredients]) <= energy_right
-    prob += lpSum([capital_dict[i] * symbols[i]
-                   for i in ingredients]) <= capital_right
-    prob += lpSum([labour_dict[i] * symbols[i]
-                   for i in ingredients]) <= labour_right
-    prob += lpSum([co2s_dict[i] * symbols[i]
-                   for i in ingredients]) == co2_right
-    if prob.solve() != 1:
-        logging.error('theta min unsolved situation occurs')
-        raise UserWarning
-    else:
-        return prob.objective.value() / production_right
-    '''
 
 @_reciprocal
 def eta_max(dmus_s, dmus_right):
@@ -212,32 +162,6 @@ def _lambda_min(energies, capitals, labours, productions, co2s,
                               [energy_right, capital_right, labour_right, production_right],
                               ['<=', '<=', '<=', '>='],
                               co2_right)
-    '''
-    prob = LpProblem('lambda_min', LpMinimize)
-    variables_count = len(co2s)
-    ingredients = [str(symbol+1) for symbol in range(variables_count)]
-    symbols = LpVariable.dict('x_%s', ingredients, lowBound=0)
-    cost = dict(zip(ingredients, co2s))
-    prob += lpSum([cost[i] * symbols[i] for i in ingredients])
-    energy_dict = dict(zip(ingredients, energies))
-    capital_dict = dict(zip(ingredients, capitals))
-    labour_dict = dict(zip(ingredients, labours))
-    production_dict = dict(zip(ingredients, productions))
-    # constraint
-    prob += lpSum([energy_dict[i] * symbols[i]
-                   for i in ingredients]) <= energy_right
-    prob += lpSum([capital_dict[i] * symbols[i]
-                   for i in ingredients]) <= capital_right
-    prob += lpSum([labour_dict[i] * symbols[i]
-                   for i in ingredients]) <= labour_right
-    prob += lpSum([production_dict[i] * symbols[i]
-                   for i in ingredients]) >= production_right
-    if prob.solve() != 1:
-        logging.error('theta min unsolved situation occurs')
-        raise UserWarning
-    else:
-        return prob.objective.value() / co2_right
-    '''
 @_reciprocal
 def lambda_min(dmus_s, dmus_right):
     '''

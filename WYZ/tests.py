@@ -6,7 +6,7 @@ from read_xls import read_dmus
 
 class TestModel(unittest.TestCase):
     def setUp(self):
-        self.dmu = Dmu('beijing', 100.0, 89.1, 22.3, 45.2, 32.9)
+        self.dmu = Dmu(name='beijing', energy=100.0, capital=89.1, labour=22.3, production=45.2, co2=32.9)
     def test_name(self):
         self.assertEqual(self.dmu.name, 'beijing')
     def test_energy(self):
@@ -30,7 +30,7 @@ class TestRead(unittest.TestCase):
         self.assertAlmostEqual(7150.005, beijing_dmu.energy, places=3)
         self.assertAlmostEqual(16315.52973, beijing_dmu.capital, places=3)
         self.assertAlmostEqual(920.4, beijing_dmu.labour, places=3)
-        self.assertAlmostEqual(6969.52, beijing_dmu.produciton, places=3)
+        self.assertAlmostEqual(6969.52, beijing_dmu.production, places=3)
         self.assertAlmostEqual(20637.504, beijing_dmu.co2, places=3)
 if __name__ == '__main__':
     unittest.main()

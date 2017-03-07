@@ -2,7 +2,7 @@
 '''
 the configuration of wyz - project
 '''
-XLS_FILE = 'data3.xlsx'
+XLS_FILE = 'data_wyz.xlsx'
 SHEET_2005 = 0
 SHEET_2010 = 1
 ROW_START = 1
