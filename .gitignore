@@ -92,3 +92,12 @@ ENV/
 *.xlsx
 *.xls
 !industry.xlsx
+._DS_Store
+._.DS_Store
+Data/
+.DS_Store
+app/out/
+app/output/
+_pycache_
+*.jpg
+*.png
